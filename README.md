@@ -2,6 +2,8 @@
 
 Interactive simulator for the 2026 FIFA World Cup.
 
+💡 **This project was developed entirely using AI, primarily Codex (GPT 5.5) for modeling and Claude Code (Opus 4.8) for design. All code, analyses, and explanations were written by the AI (with the sole exception of this paragraph).**
+
 The app combines live group-stage results, Polymarket match probabilities, FIFA ranking points, host advantage and Monte Carlo simulations to help explore the 48-team format, especially the eight best third-placed teams and the knockout paths that follow.
 
 ## Features
