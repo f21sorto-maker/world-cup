@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/espn/:path*",
+      "destination": "https://site.api.espn.com/:path*"
+    },
+    {
+      "source": "/poly/:path*",
+      "destination": "https://gamma-api.polymarket.com/:path*"
+    },
+    {
+      "source": "/fifa-api/:path*",
+      "destination": "https://api.fifa.com/:path*"
+    },
+    {
+      "source": "/fifa/:path*",
+      "destination": "https://inside.fifa.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
