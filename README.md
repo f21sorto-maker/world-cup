@@ -11,7 +11,7 @@ The app combines live group-stage results, Polymarket match probabilities, FIFA 
 - Live group-stage results from ESPN's public scoreboard.
 - Polymarket 1X2 markets for upcoming fixtures.
 - FIFA `DecimalTotalPoints` as the main team-strength baseline.
-- Soft title prior from Polymarket outright-winner odds.
+- Title-odds force calibration from Polymarket outright-winner odds.
 - Host bonus for the United States, Mexico and Canada.
 - Editable deterministic scenario: change future group scores and bracket winners.
 - Official 2026 Round-of-32 bracket with the 495-combination third-place mapping.
@@ -23,16 +23,10 @@ The app combines live group-stage results, Polymarket match probabilities, FIFA 
 Team strength starts from:
 
 ```text
-baseRating = 0.75 * FIFA DecimalTotalPoints
-           + 0.25 * Polymarket title prior
-           + host bonus
+baseRating = FIFA DecimalTotalPoints + host bonus
 ```
 
-where:
-
-```text
-titlePrior = 1500 + 125 * ln(p_title / 0.012)
-```
+The Polymarket outright-winner market is deliberately not used as the initial team-strength baseline because it already contains bracket/path information.
 
 Future Polymarket match markets then reweight teams via:
 
@@ -41,9 +35,19 @@ E = P(win) + 0.5 * P(draw)
 target rating gap = 180 * logit(E)
 ```
 
+Only 50% of the learned market adjustment enters the final strength index.
+
 Completed matches apply a small capped Elo-like result adjustment. The rating itself is not bounded; only market/result adjustments and match probabilities are regularized.
 
 For matches without a Polymarket market, the adjusted rating drives 1X2 or knockout-advance probabilities. When a real Polymarket market exists for a known knockout match, the app uses it before falling back to the rating model.
+
+After an initial 3,000-run Monte Carlo pass, raw title probabilities are compared with Polymarket's outright-winner market and converted into a capped force adjustment:
+
+```text
+ΔR_title = clamp(60 * (logit(p_polymarket) - logit(p_model)), -50, +50)
+```
+
+The main Monte Carlo simulation then uses the recalibrated ratings. Reported title odds, stage reach and opponent paths are raw Monte Carlo frequencies from that final pass.
 
 The methodology page inside the app contains the detailed version.
 
@@ -93,4 +97,4 @@ GitHub Pages alone is not ideal unless you add a separate proxy service.
 
 ## Notes
 
-This is a hobby/analytics simulator, not betting advice. The model is intentionally simple and transparent, with Polymarket used as an input and as a benchmark rather than a black-box source of final answers.
+This is a hobby/analytics simulator, not betting advice. The model is intentionally simple and transparent, with Polymarket used for match inputs and title calibration rather than as a black-box source of final answers.

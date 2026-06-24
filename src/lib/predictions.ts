@@ -1,6 +1,8 @@
 import type { OutcomeProbabilities, Prediction, Team } from "../types";
 import { clamp } from "./normalize";
 
+const KNOCKOUT_RATING_SCALE = 500;
+
 type ScoreCell = {
   homeScore: number;
   awayScore: number;
@@ -205,7 +207,7 @@ export function ratingProbabilities(home: Team, away: Team): OutcomeProbabilitie
 }
 
 export function knockoutWinProbability(home: Team, away: Team): number {
-  return clamp(1 / (1 + 10 ** (-(home.rating - away.rating) / 390)), 0.08, 0.92);
+  return clamp(1 / (1 + 10 ** (-(home.rating - away.rating) / KNOCKOUT_RATING_SCALE)), 0.08, 0.92);
 }
 
 export function buildPrediction(
@@ -254,14 +256,6 @@ export function samplePredictedScore(prediction: Prediction, random: () => numbe
 
 export function makeFallbackPrediction(home: Team, away: Team, scoreSeed?: string): Prediction {
   return buildPrediction(ratingProbabilities(home, away), "strength-model", undefined, scoreSeed ?? `${home.id}-${away.id}`);
-}
-
-export function titleProbabilityToRating(probability: number | undefined): number {
-  if (!probability || probability <= 0) {
-    return 1375;
-  }
-
-  return Math.round(1500 + 185 * Math.log(probability / 0.012));
 }
 
 export function knockoutScore(home: Team, away: Team, winnerId: string): { homeScore: number; awayScore: number; note?: string } {

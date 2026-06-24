@@ -1200,7 +1200,7 @@ const methodSections = [
     icon: <Sparkles size={18} />,
     title: "Overview",
     body: [
-      "The simulator blends five ingredients: real results from ESPN, FIFA points, a small host advantage, Polymarket title odds as a prior, per-match Polymarket markets, and a tournament engine that follows the FIFA 2026 regulations.",
+      "The simulator blends five ingredients: real results from ESPN, FIFA points, a small host advantage, per-match Polymarket markets, a Polymarket title-odds force calibration, and a tournament engine that follows the FIFA 2026 regulations.",
       "Two views sit on top of this engine. The Tournament view is a single editable scenario — you can change any score or knockout winner and watch the whole bracket recompute. The Probabilities view runs the same engine thousands of times to estimate how far a team is likely to go."
     ]
   },
@@ -1212,7 +1212,7 @@ const methodSections = [
       "ESPN public scoreboard (fifa.world, 11–28 Jun 2026), filtered to the 72 group fixtures via the official “Group X” note. It provides teams, crests, kick-off times, live/final status, scores, and cards used for the fair-play tie-breaker.",
       "Polymarket per-match “Games” markets (series soccer-fifwc): moneyline prices matched to each fixture by team pair and kick-off. Group matches use the 1·X·2 market; knockout matches will use a two-way advance market when available, otherwise a 1·X·2 market plus a model split of the draw.",
       "Official FIFA men’s ranking (api.fifa.com): the DecimalTotalPoints field is the initial rating scale; the rank itself is kept for the final FIFA tie-breaker.",
-      "Polymarket “World Cup Winner” outright market: converted to a soft title prior and shown next to the model title odds for comparison."
+      "Polymarket “World Cup Winner” outright market: no longer used as a direct base rating; it is used after an initial simulation pass to add a small calibration adjustment to each team’s strength."
     ]
   },
   {
@@ -1231,10 +1231,11 @@ const methodSections = [
     icon: <Network size={18} />,
     title: "Team strength model",
     body: [
-      "Title prior = 1500 + 125·ln(p_title / 0.012). Base rating = 75% FIFA DecimalTotalPoints + 25% title prior + host bonus (+55 United States, +45 Mexico, +35 Canada). If one of the two sources is missing, the available one carries the base.",
-      "The rating itself is not bounded. The regularisation comes from the 25% title-prior weight, the shrinkage in the market adjustment loop, and the caps on market/result adjustments.",
-      "Future Polymarket match markets reweight that base. For each priced known match, the market expected score E = P(win) + 0.5·P(draw), or P(advance) for two-way knockout markets, is converted to a target rating gap 180·logit(E). A small ridge-like iterative update moves both teams toward all their market-implied gaps, capped at ±135 rating points.",
+      "Base rating = FIFA DecimalTotalPoints + host bonus (+55 United States, +45 Mexico, +35 Canada). Polymarket title odds are deliberately excluded here because they already contain bracket information.",
+      "The rating itself is not bounded. The regularisation comes from the shrinkage in the market adjustment loop, the 50% market-adjustment weight, and the caps on market/result adjustments.",
+      "Future Polymarket match markets reweight that base. For each priced known match, the market expected score E = P(win) + 0.5·P(draw), or P(advance) for two-way knockout markets, is converted to a target rating gap 180·logit(E). A small ridge-like iterative update moves both teams toward all their market-implied gaps, capped at ±135 rating points, then 50% of that learned market adjustment enters the final strength index.",
       "Completed matches add only a small capped update: K = 14, margin multiplier 1 + min(0.8, 0.45·log(1 + goal difference)), cap ±42. This lets real results matter without crushing a favourite for a draw.",
+      "A 3,000-run calibration pass then compares raw simulated title odds with the Polymarket outright market and adds ΔR_title = clamp(60·(logit(p_market) − logit(p_model)), −50, +50) to the strength index. This lets the market inform team strength without being the initial rating source.",
       "Matches without a Polymarket market use the final adjusted rating: draw = clamp(0.29 − |ΔR| / 5200, 0.17, 0.30), then the remaining mass is split with an Elo-style curve."
     ]
   },
@@ -1245,8 +1246,8 @@ const methodSections = [
     body: [
       "Round-of-32 seeding follows the official FIFA bracket (M73–M88): the top two of each group plus the eight best third-placed teams, with the third-place assignment taken from FIFA’s 495-combination Annexe C table.",
       "Each Monte-Carlo iteration keeps the real results, samples every remaining group match, recomputes the 12 tables and the best-thirds cut line, then applies a light projected-form update before playing M73–M104.",
-      "For a known knockout match, the engine first looks for a real Polymarket market around the scheduled kick-off. Only if none is found does it use P(advance) = clamp(1 / (1 + 10^(−ΔR/390)), 0.08, 0.92). The deterministic view advances the favourite; you can override any winner by tapping a team.",
-      "The reported figures are simply frequency ÷ iterations over 4,200 runs. Title odds and Likely Path use the same seed and iteration count, so a selected team’s Champion probability is comparable across both panels."
+      "For a known knockout match, the engine first looks for a real Polymarket market around the scheduled kick-off. Only if none is found does it use P(advance) = clamp(1 / (1 + 10^(−ΔR/500)), 0.08, 0.92). The flatter 500-point scale keeps single-match knockout ties more volatile than the group-stage strength model. The deterministic view advances the favourite; you can override any winner by tapping a team.",
+      "After the one-pass force calibration, all reported figures are simple frequencies ÷ iterations over 4,200 runs. Title odds and Likely Path use the same seed and iteration count, so a selected team’s Champion probability is comparable across both panels."
     ]
   },
   {
@@ -1266,7 +1267,7 @@ const methodSections = [
     body: [
       "The score grid is calibrated to 1·X·2 prices, not to exact-score odds, injuries, line-ups, fatigue, red cards, travel or weather.",
       "The Negative Binomial and Dixon-Coles parameters are heuristic, chosen for more realistic score variety. They should be back-tested before treating exact scores as betting-grade predictions.",
-      "The model uses the outright market as a prior but still independently recomputes the bracket from paths and match probabilities. It can therefore disagree with Polymarket title odds, but large gaps should be read as diagnostics first, not guaranteed edges.",
+      "The outright market now calibrates team strength through one capped residual adjustment after an initial simulation pass. This is still a heuristic: the title market contains bracket/path information, so large residual adjustments should be read as diagnostics rather than pure estimates of player quality.",
       "Extra time and penalties are not modelled beyond a cosmetic “after extra time” tag, and far-future matches without a market fall back to the adjusted strength model."
     ]
   }

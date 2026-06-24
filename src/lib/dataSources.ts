@@ -1,12 +1,15 @@
 import type { DataLoadResult, GroupLetter, Match, OutcomeProbabilities, PolymarketMatchMarket, Team } from "../types";
 import { buildPrediction, makeFallbackPrediction, normalizeProbabilities } from "./predictions";
 import { normalizeName, pairKey } from "./normalize";
-import { addModelRatings, type FifaRanking, type MatchMarket, type RatingMarket } from "./ratings";
+import { addModelRatings, calibrateRatingsToTitleMarket, type FifaRanking, type MatchMarket, type RatingMarket } from "./ratings";
+import { simulateTournamentOutcomes } from "./tournament";
 
 const ESPN_SCOREBOARD_PATH =
   "/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260611-20260628&limit=200";
 const POLYMARKET_WINNER_PATH = "/events/slug/world-cup-winner";
 const FIFA_RANKINGS_PATH = "/api/v3/rankings?gender=1&count=211&locale=en";
+const TITLE_FORCE_CALIBRATION_ITERATIONS = 3000;
+const TITLE_FORCE_CALIBRATION_SEED = 20260624;
 const POLYMARKET_GAMES_PATHS = Array.from({ length: 8 }, (_, index) => index * 100).map(
   (offset) =>
     `/events?tag_slug=games&active=true&closed=false&limit=100&offset=${offset}&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z`
@@ -522,7 +525,16 @@ export async function loadWorldCupData(): Promise<DataLoadResult> {
   const matchMarkets = collectMatchMarkets(parsed.matches, parsed.teams, polymarketMarkets);
   const usedGroupMarketSlugs = new Set(Object.values(matchMarkets).map((market) => market.marketSlug));
   const ratingMarkets = collectRatingMarkets(parsed.teams, polymarketMarkets, usedGroupMarketSlugs);
-  const teams = addModelRatings(parsed.teams, parsed.matches, matchMarkets, ratingMarkets, titleProbabilities, fifaRankings);
+  const initialTeams = addModelRatings(parsed.teams, parsed.matches, matchMarkets, ratingMarkets, titleProbabilities, fifaRankings);
+  const initialMatches = addPredictions(parsed.matches, initialTeams, matchMarkets);
+  const rawCalibrationOdds = simulateTournamentOutcomes(
+    initialTeams,
+    initialMatches,
+    polymarketMarkets,
+    TITLE_FORCE_CALIBRATION_ITERATIONS,
+    TITLE_FORCE_CALIBRATION_SEED
+  ).championOdds;
+  const teams = calibrateRatingsToTitleMarket(initialTeams, rawCalibrationOdds);
   const matches = addPredictions(parsed.matches, teams, matchMarkets);
   const polymarketPredictions = Object.keys(matchMarkets).length;
 

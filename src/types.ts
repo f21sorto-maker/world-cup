@@ -15,13 +15,13 @@ export type Team = {
   color?: string;
   alternateColor?: string;
   titleProbability?: number;
-  titleRating?: number;
   rating: number;
   baseRating?: number;
   fifaPoints?: number;
   fifaRank?: number;
   marketAdjustment?: number;
   resultAdjustment?: number;
+  titleCalibrationAdjustment?: number;
 };
 
 export type OutcomeProbabilities = {

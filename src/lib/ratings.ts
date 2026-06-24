@@ -1,7 +1,6 @@
 import type { Match, Team } from "../types";
 import type { OutcomeProbabilities } from "../types";
 import { clamp, normalizeName } from "./normalize";
-import { titleProbabilityToRating } from "./predictions";
 
 export type FifaRanking = {
   rank: number;
@@ -20,14 +19,17 @@ export type RatingMarket = {
   expectedHome: number;
 };
 
+type TitleCalibrationInput = Array<{ teamId: string; probability: number }>;
+
 const HOST_BONUS: Record<string, number> = {
   unitedstates: 55,
   mexico: 45,
   canada: 35
 };
-const FIFA_PRIOR_WEIGHT = 0.75;
-const TITLE_PRIOR_WEIGHT = 0.25;
-const TITLE_PRIOR_SCALE = 125;
+const MARKET_RATING_WEIGHT = 0.5;
+const TITLE_FORCE_CALIBRATION_SCALE = 60;
+const TITLE_FORCE_CALIBRATION_CAP = 50;
+const TITLE_FORCE_CALIBRATION_EPSILON = 0.0005;
 const MARKET_LOGIT_SCALE = 180;
 const MARKET_LEARNING_RATE = 0.18;
 const MARKET_EPOCHS = 14;
@@ -41,33 +43,19 @@ function logit(probability: number): number {
   return Math.log(value / (1 - value));
 }
 
+function titleLogit(probability: number): number {
+  const value = clamp(probability, TITLE_FORCE_CALIBRATION_EPSILON, 1 - TITLE_FORCE_CALIBRATION_EPSILON);
+  return Math.log(value / (1 - value));
+}
+
 function expectedFromRatingDiff(diff: number): number {
   return 1 / (1 + Math.exp(-diff / MARKET_LOGIT_SCALE));
 }
 
-function titlePriorRating(probability: number | undefined): number | undefined {
-  if (!probability || probability <= 0) {
-    return undefined;
-  }
-
-  return 1500 + TITLE_PRIOR_SCALE * Math.log(probability / 0.012);
-}
-
-function baseRatingFor(team: Team, titleProbability: number | undefined, ranking: FifaRanking | undefined): { baseRating: number; titleRating?: number } {
+function baseRatingFor(team: Team, ranking: FifaRanking | undefined): number {
   const fifaPoints = ranking?.points;
-  const titleRating = titlePriorRating(titleProbability);
-  const fifaRating =
-    typeof fifaPoints === "number" && Number.isFinite(fifaPoints) ? fifaPoints : titleRating ?? titleProbabilityToRating(titleProbability);
-  const mixedRating =
-    titleRating && typeof fifaPoints === "number" && Number.isFinite(fifaPoints)
-      ? FIFA_PRIOR_WEIGHT * fifaRating + TITLE_PRIOR_WEIGHT * titleRating
-      : fifaRating;
-  const baseRating = mixedRating + (HOST_BONUS[normalizeName(team.name)] ?? 0);
-
-  return {
-    baseRating,
-    titleRating
-  };
+  const fifaRating = typeof fifaPoints === "number" && Number.isFinite(fifaPoints) ? fifaPoints : team.rating;
+  return fifaRating + (HOST_BONUS[normalizeName(team.name)] ?? 0);
 }
 
 function goalResult(homeGoals: number, awayGoals: number): number {
@@ -90,7 +78,6 @@ export function addModelRatings(
 ): Team[] {
   const teamsById = Object.fromEntries(teams.map((team) => [team.id, team]));
   const baseRatings: Record<string, number> = {};
-  const titleRatings: Record<string, number | undefined> = {};
   const titleById: Record<string, number | undefined> = {};
   const rankingById: Record<string, FifaRanking | undefined> = {};
 
@@ -98,11 +85,9 @@ export function addModelRatings(
     const normalized = normalizeName(team.name);
     const titleProbability = titleProbabilities[normalized];
     const ranking = fifaRankings[normalized];
-    const base = baseRatingFor(team, titleProbability, ranking);
     titleById[team.id] = titleProbability;
     rankingById[team.id] = ranking;
-    baseRatings[team.id] = base.baseRating;
-    titleRatings[team.id] = base.titleRating;
+    baseRatings[team.id] = baseRatingFor(team, ranking);
   }
 
   const marketAdjustments = Object.fromEntries(teams.map((team) => [team.id, 0])) as Record<string, number>;
@@ -163,8 +148,10 @@ export function addModelRatings(
     .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
 
   for (const match of completedMatches) {
-    const homeRating = baseRatings[match.homeTeamId] + marketAdjustments[match.homeTeamId] + resultAdjustments[match.homeTeamId];
-    const awayRating = baseRatings[match.awayTeamId] + marketAdjustments[match.awayTeamId] + resultAdjustments[match.awayTeamId];
+    const homeRating =
+      baseRatings[match.homeTeamId] + MARKET_RATING_WEIGHT * marketAdjustments[match.homeTeamId] + resultAdjustments[match.homeTeamId];
+    const awayRating =
+      baseRatings[match.awayTeamId] + MARKET_RATING_WEIGHT * marketAdjustments[match.awayTeamId] + resultAdjustments[match.awayTeamId];
     const expected = expectedFromRatingDiff(homeRating - awayRating);
     const actual = goalResult(match.homeScore as number, match.awayScore as number);
     const step = clamp(
@@ -187,7 +174,7 @@ export function addModelRatings(
 
   return teams.map((team) => {
     const baseRating = baseRatings[team.id];
-    const marketAdjustment = marketAdjustments[team.id];
+    const marketAdjustment = MARKET_RATING_WEIGHT * marketAdjustments[team.id];
     const resultAdjustment = resultAdjustments[team.id];
     const ranking = rankingById[team.id];
     return {
@@ -198,8 +185,30 @@ export function addModelRatings(
       fifaRank: ranking?.rank,
       marketAdjustment: Math.round(marketAdjustment),
       resultAdjustment: Math.round(resultAdjustment),
-      titleRating: titleRatings[team.id] ? Math.round(titleRatings[team.id] as number) : undefined,
       rating: Math.round(baseRating + marketAdjustment + resultAdjustment)
+    };
+  });
+}
+
+export function calibrateRatingsToTitleMarket(teams: Team[], rawChampionOdds: TitleCalibrationInput): Team[] {
+  const rawByTeam = Object.fromEntries(rawChampionOdds.map((row) => [row.teamId, row.probability])) as Record<string, number>;
+
+  return teams.map((team) => {
+    const market = team.titleProbability;
+    const raw = rawByTeam[team.id];
+    const titleCalibrationAdjustment =
+      typeof market === "number" && market > 0 && typeof raw === "number"
+        ? clamp(
+            TITLE_FORCE_CALIBRATION_SCALE * (titleLogit(market) - titleLogit(raw)),
+            -TITLE_FORCE_CALIBRATION_CAP,
+            TITLE_FORCE_CALIBRATION_CAP
+          )
+        : 0;
+
+    return {
+      ...team,
+      titleCalibrationAdjustment: Math.round(titleCalibrationAdjustment),
+      rating: Math.round(team.rating + titleCalibrationAdjustment)
     };
   });
 }
