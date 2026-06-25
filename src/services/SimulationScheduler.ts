@@ -84,7 +84,7 @@ export async function runCalibration(options: RunCalibrationOptions = {}): Promi
       throw new Error("Simulation requires group-stage matches");
     }
 
-    const useWorker = typeof Worker !== "undefined";
+    const useWorker = typeof Worker !== "undefined" && import.meta.env.PROD;
     const iterations =
       options.iterations ?? (useWorker ? WORKER_ITERATIONS : MAX_MAIN_THREAD);
 

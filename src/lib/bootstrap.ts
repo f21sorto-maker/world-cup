@@ -1,5 +1,5 @@
 import { loadWorldCupData } from "../lib/dataSources";
-import { deriveStandings } from "../lib/qualification";
+import { deriveStandingsIfScored } from "../lib/qualification";
 import { BOOTSTRAP_FLAGS } from "../config/apiFlags";
 import { logger } from "../services/Logger";
 import { fetchScoreboard } from "../services/ESPNClient";
@@ -84,8 +84,14 @@ export async function bootstrap(): Promise<void> {
     const teamsList = Object.values(useStore.getState().teams);
     const scored = espnData.matches.filter(
       (m) => m.group && m.homeScore !== undefined && m.awayScore !== undefined
-    ) as Parameters<typeof deriveStandings>[0];
-    store.setGroupStandings(deriveStandings(scored, teamsList));
+    );
+    const derived = deriveStandingsIfScored(espnData.matches, teamsList);
+    if (derived) {
+      store.setGroupStandings(derived);
+      logger.info("Standings derived from ESPN", "Bootstrap", { scoredMatches: scored.length });
+    } else {
+      logger.info("No ESPN group matches — preserving standings", "Bootstrap");
+    }
 
     store.setSplashProgress(65, "Running simulations...");
 

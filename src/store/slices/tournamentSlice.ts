@@ -1,4 +1,5 @@
 import { GROUP_STAGE_MATCH_COUNT } from "../../types";
+import { deriveStandingsIfScored } from "../../lib/qualification";
 import type { DataLoadResult, GroupStanding, MergedMatch, PolymarketMatchMarket, ScoreOverride, Team } from "../../types";
 
 export type TournamentSliceState = {
@@ -37,14 +38,18 @@ export const createTournamentSlice = (
   loadedAt: null,
 
   hydrateFromBootstrap: (data) =>
-    set(() => ({
-      teams: Object.fromEntries(data.teams.map((t) => [t.id, t])),
-      groupStandings: [],
-      knockoutMarkets: data.knockoutMarkets,
-      sources: data.sources,
-      warnings: data.warnings,
-      loadedAt: data.loadedAt
-    })),
+    set(() => {
+      const derived = deriveStandingsIfScored(data.matches, data.teams);
+      const groupStandings = derived ?? get().groupStandings;
+      return {
+        teams: Object.fromEntries(data.teams.map((t) => [t.id, t])),
+        groupStandings,
+        knockoutMarkets: data.knockoutMarkets,
+        sources: data.sources,
+        warnings: data.warnings,
+        loadedAt: data.loadedAt
+      };
+    }),
 
   setTeams: (teams) => set(() => ({ teams })),
 

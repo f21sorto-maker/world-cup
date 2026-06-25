@@ -1,5 +1,5 @@
-import type { MatchWithScore, MergedMatch } from "../types";
-import { deriveStandings } from "../lib/qualification";
+import type { MergedMatch } from "../types";
+import { deriveStandingsIfScored } from "../lib/qualification";
 import { useStore } from "../store";
 import { fetchScoreboard } from "./ESPNClient";
 import { applyLiveScore } from "./DataMerger";
@@ -89,12 +89,10 @@ class PollingEngine {
     const teamsList = Object.values(store.teams);
     if (teamsList.length === 0) return;
 
-    const scored = Object.values(merged).filter(
-      (m): m is MatchWithScore =>
-        Boolean(m.group) && m.homeScore !== undefined && m.awayScore !== undefined
-    );
-
-    store.setGroupStandings(deriveStandings(scored, teamsList));
+    const derived = deriveStandingsIfScored(Object.values(merged), teamsList);
+    if (derived) {
+      store.setGroupStandings(derived);
+    }
     scheduleSimulation();
   }
 
@@ -134,7 +132,7 @@ class PollingEngine {
       logger.info("ESPN fallback used", "PollingEngine", { count: espn.matches.length });
     }
 
-    const liveCount = Object.values(merged).filter((m) => m.status === "live").length;
+    const liveCount = Object.values(merged).filter((m) => m.status === "live" && m.group).length;
     const primary = selectPrimaryMatch(Object.values(merged), store.primaryLiveMatchId);
 
     store.batchPollUpdate({

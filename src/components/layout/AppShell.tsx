@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BottomTabBar } from "./BottomTabBar";
 import { TopNavBar } from "./TopNavBar";
 import { SplashScreen } from "./SplashScreen";
@@ -17,9 +17,20 @@ export function AppShell() {
   const activeTab = useStore((s) => s.activeTab);
   const splashPhase = useStore((s) => s.splashPhase);
   const lastGoalAnnouncement = useStore((s) => s.lastGoalAnnouncement);
+  const mainRef = useRef<HTMLElement>(null);
 
   useHashSync();
   useQualificationChangeLogger();
+
+  useEffect(() => {
+    const main = mainRef.current;
+    if (!main) return;
+    if (splashPhase !== "done") {
+      main.setAttribute("inert", "");
+    } else {
+      main.removeAttribute("inert");
+    }
+  }, [splashPhase]);
 
   useEffect(() => {
     const sr = document.getElementById("sr-live");
@@ -29,7 +40,7 @@ export function AppShell() {
   return (
     <div className="wc-chrome">
       <TopNavBar />
-      <main className="wc-main" aria-hidden={splashPhase !== "done"}>
+      <main ref={mainRef} className="wc-main">
         {activeTab === "live" ? <LiveView /> : null}
         {activeTab === "bracket" ? <BracketView /> : null}
         {activeTab === "groups" ? <GroupsView /> : null}

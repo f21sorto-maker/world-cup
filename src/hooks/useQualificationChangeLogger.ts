@@ -16,12 +16,13 @@ export function useQualificationChangeLogger(): void {
       const previous = previousStatuses.current[teamId];
 
       if (previous && previous.status !== current.status) {
+        const liveGroup = Object.values(liveMatches).filter((m) => m.status === "live" && m.group).length;
         logger.info("Qualification status changed", "QualificationChangeLogger", {
           teamId,
           teamName: teams[teamId]?.shortName ?? teamId,
           from: previous.status,
           to: current.status,
-          liveMatchCount: Object.values(liveMatches).filter((m) => m.status === "live").length
+          liveMatchCount: liveGroup
         });
 
         window.__lastQualificationChange = {

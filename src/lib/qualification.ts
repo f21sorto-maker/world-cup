@@ -1,4 +1,4 @@
-import type { GroupStanding, MatchWithScore, QualificationStatus, QualificationTier, ScoreOverride, Team } from "../types";
+import type { GroupStanding, Match, MatchWithScore, QualificationStatus, QualificationTier, ScoreOverride, Team } from "../types";
 import { computeStandings } from "./tournament";
 
 export function deriveStandings(
@@ -7,6 +7,16 @@ export function deriveStandings(
   _overrides: Record<string, ScoreOverride> = {}
 ): GroupStanding[] {
   return computeStandings(matches, teams);
+}
+
+/** Returns standings only when scored group-stage matches exist; otherwise null (caller should preserve existing). */
+export function deriveStandingsIfScored(matches: Match[], teams: Team[]): GroupStanding[] | null {
+  const scored = matches.filter(
+    (m): m is MatchWithScore =>
+      Boolean(m.group) && m.homeScore !== undefined && m.awayScore !== undefined
+  );
+  if (scored.length === 0) return null;
+  return deriveStandings(scored, teams);
 }
 
 export function computeEliminationProbability(pointsGap: number, matchesRemaining: number): number {

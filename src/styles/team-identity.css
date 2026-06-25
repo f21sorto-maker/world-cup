@@ -40,7 +40,7 @@
   background: color-mix(in srgb, var(--team-primary) 10%, var(--surface));
 }
 
-.team-label-themed .team-label {
+.team-label-themed {
   transition: color 150ms ease;
 }
 
