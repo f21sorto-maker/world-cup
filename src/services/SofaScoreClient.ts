@@ -4,10 +4,15 @@ import { isApiEnabled } from "../config/apiFlags";
 const BASE = typeof window !== "undefined" ? "/api/sofascore" : "https://api.sofascore.com";
 const API_V1 = "/api/v1";
 
+/** Sent on browser fetch; User-Agent is injected by Vite dev proxy and Vercel Edge function. */
 const SOFA_HEADERS: HeadersInit = {
   Accept: "application/json, text/plain, */*",
+  "Accept-Language": "en-US,en;q=0.9",
   Referer: "https://www.sofascore.com/",
-  Origin: "https://www.sofascore.com"
+  Origin: "https://www.sofascore.com",
+  "User-Agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+  "X-Requested-With": "XMLHttpRequest"
 };
 
 let sofaScoreSessionDisabled = false;
@@ -19,6 +24,14 @@ export function isSofaScoreDisabled(): boolean {
 function proxied(path: string): string {
   if (typeof window === "undefined") return `https://api.sofascore.com${API_V1}${path}`;
   return `${BASE}${path}`;
+}
+
+async function readErrorSnippet(res: Response): Promise<string> {
+  try {
+    return (await res.text()).slice(0, 240);
+  } catch {
+    return "";
+  }
 }
 
 function todayUtcDate(): string {
@@ -44,9 +57,11 @@ export async function fetchScheduledToday(): Promise<SofaEvent[]> {
       headers: SOFA_HEADERS
     });
     if (res.status === 403 || res.status === 401) {
+      const bodySnippet = await readErrorSnippet(res);
       sofaScoreSessionDisabled = true;
       logger.warn("SofaScore blocked for session; using ESPN fallback", "SofaScoreClient", {
-        status: res.status
+        status: res.status,
+        bodySnippet: bodySnippet || undefined
       });
       return [];
     }
@@ -66,6 +81,15 @@ export async function fetchIncidents(sofaEventId: number): Promise<unknown[]> {
 
   try {
     const res = await fetch(proxied(`/event/${sofaEventId}/incidents`), { headers: SOFA_HEADERS });
+    if (res.status === 403 || res.status === 401) {
+      const bodySnippet = await readErrorSnippet(res);
+      sofaScoreSessionDisabled = true;
+      logger.warn("SofaScore incidents blocked", "SofaScoreClient", {
+        status: res.status,
+        bodySnippet: bodySnippet || undefined
+      });
+      return [];
+    }
     if (!res.ok) throw new Error(`${res.status}`);
     const data = await res.json();
     return data?.incidents ?? [];

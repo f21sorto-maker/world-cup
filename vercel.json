@@ -21,10 +21,6 @@
       "destination": "https://inside.fifa.com/:path*"
     },
     {
-      "source": "/api/sofascore/:path*",
-      "destination": "https://api.sofascore.com/api/v1/:path*"
-    },
-    {
       "source": "/api/clubelo/:path*",
       "destination": "http://api.clubelo.com/:path*"
     },

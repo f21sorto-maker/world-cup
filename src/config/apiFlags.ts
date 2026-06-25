@@ -68,13 +68,13 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     disableReason: "FIFA API blocked — ratings use strength-index fallback"
   },
   sofascore: {
-    enabled: false,
+    enabled: true,
     splashPath: false,
     label: "SofaScore Live",
     lastAudit: "fail",
     lastLatencyMs: 213,
-    failureReason: "HTTP 403 forbidden (direct and proxy)",
-    disableReason: "SofaScore blocks requests — ESPN-only polling"
+    failureReason: "HTTP 403 without Edge proxy headers (fixed via api/sofascore/[...path].ts)",
+    disableReason: undefined
   },
   clubElo: {
     enabled: true,
