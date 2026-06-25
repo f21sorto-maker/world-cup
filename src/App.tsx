@@ -30,7 +30,7 @@ import type {
   TournamentSimulationResult
 } from "./types";
 import { groupLetters } from "./types";
-import { knockoutSchedule } from "./data/knockoutSchedule";
+import { knockoutSchedule, type KnockoutInfo } from "./data/knockoutSchedule";
 import { loadWorldCupData } from "./lib/dataSources";
 import { formatPercent } from "./lib/normalize";
 import { projectTournament, simulateTournamentOutcomes, toTeamsById } from "./lib/tournament";
@@ -158,6 +158,12 @@ function formatKickoff(value: string): string {
   );
   const time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
   return `${date} · ${time}`;
+}
+
+function formatVenueTitle(info: KnockoutInfo): string {
+  const location =
+    info.venueCity === info.hostCity ? info.hostCity : `${info.venueCity} (${info.hostCity})`;
+  return `${info.stadium}, ${location}, ${info.country}`;
 }
 
 function polymarketEventUrl(marketSlug?: string): string | undefined {
@@ -944,6 +950,7 @@ function BracketCard({
   const away = match.awayTeamId ? teamsById[match.awayTeamId] : undefined;
   const decided = Boolean(home && away);
   const info = knockoutSchedule[match.id];
+  const venueTitle = info ? formatVenueTitle(info) : "";
   const homeProb = match.homeWinProbability;
   const awayProb = typeof homeProb === "number" ? 1 - homeProb : undefined;
   const predictedWinnerId =
@@ -952,13 +959,11 @@ function BracketCard({
   return (
     <article className={`bracket-card ${picked ? "picked" : ""}`}>
       <div className="bracket-card-head">
-        <span className="match-date" title={info?.venue ?? ""}>
+        <span className="match-date" title={venueTitle}>
           {info ? formatKickoff(info.date) : ""}
         </span>
-        <span className={`match-id ${match.manual ? "picked-label" : ""}`}>
-          {match.manual
-            ? `${match.id} · pick`
-            : `${match.id}${match.homeSeedLabel && match.awaySeedLabel ? ` · ${match.homeSeedLabel}-${match.awaySeedLabel}` : ""}`}
+        <span className="match-city" title={venueTitle || match.id}>
+          {info ? info.hostCity : match.id}
         </span>
       </div>
       <BracketTeam
