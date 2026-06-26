@@ -5,7 +5,7 @@ import {
   buildQualificationContext,
   computeQualificationStatus
 } from "../../lib/qualification";
-import { rankBestThirds } from "../../lib/bestThirds";
+import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
 import { getTeamElo } from "../../services/ClubEloClient";
@@ -80,8 +80,8 @@ export function TeamDetailSheet() {
 
   const thirdRank = useMemo(() => {
     if (!teamId) return -1;
-    return rankBestThirds(standings).findIndex((r) => r.teamId === teamId);
-  }, [standings, teamId]);
+    return rankAliveBestThirds(standings, qualContext).findIndex((r) => r.teamId === teamId);
+  }, [standings, teamId, qualContext]);
 
   useEffect(() => {
     if (!team) return;
@@ -195,13 +195,17 @@ export function TeamDetailSheet() {
                 <div className="team-sheet-qual">
                   <h3>Qualification</h3>
                   <p>
-                    <strong>{qual.status.replace("_", " ").toUpperCase()}</strong>
-                    {qual.certainty === "confirmed" ? " · CONFIRMED" : " · PROJECTED"}
+                    <strong>{qual.lifeState.toUpperCase()}</strong>
+                    {qual.certainty === "confirmed" ? " · CONFIRMED" : qual.canQualify ? " · RULE-BASED PROJECTION" : " · ELIMINATED"}
                   </p>
                   <p>{qual.reason}</p>
-                  {qual.status === "at_risk" && thirdRank >= 0 ? (
+                  {qual.canQualify && qual.projectionScore > 0 ? (
+                    <p>Confidence score: {qual.projectionScore}/100 (rule-based, not a true probability)</p>
+                  ) : null}
+                  {qual.eliminationReason ? <p>{qual.eliminationReason}</p> : null}
+                  {qual.canQualify && qual.status === "at_risk" && thirdRank >= 0 ? (
                     <p>
-                      Best-third rank: {thirdRank + 1} of 12 — cut line is top 8.
+                      Best-third rank (alive teams): {thirdRank + 1} — cut line is top 8.
                     </p>
                   ) : null}
                 </div>

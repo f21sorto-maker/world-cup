@@ -100,10 +100,12 @@
   font-size: 11px;
   color: var(--ss-muted);
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 80px;
+  max-width: 100%;
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: normal;
+  hyphens: none;
+  line-height: 1.25;
 }
 
 .headerScorebox {

@@ -94,6 +94,9 @@ function formMarginMultiplier(homeScore: number, awayScore: number): number {
   return 1 + Math.min(0.65, Math.log1p(Math.abs(homeScore - awayScore)) * 0.35);
 }
 
+import { rankThirdPlaceRecords } from "./thirdPlaceRanking";
+import { rankAliveBestThirds } from "./thirdPlaceQualification";
+
 function rankingValue(record: TeamRecord): number {
   return record.fifaRank ? 10000 - record.fifaRank : record.rating;
 }
@@ -349,17 +352,10 @@ export function computeStandings(scoredMatches: MatchWithScore[], teams: Team[])
 }
 
 export function rankBestThirds(standings: GroupStanding[]): TeamRecord[] {
-  return standings
+  const thirds = standings
     .map((standing) => standing.rows[2])
-    .filter(Boolean)
-    .sort(
-      (a, b) =>
-        b.points - a.points ||
-        b.goalDifference - a.goalDifference ||
-        b.goalsFor - a.goalsFor ||
-        b.conduct - a.conduct ||
-        rankingValue(b) - rankingValue(a)
-    );
+    .filter((r): r is TeamRecord => Boolean(r));
+  return rankThirdPlaceRecords(thirds);
 }
 
 function seedToTeamId(seed: string, standingsByGroup: Record<GroupLetter, TeamRecord[]>, thirdMapping: Record<string, string>): string | undefined {
@@ -793,7 +789,8 @@ export function projectTournament(
   const teamsById = toTeamsById(teams);
   const scoredMatches = materializeMatches(matches, teamsById, overrides);
   const standings = computeStandings(scoredMatches, teams);
-  const bestThirds = rankBestThirds(standings);
+  const qualContext = { lockedGroupMatchCount, lockedStandingsByGroup };
+  const bestThirds = rankAliveBestThirds(standings, qualContext);
   const qualifiedThirdGroups = bestThirds
     .slice(0, 8)
     .map((record) => record.group)

@@ -5,6 +5,7 @@ import {
   buildQualificationContext,
   computeQualificationStatus,
   deriveStandingsIfScored,
+  auditProjectionViolations,
   auditFalseConfirmations,
   isConfirmedTopTwo,
   matchesInGroup
@@ -211,6 +212,56 @@ describe("auditFalseConfirmations", () => {
     const displayStandings = deriveStandingsIfScored(matches, teams)!;
     const context = buildQualificationContext(matches, teams);
     expect(auditFalseConfirmations(displayStandings, context)).toEqual([]);
+  });
+});
+
+describe("projection consistency", () => {
+  it("does not mark best-eight thirds as projected_out while group is open", () => {
+    const standings: GroupStanding[] = [
+      standing("L", [
+        row("eng", "L", 2, 4, 2),
+        row("gha", "L", 2, 4, 1),
+        row("cro", "L", 2, 3, -1),
+        row("pan", "L", 2, 0, -2)
+      ]),
+      standing("J", [
+        row("arg", "J", 2, 6, 5),
+        row("aut", "J", 2, 3, 0),
+        row("alg", "J", 2, 3, -2),
+        row("jor", "J", 2, 0, -3)
+      ])
+    ];
+    const context = { lockedGroupMatchCount: {}, lockedStandingsByGroup: {} };
+    const cro = computeQualificationStatus("cro", standings, context);
+    const alg = computeQualificationStatus("alg", standings, context);
+    expect(cro.canQualify).toBe(true);
+    expect(cro.status).not.toBe("projected_out");
+    expect(cro.projectionScore).toBeGreaterThan(0);
+    expect(alg.canQualify).toBe(true);
+    expect(alg.status).not.toBe("projected_out");
+    expect(auditProjectionViolations(["cro", "alg"], standings, context)).toEqual([]);
+  });
+
+  it("gives eliminated teams projectionScore 0", () => {
+    const standings = [standing("A", [row("usa", "A", 3, 9), row("mex", "A", 3, 6), row("can", "A", 3, 4), row("jpn", "A", 3, 1)])];
+    const jpn = computeQualificationStatus("jpn", standings);
+    expect(jpn.canQualify).toBe(false);
+    expect(jpn.projectionScore).toBe(0);
+    expect(jpn.lifeState).toBe("eliminated");
+  });
+
+  it("audit finds no violations on complete-group best-eight scenario", () => {
+    const groups: GroupLetter[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+    const standings = groups.map((group, index) =>
+      standing(group, [
+        row(`t1-${group}`, group, 3, 9),
+        row(`t2-${group}`, group, 3, 6),
+        row(`t3-${group}`, group, 3, 8 - index),
+        row(`t4-${group}`, group, 3, 0)
+      ])
+    );
+    const teamIds = standings.flatMap((g) => g.rows.map((r) => r.teamId));
+    expect(auditProjectionViolations(teamIds, standings)).toEqual([]);
   });
 });
 

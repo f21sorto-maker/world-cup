@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { rankBestThirds } from "../../lib/bestThirds";
+import { buildQualificationContext } from "../../lib/qualification";
+import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import type { GroupStanding, MergedMatch, TeamRecord } from "../../types";
 import { useStore } from "../../store";
@@ -71,14 +72,19 @@ function computeH2H(
 }
 
 function rowClass(index: number): string {
-  return index < 4 ? "group-table-row--qualified" : "group-table-row--eliminated";
+  return index < 8 ? "group-table-row--qualified" : "group-table-row--eliminated";
 }
 
 export function BestThirdTableBento({ standings }: BestThirdTableBentoProps) {
   const teams = useStore((s) => s.teams);
   const liveMatches = useStore((s) => s.liveMatches);
 
-  const ranked = useMemo(() => rankBestThirds(standings), [standings]);
+  const qualContext = useMemo(
+    () => buildQualificationContext(Object.values(liveMatches), Object.values(teams)),
+    [liveMatches, teams]
+  );
+
+  const ranked = useMemo(() => rankAliveBestThirds(standings, qualContext), [standings, qualContext]);
 
   const thirdPlaceIds = useMemo(
     () => new Set(ranked.map((row) => row.teamId)),
@@ -102,7 +108,9 @@ export function BestThirdTableBento({ standings }: BestThirdTableBentoProps) {
     <section className="best-third-table-bento" aria-label="Best third place teams">
       <header className="group-table-bento-header">
         <h3>Best 3rd — FIFA tiebreaker</h3>
-        <p className="best-third-table-lead">All six third-placed teams ranked for the eight knockout berths.</p>
+        <p className="best-third-table-lead">
+          All twelve third-placed teams ranked for eight berths (eliminated teams excluded).
+        </p>
       </header>
 
       <div className="group-table-scroll">
@@ -157,7 +165,8 @@ export function BestThirdTableBento({ standings }: BestThirdTableBentoProps) {
 
       <div className="best-third-legend">
         <p>
-          <strong>H2H</strong> — head-to-head record vs other third-placed teams (W/D/L).{" "}
+          <strong>H2H</strong> — informational only; not used in FIFA best-third ranking. W/D/L vs other
+          third-placed teams.{" "}
           <strong>Discipline</strong> — fair play score: yellow −1, red −4, second yellow −5 (0 is clean).
         </p>
       </div>

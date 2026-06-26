@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { bucketQualificationTeams, buildQualificationContext, computeQualificationStatus } from "../../lib/qualification";
-import { rankBestThirds } from "../../lib/bestThirds";
+import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
 import type { QualificationCertainty } from "../../types";
@@ -192,7 +192,13 @@ export function InContentionBento() {
 
 export function BestThirdsBento() {
   const standings = useStore((s) => s.groupStandings);
-  const best = rankBestThirds(standings).slice(0, 8);
+  const teams = useStore((s) => s.teams);
+  const liveMatches = useStore((s) => s.liveMatches);
+  const qualContext = useMemo(
+    () => buildQualificationContext(Object.values(liveMatches), Object.values(teams)),
+    [liveMatches, teams]
+  );
+  const best = rankAliveBestThirds(standings, qualContext).slice(0, 8);
 
   return (
     <section className="qual-bento qual-bento--thirds" aria-label="Best third place teams">

@@ -164,7 +164,7 @@ export function MatchDetailView() {
               ) : (
                 <span className={styles.headerTeamFlag}>🏳️</span>
               )}
-              <span className={styles.headerTeamName}>{homeTeamName}</span>
+              <span className={`${styles.headerTeamName} team-name-text`}>{homeTeamName}</span>
             </div>
 
             {/* Score + status */}
@@ -210,7 +210,7 @@ export function MatchDetailView() {
               ) : (
                 <span className={styles.headerTeamFlag}>🏳️</span>
               )}
-              <span className={styles.headerTeamName}>{awayTeamName}</span>
+              <span className={`${styles.headerTeamName} team-name-text`}>{awayTeamName}</span>
             </div>
           </div>
         </div>

@@ -334,14 +334,27 @@ export type QualificationCertainty =
   | "projected_weak"
   | "projected";
 
+export type LifeState = "alive" | "projected" | "eliminated";
+
 export type QualificationStatus = {
   status: QualificationTier;
   /** Whether the outcome is mathematically locked or based on the current table. */
   certainty: QualificationCertainty;
-  eliminationProbability?: number;
+  /** Simplified UI bucket: alive (fighting), projected (on track), eliminated (out). */
+  lifeState: LifeState;
+  /** False when no knockout path remains. */
+  canQualify: boolean;
+  /**
+   * Rule-based confidence score 0–100 (not a true probability).
+   * 0 = mathematically eliminated.
+   */
+  projectionScore: number;
   pointsNeeded?: number;
   /** Short explanation for UI tooltips and section copy. */
   reason?: string;
+  eliminationReason?: string;
+  /** @deprecated Use projectionScore — kept for transitional callers. */
+  eliminationProbability?: number;
 };
 
 export type MatchEventType =

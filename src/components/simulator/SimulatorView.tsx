@@ -330,10 +330,19 @@ export function SimulatorView() {
     };
   }, [data]);
 
-  const projection = useMemo(
-    () => (data ? projectTournament(data.teams, data.matches, data.knockoutMarkets, overrides, bracketPicks) : null),
-    [data, overrides, bracketPicks]
-  );
+  const projection = useMemo(() => {
+    if (!data) return null;
+    const scoredOnly = data.matches.filter(
+      (m) => m.homeScore !== undefined && m.awayScore !== undefined
+    );
+    return projectTournament(
+      data.teams,
+      scoredOnly,
+      data.knockoutMarkets,
+      overrides,
+      bracketPicks
+    );
+  }, [data, overrides, bracketPicks]);
   const teamsById = useMemo(() => (data ? toTeamsById(data.teams) : {}), [data]);
   const teamSimulation = useMemo(() => {
     if (!simulations || !selectedTeamId) return null;

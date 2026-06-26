@@ -262,8 +262,14 @@
 
 .schedule-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .schedule-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
 }
 
 .schedule-list--compact .schedule-card {
@@ -300,8 +306,50 @@
   color: inherit;
 }
 
-.schedule-score-line {
-  margin-top: 4px;
+.schedule-card .score-line.schedule-score-line {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 4px 6px;
+  align-items: center;
+}
+
+/* Stacked matchup: home row → score → away row (full card width per team) */
+.schedule-card .score-line.schedule-score-line > :nth-child(1) {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  width: 100%;
+}
+
+.schedule-card .score-line.schedule-score-line > :nth-child(2) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.schedule-card .score-line.schedule-score-line > :nth-child(3) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.schedule-card .score-line.schedule-score-line > :nth-child(4) {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+.schedule-card .score-line.schedule-score-line > :nth-child(5) {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  width: 100%;
+  justify-self: end;
+}
+
+.schedule-card .score-line.schedule-score-line .team-label {
+  font-size: 13px;
+}
+
+.schedule-card .score-line.schedule-score-line .team-label.right {
+  justify-content: flex-end;
 }
 
 .schedule-score {
@@ -608,6 +656,9 @@
   font-weight: 600;
   line-height: 1.25;
   max-width: 100%;
+  white-space: normal;
+  overflow: visible;
+  hyphens: none;
 }
 
 .qual-team-fallback {
@@ -1058,9 +1109,42 @@
 
 .result-match-card-scoreline {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 36px 14px 36px minmax(0, 1fr);
+  grid-template-columns: 1fr auto auto auto 1fr;
+  grid-template-rows: auto auto auto;
   align-items: center;
-  gap: 8px;
+  gap: 4px 6px;
+}
+
+.result-match-card .result-match-card-scoreline > :nth-child(1) {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  width: 100%;
+}
+
+.result-match-card .result-match-card-scoreline > :nth-child(2) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.result-match-card .result-match-card-scoreline > :nth-child(3) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.result-match-card .result-match-card-scoreline > :nth-child(4) {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+.result-match-card .result-match-card-scoreline > :nth-child(5) {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  width: 100%;
+  justify-self: end;
+}
+
+.result-match-card .result-match-card-scoreline .team-label.right {
+  justify-content: flex-end;
 }
 
 .result-match-card-score {
@@ -1152,17 +1236,24 @@
   padding: 8px 10px;
   border-bottom: 1px solid var(--line);
   text-align: center;
+}
+
+.group-table th:not(:nth-child(2)),
+.group-table td:not(:nth-child(2)) {
   white-space: nowrap;
 }
 
 .group-table th:nth-child(2),
 .group-table td:nth-child(2) {
+  white-space: normal;
+  vertical-align: top;
+  hyphens: none;
   text-align: left;
 }
 
 .group-table-team {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
@@ -1434,7 +1525,7 @@
 
 .teams-row--accent {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   width: 100%;
   padding: 10px 12px;
