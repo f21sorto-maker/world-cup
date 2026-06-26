@@ -190,7 +190,7 @@ type SeedTarget = {
 
 const SEED_TARGETS: SeedTarget[] = [
   {
-    name: "World Cup Tracker",
+    name: "Road to the World Cup Final 2026",
     envFilePath: join(HOME, "Developer/world-cup/.env.local"),
     seedKeyIds: [
       "world-cup:VITE_RAPIDAPI_KEY",
@@ -294,11 +294,29 @@ async function seed() {
   for (const seedKey of SEED_KEYS) {
     const { _seedId, ...keyData } = seedKey;
 
-    // Already exists from a previous seed run
+    // Already exists from a previous seed run (by seed marker)
     if (seedIdToKey.has(_seedId)) {
       const existing = seedIdToKey.get(_seedId)!;
       addedBySeedId.set(_seedId, existing.id);
       console.log(`  ⏭  skip   ${keyData.envVarName} [${_seedId}]`);
+      keysSkipped++;
+      continue;
+    }
+
+    // Fallback: match legacy entries without seed marker (same envVarName + serviceGroup)
+    const legacyMatch = vault.keys.find(
+      (k) =>
+        k.envVarName === keyData.envVarName &&
+        k.serviceGroup === keyData.serviceGroup &&
+        !k.notes?.includes("[seed:")
+    );
+    if (legacyMatch) {
+      legacyMatch.notes = `${legacyMatch.notes ?? ""}\n[seed:${_seedId}]`.trim();
+      legacyMatch.serviceGroup = keyData.serviceGroup;
+      legacyMatch.label = keyData.label;
+      seedIdToKey.set(_seedId, legacyMatch);
+      addedBySeedId.set(_seedId, legacyMatch.id);
+      console.log(`  ↻  linked  ${keyData.envVarName} [${_seedId}] (existing entry)`);
       keysSkipped++;
       continue;
     }

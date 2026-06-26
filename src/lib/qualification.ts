@@ -124,8 +124,10 @@ export function isConfirmedTopTwo(
   if (!groupComplete) return false;
 
   if (
-    opts.lockedGroupMatchCount !== undefined &&
-    opts.lockedGroupMatchCount < requiredLockedMatches
+    opts.lockedRows !== undefined
+      ? (opts.lockedGroupMatchCount ?? 0) < requiredLockedMatches
+      : opts.lockedGroupMatchCount !== undefined &&
+        opts.lockedGroupMatchCount < requiredLockedMatches
   ) {
     return false;
   }
@@ -367,6 +369,53 @@ export function assertBucketMutualExclusion(buckets: QualificationBuckets): void
 
 export function useQualificationTierFromStatus(status: QualificationStatus): QualificationTier {
   return status.status;
+}
+
+export function auditFalseConfirmations(
+  standings: GroupStanding[],
+  context: QualificationMatchContext
+): Array<{ teamId: string; group: GroupLetter; displayPlayed: number; lockedPlayed: number; lockedMatchCount: number | undefined }> {
+  const falsePositives: Array<{
+    teamId: string;
+    group: GroupLetter;
+    displayPlayed: number;
+    lockedPlayed: number;
+    lockedMatchCount: number | undefined;
+  }> = [];
+
+  for (const group of standings) {
+    for (let i = 0; i < Math.min(2, group.rows.length); i++) {
+      const row = group.rows[i]!;
+      const qual = computeQualificationStatus(row.teamId, standings, context);
+      if (qual.certainty !== "confirmed") continue;
+
+      const lockedRows = context.lockedStandingsByGroup[group.group];
+      const lockedRow = lockedRows?.find((r) => r.teamId === row.teamId);
+      const expectedPlayed = expectedMatchesPerTeam(group.rows.length || DEFAULT_GROUP_SIZE);
+      const groupComplete =
+        lockedRows !== undefined &&
+        lockedRows.length > 0 &&
+        lockedRows.every((r) => r.played >= expectedPlayed);
+      const lockedCount = context.lockedGroupMatchCount[group.group];
+      const required = matchesInGroup(group.rows.length || DEFAULT_GROUP_SIZE);
+
+      if (
+        !groupComplete ||
+        (lockedRow?.played ?? 0) < expectedPlayed ||
+        (lockedCount ?? 0) < required
+      ) {
+        falsePositives.push({
+          teamId: row.teamId,
+          group: group.group,
+          displayPlayed: row.played,
+          lockedPlayed: lockedRow?.played ?? 0,
+          lockedMatchCount: lockedCount
+        });
+      }
+    }
+  }
+
+  return falsePositives;
 }
 
 export function groupStageComplete(matches: Array<{ group?: string; status: string }>): boolean {

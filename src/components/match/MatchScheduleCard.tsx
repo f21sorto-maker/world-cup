@@ -1,12 +1,11 @@
-import type { MergedMatch } from "../../types";
-import type { Team } from "../../types"; // force re-transform
+import type { MergedMatch, Team } from "../../types";
 import { getBroadcast, getBroadcastByKickoff } from "../../services/BroadcastLookup";
 import { formatKickoffTime } from "../../lib/formatKickoff";
 import { formatLiveClock } from "../../lib/formatMatchClock";
 import { useMatchTheme } from "../../hooks/useMatchTheme";
 import { TeamLabel } from "../team/TeamLabel";
 import { TeamLabelById } from "../team/TeamLabelById";
-import { OddsRow } from "./OddsRow";
+import { BroadcastBar } from "./BroadcastBar";
 import { WeatherBadge } from "./WeatherBadge";
 import { VenueLabel } from "../venue/VenueLabel";
 
@@ -86,18 +85,7 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
         />
       ) : null}
 
-      {broadcast ? (
-        <div className="broadcast-bar">
-          <span className="network-badge network-badge--en">{broadcast.englishNetwork}</span>
-          <span className="network-badge network-badge--es">{broadcast.spanishNetwork}</span>
-          {broadcast.isConcurrent ? (
-            <span className="network-badge network-badge--warn">Concurrent</span>
-          ) : null}
-          {!compact && broadcast.streaming.length > 0 ? (
-            <span className="broadcast-stream">{broadcast.streaming.slice(0, 2).join(" · ")}</span>
-          ) : null}
-        </div>
-      ) : null}
+      <BroadcastBar matchId={match.matchId} kickoffUtc={kickoffUtc} />
     </>
   );
 

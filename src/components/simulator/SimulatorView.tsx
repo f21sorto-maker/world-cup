@@ -36,6 +36,7 @@ import { formatPercent } from "../../lib/normalize";
 import { projectTournament, simulateTournamentOutcomes, toTeamsById } from "../../lib/tournament";
 import { formatKickoffLabel, resolveKickoffByMatchId } from "../../services/ScheduleLinker";
 import { useStore } from "../../store";
+import { APP_BRAND } from "../../config/appMeta";
 import { TeamLabel } from "../team/TeamLabel";
 import { VenueLabel } from "../venue/VenueLabel";
 import { BracketTeamButton } from "../team/BracketTeamButton";
@@ -401,7 +402,7 @@ export function SimulatorView() {
         <span className="brand-mark loading-mark" aria-hidden="true">
           <Trophy size={26} strokeWidth={2} />
         </span>
-        <strong>World Cup Lab</strong>
+        <strong>{APP_BRAND.shortName}</strong>
         <span className="app-loading-note">
           <span className="loader sm" />
           Loading live scores and markets…
@@ -434,8 +435,8 @@ export function SimulatorView() {
             <Trophy size={22} strokeWidth={2} />
           </span>
           <span className="brand-text">
-            <strong>World Cup Lab</strong>
-            <small>WC 2026 · Simulator</small>
+            <strong>{APP_BRAND.shortName}</strong>
+            <small>{APP_BRAND.pwaShortName} · Simulator</small>
           </span>
         </button>
         <div className="topbar-actions">

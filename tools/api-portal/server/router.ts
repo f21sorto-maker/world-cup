@@ -139,6 +139,20 @@ router.post("/keys", async (req, res) => {
 
   const vault = await readVault();
   const now = new Date().toISOString();
+
+  const duplicate = vault.keys.find(
+    (k) =>
+      k.envVarName === parsed.data.envVarName &&
+      k.serviceGroup === parsed.data.serviceGroup
+  );
+  if (duplicate) {
+    res.status(409).json({
+      error: `A key with env var "${parsed.data.envVarName}" already exists in "${parsed.data.serviceGroup}". Edit the existing key instead.`,
+      existingId: duplicate.id,
+    });
+    return;
+  }
+
   const newKey: ApiKey = {
     id: nanoid(),
     createdAt: now,

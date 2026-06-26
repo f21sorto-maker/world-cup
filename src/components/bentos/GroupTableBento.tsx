@@ -60,10 +60,7 @@ export function GroupTableBento({ standing }: GroupTableBentoProps) {
                     <div className="group-table-rank">
                       <span>{index + 1}</span>
                       {showBadge ? (
-                        <CertaintyBadge
-                          certainty={qual.certainty === "confirmed" ? "confirmed" : "projected"}
-                          size="xs"
-                        />
+                        <CertaintyBadge certainty={qual.certainty} size="xs" />
                       ) : null}
                     </div>
                   </td>

@@ -6,6 +6,7 @@ import { formatLiveClock } from "../../lib/formatMatchClock";
 import { formatKickoffTime } from "../../lib/formatKickoff";
 import styles from "./ScheduleView.module.css";
 import { VenueLabel } from "../venue/VenueLabel";
+import { APP_BRAND } from "../../config/appMeta";
 
 export function ScheduleView() {
   const teams = useStore((s) => s.teams);
@@ -31,7 +32,7 @@ export function ScheduleView() {
   return (
     <div className={styles.view}>
       <section className="hero-panel hero-panel--compact">
-        <div className="eyebrow">FIFA World Cup 2026™</div>
+        <div className="eyebrow">{APP_BRAND.tournament}</div>
         <h1>
           Full <span className="accent">Schedule.</span>
         </h1>

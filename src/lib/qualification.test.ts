@@ -5,6 +5,7 @@ import {
   buildQualificationContext,
   computeQualificationStatus,
   deriveStandingsIfScored,
+  auditFalseConfirmations,
   isConfirmedTopTwo,
   matchesInGroup
 } from "./qualification";
@@ -68,15 +69,19 @@ describe("isConfirmedTopTwo", () => {
     expect(qual.certainty).toMatch(/projected/);
   });
 
-  it("requires locked matches for post-group confirmation when count is provided", () => {
+  it("requires full locked match count when locked rows are provided", () => {
     const rows = [
-      row("usa", "A", 3, 7),
-      row("mex", "A", 3, 4),
+      row("usa", "A", 3, 9),
+      row("mex", "A", 3, 6),
       row("can", "A", 3, 3),
       row("jpn", "A", 3, 0)
     ];
-    expect(isConfirmedTopTwo(row("usa", "A", 3, 7), rows, { lockedGroupMatchCount: 4 })).toBe(false);
-    expect(isConfirmedTopTwo(row("usa", "A", 3, 7), rows, { lockedGroupMatchCount: 6 })).toBe(true);
+    expect(isConfirmedTopTwo(row("usa", "A", 3, 9), rows, { lockedRows: rows, lockedGroupMatchCount: 5 })).toBe(
+      false
+    );
+    expect(isConfirmedTopTwo(row("usa", "A", 3, 9), rows, { lockedRows: rows, lockedGroupMatchCount: 6 })).toBe(
+      true
+    );
   });
 });
 
@@ -176,6 +181,36 @@ describe("locked-only confirmation", () => {
     expect(context.lockedStandingsByGroup.A?.find((r) => r.teamId === "usa")?.played).toBe(0);
     const usa = computeQualificationStatus("usa", displayStandings, context);
     expect(usa.certainty).not.toBe("confirmed");
+  });
+});
+
+describe("auditFalseConfirmations", () => {
+  it("detects no false positives for locked-only incomplete group", () => {
+    const teams = [
+      { id: "usa", name: "USA", shortName: "USA", abbreviation: "USA", group: "A" as const, rating: 1500 },
+      { id: "mex", name: "MEX", shortName: "MEX", abbreviation: "MEX", group: "A" as const, rating: 1500 },
+      { id: "can", name: "CAN", shortName: "CAN", abbreviation: "CAN", group: "A" as const, rating: 1500 },
+      { id: "jpn", name: "JPN", shortName: "JPN", abbreviation: "JPN", group: "A" as const, rating: 1500 }
+    ];
+    const baseMatch = {
+      group: "A" as const,
+      date: "2026-06-11T19:00:00Z",
+      status: "completed" as const,
+      homeConduct: 0,
+      awayConduct: 0,
+      source: "espn" as const
+    };
+    const matches = [
+      { ...baseMatch, id: "m1", homeTeamId: "usa", awayTeamId: "mex", homeScore: 2, awayScore: 0, locked: true },
+      { ...baseMatch, id: "m2", homeTeamId: "usa", awayTeamId: "can", homeScore: 2, awayScore: 0, locked: true },
+      { ...baseMatch, id: "m3", homeTeamId: "usa", awayTeamId: "jpn", homeScore: 3, awayScore: 0, locked: false },
+      { ...baseMatch, id: "m4", homeTeamId: "mex", awayTeamId: "can", homeScore: 1, awayScore: 1, locked: true },
+      { ...baseMatch, id: "m5", homeTeamId: "mex", awayTeamId: "jpn", homeScore: 2, awayScore: 0, locked: true },
+      { ...baseMatch, id: "m6", homeTeamId: "can", awayTeamId: "jpn", homeScore: 1, awayScore: 0, locked: true }
+    ];
+    const displayStandings = deriveStandingsIfScored(matches, teams)!;
+    const context = buildQualificationContext(matches, teams);
+    expect(auditFalseConfirmations(displayStandings, context)).toEqual([]);
   });
 });
 

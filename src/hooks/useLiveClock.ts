@@ -55,7 +55,7 @@ export function useLiveClock(
   useEffect(() => {
     localMinRef.current = minute;
     setDisplay(computeDisplay(period, minute, extra));
-  }, [period, minute, extra, running]);
+  }, [period, minute, extra]);
 
   // Tick the clock forward every 60 s when the match is running.
   // This keeps the display moving between ESPN polls (which arrive every ~15 s

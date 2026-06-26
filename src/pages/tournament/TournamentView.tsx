@@ -4,6 +4,7 @@ import { TournamentStandingsTab } from "./components/tabs/TournamentStandingsTab
 import { TournamentBracketTab } from "./components/tabs/TournamentBracketTab";
 import { TournamentStatsTab } from "./components/tabs/TournamentStatsTab";
 import type { TournamentSubTab } from "../../types";
+import { APP_BRAND } from "../../config/appMeta";
 import styles from "./TournamentView.module.css";
 
 const SUB_TABS: { id: TournamentSubTab; label: string }[] = [
@@ -21,7 +22,7 @@ export function TournamentView() {
     <div className={styles.root}>
       {/* Header */}
       <header className={styles.header}>
-        <h1 className={styles.headerTitle}>FIFA World Cup 2026™</h1>
+        <h1 className={styles.headerTitle}>{APP_BRAND.tournament}</h1>
         <p className={styles.headerSubtitle}>USA · Canada · Mexico</p>
       </header>
 

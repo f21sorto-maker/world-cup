@@ -74,6 +74,16 @@
   height: 7px;
 }
 
+.wc-topbar-version {
+  opacity: 0.9;
+}
+
+@media (max-width: 520px) {
+  .wc-topbar-version {
+    display: none;
+  }
+}
+
 /* Bottom navigation */
 .bottom-tab-bar {
   position: fixed;

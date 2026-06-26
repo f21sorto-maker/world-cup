@@ -15,6 +15,7 @@ import { MatchLineupsTab } from "./components/tabs/MatchLineupsTab";
 import { MatchCommentaryTab } from "./components/tabs/MatchCommentaryTab";
 import { MatchH2HTab } from "./components/tabs/MatchH2HTab";
 import type { MatchDetailTab, MatchEvent } from "../../types";
+import { APP_BRAND } from "../../config/appMeta";
 import { VenueLabel } from "../../components/venue/VenueLabel";
 import styles from "./MatchDetailView.module.css";
 
@@ -215,7 +216,7 @@ export function MatchDetailView() {
 
         {/* Context bar */}
         <div className={styles.contextBar}>
-          <span>FIFA World Cup 2026</span>
+          <span>{APP_BRAND.tournament}</span>
           {match?.stage ? (
             <>
               <span className={styles.contextSep}>·</span>

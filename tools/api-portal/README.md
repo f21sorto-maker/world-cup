@@ -59,14 +59,14 @@ On first run, you will be prompted to create a master passphrase. It is derived 
 Write keys to a project's `.env.local` without opening the browser:
 
 ```bash
-# From repo root — sync to World Cup Tracker target
+# From repo root — sync to Road to the World Cup Final 2026 target
 npm run sync-keys:wc
 
 # Sync all configured targets
 npm run sync-keys
 
 # From this directory — sync a specific named target
-npm run sync-keys -- "World Cup Tracker"
+npm run sync-keys -- "Road to the World Cup Final 2026"
 ```
 
 The sync command verifies that the target `.env.local` file is listed in the project's `.gitignore` before writing. If not, it aborts with a clear error.
@@ -96,10 +96,10 @@ To restore:
 cp .portal-keys.enc.bak.<timestamp> .portal-keys.enc
 ```
 
-## Recommended World Cup Tracker Setup
+## Recommended Road to the World Cup Final 2026 setup
 
 After first run, add a sync target via the UI:
 
-- **Name**: `World Cup Tracker`
+- **Name**: `Road to the World Cup Final 2026`
 - **Path**: `/Users/<you>/Developer/world-cup/.env.local`
 - **Keys**: `VITE_RAPIDAPI_KEY`, `VITE_ZAFRONIX_API_KEY`, `VITE_THESTATS_API_KEY`, `VITE_ODDS_API_KEY`

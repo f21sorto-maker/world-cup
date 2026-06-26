@@ -591,8 +591,10 @@ function isSlotConfirmed(row: TeamRecord, rows: TeamRecord[], opts: SlotConfirme
   if (!groupComplete) return false;
 
   if (
-    opts.lockedGroupMatchCount !== undefined &&
-    opts.lockedGroupMatchCount < requiredLockedMatches
+    opts.lockedRows !== undefined
+      ? (opts.lockedGroupMatchCount ?? 0) < requiredLockedMatches
+      : opts.lockedGroupMatchCount !== undefined &&
+        opts.lockedGroupMatchCount < requiredLockedMatches
   ) {
     return false;
   }
