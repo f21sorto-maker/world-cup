@@ -18,6 +18,9 @@ export function useQualificationChangeLogger(): void {
         const liveGroup = Object.values(useStore.getState().liveMatches).filter(
           (m) => m.status === "live" && m.group
         ).length;
+        // #region agent log
+        fetch('http://127.0.0.1:7681/ingest/f800a0a9-8d11-45c6-8805-1b187f693046',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'62d96e'},body:JSON.stringify({sessionId:'62d96e',location:'useQualificationChangeLogger.ts:21',message:'liveGroup read inside effect',data:{liveGroup,teamId,liveMatchesInStore:Object.values(useStore.getState().liveMatches).filter(m=>m.status==='live').length},hypothesisId:'B2',runId:'run1',timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
         logger.info("Qualification status changed", "QualificationChangeLogger", {
           teamId,
           teamName: teams[teamId]?.shortName ?? teamId,

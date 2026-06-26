@@ -51,9 +51,15 @@ export function useLiveClock(
 
   useEffect(() => {
     setDisplay(computeDisplay(period, minute, extra));
+    // #region agent log
+    fetch('http://127.0.0.1:7681/ingest/f800a0a9-8d11-45c6-8805-1b187f693046',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'62d96e'},body:JSON.stringify({sessionId:'62d96e',location:'useLiveClock.ts:53',message:'sync-effect fired',data:{period,minute,extra,running},hypothesisId:'B1',runId:'run1',timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
   }, [period, minute, extra, running]);
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7681/ingest/f800a0a9-8d11-45c6-8805-1b187f693046',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'62d96e'},body:JSON.stringify({sessionId:'62d96e',location:'useLiveClock.ts:60',message:'no-raf-loop: running flag at mount',data:{running,period,minute},hypothesisId:'B1',runId:'run1',timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     const onVis = () => setDisplay(computeDisplay(period, minute, extra));
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);

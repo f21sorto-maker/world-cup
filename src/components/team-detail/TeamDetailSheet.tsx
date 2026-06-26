@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { formatKickoffDate } from "../../lib/formatKickoff";
 import { useStore } from "../../store";
 import { getTeamElo } from "../../services/ClubEloClient";
+import {
+  getHistoricalMatchesForTeam,
+  type ZafronixMatch,
+} from "../../services/ZafronixClient";
 import { TeamThemeRoot } from "../team/TeamThemeRoot";
 import type { MergedMatch } from "../../types";
 
@@ -41,6 +45,8 @@ export function TeamDetailSheet() {
   const simulationRunning = useStore((s) => s.simulationRunning);
   const [tab, setTab] = useState<Tab>("now");
   const [elo, setElo] = useState<number | null>(null);
+  const [recentForm, setRecentForm] = useState<ZafronixMatch[]>([]);
+  const [recentFormLoading, setRecentFormLoading] = useState(false);
 
   const team = teamId ? teams[teamId] : null;
 
@@ -59,6 +65,15 @@ export function TeamDetailSheet() {
     if (!team) return;
     void getTeamElo(team.name).then(setElo);
   }, [team]);
+
+  useEffect(() => {
+    if (!team || tab !== "now") return;
+    setRecentFormLoading(true);
+    void getHistoricalMatchesForTeam(team.name, 7).then((matches) => {
+      setRecentForm(matches);
+      setRecentFormLoading(false);
+    });
+  }, [team, tab]);
 
   if (!open || !team) return null;
 
@@ -98,6 +113,33 @@ export function TeamDetailSheet() {
                 Group {team.group} · FIFA rank {team.fifaRank ?? "—"} · Title market{" "}
                 {team.titleProbability ? `${(team.titleProbability * 100).toFixed(1)}%` : "—"}
               </p>
+
+              {recentForm.length > 0 || recentFormLoading ? (
+                <section className="team-recent-form" aria-label="Recent form">
+                  <h3 className="team-match-history-title">Recent Form</h3>
+                  {recentFormLoading ? (
+                    <p className="team-match-history-empty">Loading…</p>
+                  ) : (
+                    <div className="recent-form-pills">
+                      {recentForm.map((m) => {
+                        const isHome = m.homeTeam.toLowerCase() === team.name.toLowerCase();
+                        const teamScore = isHome ? m.homeScore : m.awayScore;
+                        const oppScore = isHome ? m.awayScore : m.homeScore;
+                        const opponent = isHome ? m.awayTeam : m.homeTeam;
+                        const result = teamScore > oppScore ? "W" : teamScore < oppScore ? "L" : "D";
+                        const pillClass = `recent-form-pill recent-form-pill--${result.toLowerCase()}${m.isWorldCup ? " recent-form-pill--wc" : ""}`;
+                        return (
+                          <span key={m.id} className={pillClass} title={`${m.competition ?? ""} · ${m.date}`}>
+                            <span className="rfp-result">{result}</span>
+                            <span className="rfp-opp">{opponent}</span>
+                            <span className="rfp-score">{teamScore}–{oppScore}</span>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
+              ) : null}
 
               <section className="team-match-history" aria-label="Match history">
                 <h3 className="team-match-history-title">Match History</h3>
@@ -147,8 +189,9 @@ export function TeamDetailSheet() {
             <div>
               <p>Polymarket / model odds from simulation.</p>
               {simulationRunning ? <p className="odds-recalc">Recalculating…</p> : null}
-              <p className="odds-stub">Sportsbook consensus: — (v2)</p>
-              <p className="odds-stub">Betfair implied: — (v2)</p>
+              <p className="odds-stub">
+                Sportsbook consensus available on upcoming match cards (Sports Odds Intelligence).
+              </p>
             </div>
           ) : null}
         </div>
