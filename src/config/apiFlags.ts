@@ -33,7 +33,7 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     splashPath: true,
     label: "ESPN Scoreboard",
     lastAudit: "pass",
-    lastLatencyMs: 412
+    lastLatencyMs: 412,
   },
   espnPlayByPlay: {
     enabled: false,
@@ -42,21 +42,21 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     lastAudit: "fail",
     lastLatencyMs: 143,
     failureReason: "Vite proxy returns HTTP 403 (direct API works)",
-    disableReason: "Proxy blocked — disabled until espn-web proxy is fixed"
+    disableReason: "Proxy blocked — disabled until espn-web proxy is fixed",
   },
   polymarketWinner: {
     enabled: true,
     splashPath: false,
     label: "Polymarket Winner",
     lastAudit: "pass",
-    lastLatencyMs: 146
+    lastLatencyMs: 146,
   },
   polymarketGames: {
     enabled: true,
     splashPath: false,
     label: "Polymarket Games (8 pages)",
     lastAudit: "pass",
-    lastLatencyMs: 118
+    lastLatencyMs: 118,
   },
   fifaRankings: {
     enabled: false,
@@ -65,24 +65,24 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     lastAudit: "fail",
     lastLatencyMs: 94,
     failureReason: "Returns HTML instead of JSON (bot protection)",
-    disableReason: "FIFA API blocked — ratings use strength-index fallback"
+    disableReason: "FIFA API blocked — ratings use strength-index fallback",
   },
   sofascore: {
     enabled: true,
     splashPath: false,
     label: "SofaScore Live",
-    lastAudit: "fail",
+    lastAudit: "untested",
     lastLatencyMs: 213,
-    failureReason: "HTTP 403 from local/dev IPs (works via Vercel Edge in production)",
-    disableReason: "Skipped in Vite dev — polling uses ESPN instead"
+    failureReason: "HTTP 403 without Edge proxy headers — now fixed via api/sofascore/[...path].ts",
+    disableReason: undefined,
   },
   clubElo: {
     enabled: true,
     splashPath: false,
     label: "ClubElo",
     lastAudit: "pass",
-    lastLatencyMs: 738
-  }
+    lastLatencyMs: 738,
+  },
 };
 
 /** Bootstrap toggles — flip to isolate splash hang causes. */
@@ -90,14 +90,11 @@ export const BOOTSTRAP_FLAGS = {
   /** Background Polymarket/FIFA/ESPN enrichment after splash. */
   backgroundEnrichment: true,
   /** Monte Carlo sim gate on splash (not an API — main suspect for long splash). */
-  bootstrapSimulation: true
+  bootstrapSimulation: true,
 } as const;
 
 export function isApiEnabled(id: ApiSourceId): boolean {
-  if (!API_SOURCES[id].enabled) return false;
-  // SofaScore blocks non-edge IPs; dev polling uses ESPN to avoid 403 noise.
-  if (id === "sofascore" && import.meta.env.DEV) return false;
-  return true;
+  return API_SOURCES[id].enabled;
 }
 
 export function listDisabledApis(): ApiSourceConfig[] {
