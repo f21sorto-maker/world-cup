@@ -1,13 +1,17 @@
 import type { MatchEvent, MergedMatch } from "../../types";
 
+export type LockedMatchIds = Record<string, true>;
+
 export type MatchSliceState = {
   liveMatches: Record<string, MergedMatch>;
+  lockedMatchIds: LockedMatchIds;
   matchEvents: Record<string, MatchEvent[]>;
   lastPollAt: number | null;
   consecutiveErrors: number;
   lastGoalTimestamp: number | null;
   lastGoalAnnouncement: string | null;
   setLiveMatches: (matches: Record<string, MergedMatch>) => void;
+  addLockedMatchId: (id: string) => void;
   batchPollUpdate: (payload: {
     matches: Record<string, MergedMatch>;
     events?: Record<string, MatchEvent[]>;
@@ -20,11 +24,16 @@ export type MatchSliceState = {
   resetManualOverride: (matchId: string) => void;
 };
 
+export function getLockedSet(state: Pick<MatchSliceState, "lockedMatchIds">): Set<string> {
+  return new Set(Object.keys(state.lockedMatchIds));
+}
+
 export const createMatchSlice = (
   set: (fn: (state: MatchSliceState) => Partial<MatchSliceState>) => void,
   get: () => MatchSliceState
 ): MatchSliceState => ({
   liveMatches: {},
+  lockedMatchIds: {},
   matchEvents: {},
   lastPollAt: null,
   consecutiveErrors: 0,
@@ -32,6 +41,13 @@ export const createMatchSlice = (
   lastGoalAnnouncement: null,
 
   setLiveMatches: (matches) => set(() => ({ liveMatches: matches })),
+
+  addLockedMatchId: (id) =>
+    set((state) =>
+      state.lockedMatchIds[id]
+        ? {}
+        : { lockedMatchIds: { ...state.lockedMatchIds, [id]: true } }
+    ),
 
   batchPollUpdate: (payload) =>
     set((state) => ({

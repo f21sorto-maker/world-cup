@@ -4,7 +4,10 @@ export const config = {
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const slug = url.pathname.replace(/^\/api\/clubelo\//, "");
+  let slug = url.pathname.replace(/^\/api\/clubelo\/?/, "");
+  if (!slug) {
+    slug = url.searchParams.get("path") ?? "";
+  }
   if (!slug || slug.includes("..")) {
     return new Response("Bad request", { status: 400 });
   }

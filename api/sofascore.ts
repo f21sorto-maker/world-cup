@@ -19,7 +19,6 @@ const BROWSER_HEADERS = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Build path from dynamic route segment
   const segments = req.query.path;
   const path = "/" + (Array.isArray(segments) ? segments.join("/") : segments ?? "");
 
@@ -33,7 +32,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const upstreamRes = await fetch(upstream, { headers: BROWSER_HEADERS });
 
-    // Forward exact status so SofaScoreClient can detect 403/401 correctly
     res.status(upstreamRes.status);
 
     if (!upstreamRes.ok) {

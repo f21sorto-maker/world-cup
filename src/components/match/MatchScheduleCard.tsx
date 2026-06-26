@@ -1,8 +1,11 @@
 import type { MergedMatch } from "../../types";
 import type { Team } from "../../types";
 import { getBroadcast, getBroadcastByKickoff } from "../../services/BroadcastLookup";
-import { detectKickoffConflict } from "../../lib/scheduleConflict";
-import { formatKickoffLocal } from "../../services/ScheduleLinker";
+import { formatKickoffDate, formatKickoffTime } from "../../lib/formatKickoff";
+import { KICKOFF_LABEL } from "../../services/ScheduleLinker";
+import { useMatchTheme } from "../../hooks/useMatchTheme";
+import { TeamLabel } from "../team/TeamLabel";
+import { TeamLabelById } from "../team/TeamLabelById";
 
 type Props = {
   match: MergedMatch;
@@ -15,13 +18,23 @@ type Props = {
 export function MatchScheduleCard({ match, home, away, compact, onSelect }: Props) {
   const broadcast =
     (match.matchId ? getBroadcast(match.matchId) : undefined) ?? getBroadcastByKickoff(match.date);
-  const conflict = detectKickoffConflict(match);
-  const kickoffUtc = broadcast?.kickoffUTC ?? match.date;
+  const kickoffUtc = match.date;
   const isLive = match.status === "live";
-  const isDone = match.status === "completed";
+  const isDone = match.status === "completed" || match.locked;
+  const matchTheme = useMatchTheme(match.homeTeamId, match.awayTeamId, isLive ? "live" : "default");
+
+  const kickoffDisplay =
+    isDone || match.locked
+      ? formatKickoffDate(kickoffUtc)
+      : isLive
+        ? formatKickoffTime(kickoffUtc)
+        : `${KICKOFF_LABEL} · ${formatKickoffTime(kickoffUtc)}`;
+
+  const cardClass = `schedule-card schedule-card-themed ${isLive ? "is-live" : ""} ${compact ? "schedule-card--compact" : ""} ${onSelect ? "schedule-card--btn" : ""}`.trim();
 
   const body = (
     <>
+      {isLive ? <div className="team-accent-bar" aria-hidden /> : null}
       <div className="match-meta">
         <span>
           {isLive ? (
@@ -29,17 +42,18 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
               <span className="live-pill-dot" aria-hidden /> LIVE
             </span>
           ) : null}
-          <time dateTime={kickoffUtc}>{formatKickoffLocal(kickoffUtc)}</time>
+          <time dateTime={kickoffUtc}>{kickoffDisplay}</time>
           {broadcast?.venue.city ? ` · ${broadcast.venue.city}` : null}
         </span>
         {match.group ? <span className="match-source espn">Group {match.group}</span> : null}
       </div>
 
       <div className="score-line schedule-score-line">
-        <span className="team-label">
-          {home?.logo ? <img src={home.logo} alt="" width={28} height={28} /> : null}
-          <span>{home?.shortName ?? match.homeTeamId}</span>
-        </span>
+        {home ? (
+          <TeamLabel team={home} />
+        ) : (
+          <TeamLabelById teamId={match.homeTeamId} />
+        )}
         <strong className="schedule-score">
           {isDone || isLive ? (match.homeScore ?? 0) : "–"}
         </strong>
@@ -47,10 +61,11 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
         <strong className="schedule-score">
           {isDone || isLive ? (match.awayScore ?? 0) : "–"}
         </strong>
-        <span className="team-label right">
-          {away?.logo ? <img src={away.logo} alt="" width={28} height={28} /> : null}
-          <span>{away?.shortName ?? match.awayTeamId}</span>
-        </span>
+        {away ? (
+          <TeamLabel team={away} align="right" />
+        ) : (
+          <TeamLabelById teamId={match.awayTeamId} align="right" />
+        )}
       </div>
 
       {broadcast ? (
@@ -65,22 +80,22 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
           ) : null}
         </div>
       ) : null}
-
-      {conflict ? (
-        <p className="schedule-conflict-note">
-          Schedule {conflict.scheduleLabel} · Feed {conflict.liveLabel}
-        </p>
-      ) : null}
     </>
   );
 
+  const cardStyle = matchTheme;
+
   if (onSelect) {
     return (
-      <button type="button" className={`schedule-card schedule-card--btn ${isLive ? "is-live" : ""}`} onClick={onSelect}>
+      <button type="button" className={cardClass} style={cardStyle} onClick={onSelect}>
         {body}
       </button>
     );
   }
 
-  return <article className={`schedule-card ${isLive ? "is-live" : ""} ${compact ? "schedule-card--compact" : ""}`}>{body}</article>;
+  return (
+    <article className={cardClass} style={cardStyle}>
+      {body}
+    </article>
+  );
 }

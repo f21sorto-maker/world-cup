@@ -26,10 +26,10 @@
     },
     {
       "source": "/api/clubelo/:path*",
-      "destination": "http://api.clubelo.com/:path*"
+      "destination": "/api/clubelo"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ],

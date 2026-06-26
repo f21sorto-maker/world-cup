@@ -53,8 +53,10 @@ export async function fetchScheduledToday(): Promise<SofaEvent[]> {
     });
     if (res.status === 403 || res.status === 401) {
       sofaScoreSessionDisabled = true;
+      const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "");
       logger.warn("SofaScore blocked for session; using ESPN fallback", "SofaScoreClient", {
         status: res.status,
+        bodySnippet,
       });
       return [];
     }
@@ -76,6 +78,15 @@ export async function fetchIncidents(sofaEventId: number): Promise<unknown[]> {
     const res = await fetch(proxied(`/event/${sofaEventId}/incidents`), {
       headers: SOFA_HEADERS,
     });
+    if (res.status === 403 || res.status === 401) {
+      sofaScoreSessionDisabled = true;
+      const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "");
+      logger.warn("SofaScore incidents blocked", "SofaScoreClient", {
+        status: res.status,
+        bodySnippet,
+      });
+      return [];
+    }
     if (!res.ok) throw new Error(`${res.status}`);
     const data = await res.json();
     return data?.incidents ?? [];

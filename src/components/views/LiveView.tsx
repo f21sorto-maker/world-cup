@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { BentoErrorBoundary } from "../shared/ErrorBoundary";
 import { LiveMatchBento } from "../bentos/LiveMatchBento";
 import { MatchScheduleCard } from "../match/MatchScheduleCard";
-import { QualifiedBento, EliminatedBento } from "../bentos/QualifiedBento";
+import { QualifiedBento, EliminatedBento, InContentionBento } from "../bentos/QualifiedBento";
 import { useStore } from "../../store";
 import type { MergedMatch } from "../../types";
 
@@ -16,19 +16,19 @@ export function LiveView() {
   const primaryId = useStore((s) => s.primaryLiveMatchId);
   const setPrimary = useStore((s) => s.setPrimaryMatch);
 
-  const allMatches = useMemo(() => Object.values(liveMatchesMap), [liveMatchesMap]);
+  const allMatches = useMemo(
+    () =>
+      Object.values(liveMatchesMap).filter((m) => !m.locked && m.status !== "completed"),
+    [liveMatchesMap]
+  );
 
   const live = useMemo(() => allMatches.filter((m) => m.status === "live"), [allMatches]);
 
-  const todaySchedule = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    return sortByDate(
-      allMatches.filter((m) => {
-        const day = new Date(m.date).toISOString().slice(0, 10);
-        return m.group && (m.status === "scheduled" || day === today);
-      })
-    ).slice(0, 16);
-  }, [allMatches]);
+  const todaySchedule = useMemo(
+    () =>
+      sortByDate(allMatches.filter((m) => m.status === "scheduled" && Boolean(m.group))).slice(0, 16),
+    [allMatches]
+  );
 
   const primary = live.find((m) => m.id === primaryId) ?? live[0];
   const secondary = live.filter((m) => m.id !== primary?.id).slice(0, 6);
@@ -77,7 +77,10 @@ export function LiveView() {
         <section className="dashboard-section">
           <div className="idle-banner">
             <span className="section-kicker">No live matches</span>
-            <p>Check today&apos;s schedule below or open the Simulator to model outcomes.</p>
+            <p>
+              No live matches right now. Check the Results tab for completed matches or the schedule
+              for upcoming kickoffs.
+            </p>
           </div>
         </section>
       )}
@@ -109,11 +112,18 @@ export function LiveView() {
           <div>
             <div className="section-kicker">Qualification</div>
             <h2 className="section-title-text">Who&apos;s through</h2>
+            <p className="section-note">
+              <strong>Confirmed</strong> = mathematically locked. <strong>Projected</strong> = based on current
+              standings only.
+            </p>
           </div>
         </div>
         <div className="live-qual-row">
           <BentoErrorBoundary bento="QualifiedBento">
             <QualifiedBento />
+          </BentoErrorBoundary>
+          <BentoErrorBoundary bento="InContentionBento">
+            <InContentionBento />
           </BentoErrorBoundary>
           <BentoErrorBoundary bento="EliminatedBento">
             <EliminatedBento />

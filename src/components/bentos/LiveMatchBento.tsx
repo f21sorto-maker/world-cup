@@ -1,9 +1,10 @@
 import type { MergedMatch } from "../../types";
 import { useStore } from "../../store";
 import { getBroadcast, getBroadcastByKickoff } from "../../services/BroadcastLookup";
-import { detectKickoffConflict } from "../../lib/scheduleConflict";
-import { ScheduleConflictBadge } from "../shared/ScheduleConflictBadge";
 import { useLiveClock } from "../../hooks/useLiveClock";
+import { useMatchTheme } from "../../hooks/useMatchTheme";
+import { TeamLabel } from "../team/TeamLabel";
+import { TeamLabelById } from "../team/TeamLabelById";
 
 type Props = {
   match: MergedMatch;
@@ -14,9 +15,9 @@ export function LiveMatchBento({ match, variant }: Props) {
   const teams = useStore((s) => s.teams);
   const home = teams[match.homeTeamId];
   const away = teams[match.awayTeamId];
+  const matchTheme = useMatchTheme(match.homeTeamId, match.awayTeamId);
   const broadcast =
     (match.matchId ? getBroadcast(match.matchId) : undefined) ?? getBroadcastByKickoff(match.date);
-  const kickoffConflict = detectKickoffConflict(match);
 
   const clock = useLiveClock(
     match.period ?? (match.status === "live" ? "second_half" : "not_started"),
@@ -26,7 +27,10 @@ export function LiveMatchBento({ match, variant }: Props) {
   );
 
   return (
-    <article className={`live-hero-card live-hero-card--${variant}`}>
+    <article
+      className={`live-hero-card live-hero-themed live-hero-card--${variant}`}
+      style={matchTheme}
+    >
       <div className="live-hero-header">
         <span className="live-pill">
           <span className="live-pill-dot" aria-hidden />
@@ -37,20 +41,20 @@ export function LiveMatchBento({ match, variant }: Props) {
       </div>
 
       <div className="score-line live-hero-scoreline">
-        <span className="team-label">
-          {home?.logo ? <img src={home.logo} alt="" width={36} height={36} /> : null}
-          <span>{home?.shortName ?? match.homeTeamId}</span>
-        </span>
+        {home ? (
+          <TeamLabel team={home} />
+        ) : (
+          <TeamLabelById teamId={match.homeTeamId} />
+        )}
         <strong className="live-hero-score">{match.homeScore ?? 0}</strong>
         <span className="schedule-score-sep">:</span>
         <strong className="live-hero-score">{match.awayScore ?? 0}</strong>
-        <span className="team-label right">
-          {away?.logo ? <img src={away.logo} alt="" width={36} height={36} /> : null}
-          <span>{away?.shortName ?? match.awayTeamId}</span>
-        </span>
+        {away ? (
+          <TeamLabel team={away} align="right" />
+        ) : (
+          <TeamLabelById teamId={match.awayTeamId} align="right" />
+        )}
       </div>
-
-      {kickoffConflict ? <ScheduleConflictBadge conflict={kickoffConflict} /> : null}
 
       {broadcast ? (
         <div className="broadcast-bar broadcast-bar--hero">

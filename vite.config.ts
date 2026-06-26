@@ -8,7 +8,8 @@ const SOFA_BROWSER_HEADERS: Record<string, string> = {
   Accept: "application/json, text/plain, */*",
   "Accept-Language": "en-US,en;q=0.9",
   "User-Agent":
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+  "X-Requested-With": "XMLHttpRequest",
 };
 
 function configureSofaProxy(proxy: Server) {
@@ -23,7 +24,7 @@ const sofaProxy = {
   target: "https://api.sofascore.com",
   changeOrigin: true,
   rewrite: (path: string) => path.replace(/^\/api\/sofascore/, "/api/v1"),
-  configure: configureSofaProxy
+  configure: configureSofaProxy,
 };
 
 function configureFifaApiProxy(proxy: Server) {
@@ -36,26 +37,26 @@ const fifaApiProxy = {
   target: "https://www.fifa.com",
   changeOrigin: true,
   rewrite: (path: string) => path.replace(/^\/fifa-api/, ""),
-  configure: configureFifaApiProxy
+  configure: configureFifaApiProxy,
 };
 
 const proxy = {
   "/espn": {
     target: "https://site.api.espn.com",
     changeOrigin: true,
-    rewrite: (path: string) => path.replace(/^\/espn/, "")
+    rewrite: (path: string) => path.replace(/^\/espn/, ""),
   },
   "/poly": {
     target: "https://gamma-api.polymarket.com",
     changeOrigin: true,
-    rewrite: (path: string) => path.replace(/^\/poly/, "")
+    rewrite: (path: string) => path.replace(/^\/poly/, ""),
   },
   "/fifa": {
     target: "https://inside.fifa.com",
     changeOrigin: true,
-    rewrite: (path: string) => path.replace(/^\/fifa/, "")
+    rewrite: (path: string) => path.replace(/^\/fifa/, ""),
   },
-  "/fifa-api": fifaApiProxy
+  "/fifa-api": fifaApiProxy,
 };
 
 export default defineConfig({
@@ -69,14 +70,14 @@ export default defineConfig({
       "/espn-web": {
         target: "https://site.web.api.espn.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/espn-web/, "")
+        rewrite: (path: string) => path.replace(/^\/espn-web/, ""),
       },
       "/api/clubelo": {
         target: "http://api.clubelo.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/api\/clubelo/, "")
-      }
-    }
+        rewrite: (path: string) => path.replace(/^\/api\/clubelo/, ""),
+      },
+    },
   },
   preview: {
     host: "127.0.0.1",
@@ -87,16 +88,18 @@ export default defineConfig({
       "/espn-web": {
         target: "https://site.web.api.espn.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/espn-web/, "")
+        rewrite: (path: string) => path.replace(/^\/espn-web/, ""),
       },
       "/api/clubelo": {
         target: "http://api.clubelo.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/api\/clubelo/, "")
-      }
-    }
+        rewrite: (path: string) => path.replace(/^\/api\/clubelo/, ""),
+      },
+    },
   },
   define: {
-    "import.meta.env.VITE_BUILD_VERSION": JSON.stringify(process.env.npm_package_version ?? "0.1.0")
-  }
+    "import.meta.env.VITE_BUILD_VERSION": JSON.stringify(
+      process.env.npm_package_version ?? "0.1.0"
+    ),
+  },
 });

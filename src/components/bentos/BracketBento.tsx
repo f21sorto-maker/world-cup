@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { knockoutSchedule } from "../../data/knockoutSchedule";
 import { projectTournament } from "../../lib/tournament";
-import { formatKickoffLocal } from "../../services/ScheduleLinker";
+import { formatKickoffLabel, resolveKickoffByMatchId } from "../../services/ScheduleLinker";
 import type { BracketMatch, Stage, Team } from "../../types";
 import { useStore } from "../../store";
+import { useTeamTheme } from "../../hooks/useTeamTheme";
+import type { TeamThemeStatus } from "../team/TeamThemeRoot";
 
 const bracketStages: Stage[] = ["R32", "R16", "QF", "SF", "Final"];
 const stageColumns: Record<Stage, number> = { R32: 1, R16: 2, QF: 3, SF: 4, Final: 5 };
@@ -11,14 +13,24 @@ const stageColumns: Record<Stage, number> = { R32: 1, R16: 2, QF: 3, SF: 4, Fina
 function BracketTeamReadonly({
   team,
   seedLabel,
-  winner
+  winner,
+  status = "default"
 }: {
   team?: Team;
   seedLabel?: string;
   winner?: boolean;
+  status?: TeamThemeStatus;
 }) {
+  const theme = useTeamTheme(team?.id);
+  const resolvedStatus: TeamThemeStatus = winner ? "advancing" : status;
+
   return (
-    <div className={`bracket-team ${winner ? "winner" : ""}`}>
+    <div
+      className={`bracket-team bracket-team-themed ${winner ? "winner" : ""}`}
+      style={team ? theme : undefined}
+      data-team-id={team?.id}
+      data-status={resolvedStatus === "default" ? undefined : resolvedStatus}
+    >
       {team?.logo ? <img src={team.logo} alt="" /> : <span className="bracket-dot" />}
       <span>{team?.shortName ?? seedLabel ?? "TBD"}</span>
       {winner ? <b>✓</b> : null}
@@ -30,11 +42,15 @@ function BracketCardReadonly({ match, teamsById }: { match: BracketMatch; teamsB
   const home = match.homeTeamId ? teamsById[match.homeTeamId] : undefined;
   const away = match.awayTeamId ? teamsById[match.awayTeamId] : undefined;
   const info = knockoutSchedule[match.id];
+  const liveMatches = useStore((s) => s.liveMatches);
+  const kickoffUtc = info
+    ? resolveKickoffByMatchId(match.id, info.date, Object.values(liveMatches))
+    : undefined;
 
   return (
     <article className="bracket-card">
       <div className="bracket-card-head">
-        <span className="match-date">{info ? formatKickoffLocal(info.date) : match.label}</span>
+        <span className="match-date">{kickoffUtc ? formatKickoffLabel(kickoffUtc) : match.label}</span>
         <span className="match-city">{info?.hostCity ?? match.id}</span>
       </div>
       <BracketTeamReadonly

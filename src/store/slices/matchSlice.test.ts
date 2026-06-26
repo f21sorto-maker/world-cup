@@ -1,23 +1,28 @@
 import { describe, expect, it } from "vitest";
-import { createMatchSlice } from "./matchSlice";
+import { createMatchSlice, getLockedSet, type MatchSliceState } from "./matchSlice";
 
-describe("mergeMatchEvents", () => {
-  it("deduplicates by providerId", () => {
-    let state = createMatchSlice(
-      (fn) => {
-        state = { ...state, ...fn(state) };
-      },
-      () => state
-    );
+function createTestSlice() {
+  let state: MatchSliceState = createMatchSlice(
+    (fn) => {
+      state = { ...state, ...fn(state) };
+    },
+    () => state
+  );
+  return {
+    getState: () => state,
+    actions: state
+  };
+}
 
-    state.mergeMatchEvents("m1", [
-      { providerId: "g1", minute: 10, type: "goal", teamId: "t1", playerName: "A" }
-    ]);
-    state.mergeMatchEvents("m1", [
-      { providerId: "g1", minute: 10, type: "goal", teamId: "t1", playerName: "A" },
-      { providerId: "g2", minute: 55, type: "goal", teamId: "t2", playerName: "B" }
-    ]);
+describe("matchSlice lockedMatchIds", () => {
+  it("adds locked match ids without duplicates", () => {
+    const { getState, actions } = createTestSlice();
 
-    expect(state.matchEvents.m1).toHaveLength(2);
+    actions.addLockedMatchId("m1");
+    actions.addLockedMatchId("m2");
+    actions.addLockedMatchId("m1");
+
+    expect(getState().lockedMatchIds).toEqual({ m1: true, m2: true });
+    expect(getLockedSet(getState())).toEqual(new Set(["m1", "m2"]));
   });
 });

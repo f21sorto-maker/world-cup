@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { computeQualificationStatus } from "../../lib/qualification";
 import { useStore } from "../../store";
 import type { QualificationTier } from "../../types";
+import { TeamThemeRoot } from "../team/TeamThemeRoot";
 
 type Filter = QualificationTier | "all";
 
@@ -27,7 +28,7 @@ export function TeamsView() {
         const q = query.toLowerCase();
         const matchesSearch =
           t.name.toLowerCase().includes(q) || t.shortName.toLowerCase().includes(q);
-        const status = computeQualificationStatus(t.id, standings, 3).status;
+        const status = computeQualificationStatus(t.id, standings).status;
         const matchesFilter = filter === "all" || status === filter;
         return matchesSearch && matchesFilter;
       })
@@ -92,22 +93,26 @@ export function TeamsView() {
           <summary>Group {group}</summary>
           <ul>
             {list.map((t) => {
-              const status = computeQualificationStatus(t.id, standings, 3);
+              const status = computeQualificationStatus(t.id, standings);
               const groupStanding = standings.find((g) => g.group === t.group);
               const row = groupStanding?.rows.find((r) => r.teamId === t.id);
               const rank = row ? (groupStanding?.rows.indexOf(row) ?? 0) + 1 : "—";
               return (
                 <li key={t.id}>
-                  <button type="button" className="teams-row" onClick={() => openTeamSheet(t.id)}>
-                    {t.logo ? <img src={t.logo} alt="" width={24} height={24} /> : null}
-                    <span>{t.shortName}</span>
-                    <span className={`badge badge--${status.status}`}>
-                      {filterLabels[status.status as Filter] ?? status.status}
-                    </span>
-                    <span className="teams-stats">
-                      Rank {rank} · {row?.points ?? 0}pts · {row?.goalDifference ?? 0} GD
-                    </span>
-                  </button>
+                  <TeamThemeRoot teamId={t.id} className="team-card">
+                    <div className="team-accent-bar" aria-hidden />
+                    <button type="button" className="teams-row" onClick={() => openTeamSheet(t.id)}>
+                      {t.logo ? <img src={t.logo} alt="" width={24} height={24} /> : null}
+                      <span>{t.shortName}</span>
+                      <span className={`badge badge--${status.status}`}>
+                        {filterLabels[status.status as Filter] ?? status.status}
+                        {status.certainty === "confirmed" ? " · locked" : status.certainty === "projected" ? " · projected" : ""}
+                      </span>
+                      <span className="teams-stats">
+                        Rank {rank} · {row?.points ?? 0}pts · {row?.goalDifference ?? 0} GD
+                      </span>
+                    </button>
+                  </TeamThemeRoot>
                 </li>
               );
             })}
