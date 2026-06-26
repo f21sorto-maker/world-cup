@@ -6,6 +6,8 @@ import { formatLiveClock } from "../../lib/formatMatchClock";
 import { useMatchTheme } from "../../hooks/useMatchTheme";
 import { TeamLabel } from "../team/TeamLabel";
 import { TeamLabelById } from "../team/TeamLabelById";
+import { OddsRow } from "./OddsRow";
+import { WeatherBadge } from "./WeatherBadge";
 
 type Props = {
   match: MergedMatch;
@@ -43,6 +45,9 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
           ) : null}
           <time dateTime={kickoffUtc}>{metaTimeDisplay}</time>
           {broadcast?.venue.city ? ` · ${broadcast.venue.city}` : null}
+          {!isDone && broadcast?.venue.city ? (
+            <WeatherBadge city={broadcast.venue.city} />
+          ) : null}
         </span>
         {match.group ? <span className="match-source espn">Group {match.group}</span> : null}
       </div>
@@ -66,6 +71,14 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
           <TeamLabelById teamId={match.awayTeamId} align="right" />
         )}
       </div>
+
+      {!isDone && !isLive && match.id ? (
+        <OddsRow
+          espnEventId={match.id}
+          homeTeam={home?.shortName ?? match.homeTeamId}
+          awayTeam={away?.shortName ?? match.awayTeamId}
+        />
+      ) : null}
 
       {broadcast ? (
         <div className="broadcast-bar">

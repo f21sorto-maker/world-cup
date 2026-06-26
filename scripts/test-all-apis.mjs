@@ -229,6 +229,76 @@ const tests = [
       return `teams=${d.teams?.length ?? 0}`;
     },
   },
+  {
+    label: "WC2026 Live /wc/live (direct)",
+    url: "https://world-cup-2026-live-api.p.rapidapi.com/wc/live",
+    headers: rapidHeaders("world-cup-2026-live-api.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ body, status }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status}`;
+      if (status === 404) return `HTTP 404 (no live matches)`;
+      const d = JSON.parse(body);
+      return `matches=${Array.isArray(d) ? d.length : JSON.stringify(d).slice(0, 60)}`;
+    },
+  },
+  {
+    label: "WC2026 Live /wc/live (vite proxy)",
+    url: `${PROXY_BASE}/rapidapi-wc-live/wc/live`,
+    headers: rapidHeaders("world-cup-2026-live-api.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ body, status }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status}`;
+      if (status === 404) return `HTTP 404 (no live matches)`;
+      const d = JSON.parse(body);
+      return `matches=${Array.isArray(d) ? d.length : JSON.stringify(d).slice(0, 60)}`;
+    },
+  },
+  {
+    label: "Open Weather 13 (direct)",
+    url: "https://open-weather13.p.rapidapi.com/city/New%20York/EN",
+    headers: rapidHeaders("open-weather13.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ body, status }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status}`;
+      const d = JSON.parse(body);
+      return `city=${d.name ?? "?"}, temp=${d.main?.temp ?? "?"}`;
+    },
+  },
+  {
+    label: "Open Weather 13 (vite proxy)",
+    url: `${PROXY_BASE}/rapidapi-weather/city/New%20York/EN`,
+    headers: rapidHeaders("open-weather13.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ body, status }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status}`;
+      const d = JSON.parse(body);
+      return `city=${d.name ?? "?"}, temp=${d.main?.temp ?? "?"}`;
+    },
+  },
+  {
+    label: "Sports Odds Intelligence (direct)",
+    url: "https://sports-odds-intelligence-api.p.rapidapi.com/soccer/",
+    headers: rapidHeaders("sports-odds-intelligence-api.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ body, status }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status}`;
+      if (status === 404) return `HTTP 404 (check exact endpoint)`;
+      const d = JSON.parse(body);
+      return `ok, keys=${Object.keys(d).join(",")}`;
+    },
+  },
+  {
+    label: "Sports Odds Intelligence (vite proxy)",
+    url: `${PROXY_BASE}/rapidapi-odds/soccer/`,
+    headers: rapidHeaders("sports-odds-intelligence-api.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ body, status }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status}`;
+      if (status === 404) return `HTTP 404 (check exact endpoint)`;
+      const d = JSON.parse(body);
+      return `ok, keys=${Object.keys(d).join(",")}`;
+    },
+  },
   ...Array.from({ length: 8 }, (_, i) => i * 100).map((offset) => ({
     label: `Polymarket games offset=${offset} (direct)`,
     url: `https://gamma-api.polymarket.com${polyGames(offset)}`,
