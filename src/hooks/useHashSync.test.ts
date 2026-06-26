@@ -4,6 +4,7 @@ import { buildAppHash, parseAppHash } from "./useHashSync";
 describe("useHashSync", () => {
   it("parses main tabs", () => {
     expect(parseAppHash("#live")).toEqual({ tab: "live", simulatorMode: "tournament" });
+    expect(parseAppHash("#results")).toEqual({ tab: "results", simulatorMode: "tournament" });
     expect(parseAppHash("#groups")).toEqual({ tab: "groups", simulatorMode: "tournament" });
   });
 

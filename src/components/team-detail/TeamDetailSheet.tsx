@@ -1,20 +1,59 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { formatKickoffDate } from "../../lib/formatKickoff";
 import { useStore } from "../../store";
 import { getTeamElo } from "../../services/ClubEloClient";
 import { TeamThemeRoot } from "../team/TeamThemeRoot";
+import type { MergedMatch } from "../../types";
 
 type Tab = "now" | "path" | "odds";
+type MatchOutcome = "W" | "D" | "L";
+
+function outcomeForTeam(match: MergedMatch, teamId: string): MatchOutcome {
+  const isHome = match.homeTeamId === teamId;
+  const teamScore = isHome ? (match.homeScore ?? 0) : (match.awayScore ?? 0);
+  const oppScore = isHome ? (match.awayScore ?? 0) : (match.homeScore ?? 0);
+  if (teamScore > oppScore) return "W";
+  if (teamScore < oppScore) return "L";
+  return "D";
+}
+
+function outcomeClass(outcome: MatchOutcome): string {
+  switch (outcome) {
+    case "W":
+      return "team-history-outcome--win";
+    case "D":
+      return "team-history-outcome--draw";
+    case "L":
+      return "team-history-outcome--loss";
+    default: {
+      const _exhaustive: never = outcome;
+      return _exhaustive;
+    }
+  }
+}
 
 export function TeamDetailSheet() {
   const open = useStore((s) => s.teamSheetOpen);
   const teamId = useStore((s) => s.activeTeamId);
   const close = useStore((s) => s.closeTeamSheet);
   const teams = useStore((s) => s.teams);
+  const liveMatches = useStore((s) => s.liveMatches);
   const simulationRunning = useStore((s) => s.simulationRunning);
   const [tab, setTab] = useState<Tab>("now");
   const [elo, setElo] = useState<number | null>(null);
 
   const team = teamId ? teams[teamId] : null;
+
+  const matchHistory = useMemo(() => {
+    if (!teamId) return [];
+    return Object.values(liveMatches)
+      .filter(
+        (match) =>
+          match.locked &&
+          (match.homeTeamId === teamId || match.awayTeamId === teamId)
+      )
+      .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+  }, [liveMatches, teamId]);
 
   useEffect(() => {
     if (!team) return;
@@ -54,10 +93,50 @@ export function TeamDetailSheet() {
 
         <div className="team-sheet-body">
           {tab === "now" ? (
-            <p>
-              Group {team.group} · FIFA rank {team.fifaRank ?? "—"} · Title market{" "}
-              {team.titleProbability ? `${(team.titleProbability * 100).toFixed(1)}%` : "—"}
-            </p>
+            <>
+              <p>
+                Group {team.group} · FIFA rank {team.fifaRank ?? "—"} · Title market{" "}
+                {team.titleProbability ? `${(team.titleProbability * 100).toFixed(1)}%` : "—"}
+              </p>
+
+              <section className="team-match-history" aria-label="Match history">
+                <h3 className="team-match-history-title">Match History</h3>
+                {matchHistory.length === 0 ? (
+                  <p className="team-match-history-empty">No completed matches yet</p>
+                ) : (
+                  <ul className="team-match-history-list">
+                    {matchHistory.map((match) => {
+                      const isHome = match.homeTeamId === team.id;
+                      const opponentId = isHome ? match.awayTeamId : match.homeTeamId;
+                      const opponent = teams[opponentId];
+                      const teamScore = isHome ? (match.homeScore ?? 0) : (match.awayScore ?? 0);
+                      const oppScore = isHome ? (match.awayScore ?? 0) : (match.homeScore ?? 0);
+                      const outcome = outcomeForTeam(match, team.id);
+
+                      return (
+                        <li key={match.id} className="team-match-history-row">
+                          <span className="team-match-history-opponent">
+                            {opponent?.logo ? (
+                              <img src={opponent.logo} alt="" width={18} height={18} />
+                            ) : null}
+                            <span>{opponent?.shortName ?? opponentId}</span>
+                          </span>
+                          <span className="team-match-history-score">
+                            {teamScore}–{oppScore}
+                          </span>
+                          <span className={`team-match-history-outcome ${outcomeClass(outcome)}`}>
+                            {outcome}
+                          </span>
+                          <time className="team-match-history-date" dateTime={match.date}>
+                            {formatKickoffDate(match.date)}
+                          </time>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </section>
+            </>
           ) : null}
           {tab === "path" ? (
             <p>

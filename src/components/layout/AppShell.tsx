@@ -7,6 +7,7 @@ import { useHashSync } from "../../hooks/useHashSync";
 import { useQualificationChangeLogger } from "../../hooks/useQualificationChangeLogger";
 import { useStore } from "../../store";
 import { LiveView } from "../views/LiveView";
+import { ResultsView } from "../views/ResultsView";
 import { BracketView } from "../views/BracketView";
 import { GroupsView } from "../views/GroupsView";
 import { TeamsView } from "../views/TeamsView";
@@ -42,6 +43,7 @@ export function AppShell() {
       <TopNavBar hidden={activeTab === "simulator"} />
       <main ref={mainRef} className="wc-main">
         {activeTab === "live" ? <LiveView /> : null}
+        {activeTab === "results" ? <ResultsView /> : null}
         {activeTab === "bracket" ? <BracketView /> : null}
         {activeTab === "groups" ? <GroupsView /> : null}
         {activeTab === "simulator" ? (

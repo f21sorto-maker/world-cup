@@ -172,7 +172,8 @@ export type TournamentSimulationResult = {
 
 // --- Extended types (Road to WC Final) ---
 
-export type TabId = "live" | "bracket" | "groups" | "simulator" | "teams";
+export type TabId = "live" | "results" | "bracket" | "groups" | "simulator" | "teams";
+export type GroupsViewMode = "flags" | "table";
 export type SimulatorMode = "tournament" | "probabilities" | "methodology";
 export type SplashPhase = "loading" | "slow" | "error" | "done";
 export type BracketViewMode = "projected" | "confirmed";

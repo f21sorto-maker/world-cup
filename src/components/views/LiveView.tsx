@@ -16,19 +16,19 @@ export function LiveView() {
   const primaryId = useStore((s) => s.primaryLiveMatchId);
   const setPrimary = useStore((s) => s.setPrimaryMatch);
 
-  const allMatches = useMemo(() => Object.values(liveMatchesMap), [liveMatchesMap]);
+  const allMatches = useMemo(
+    () =>
+      Object.values(liveMatchesMap).filter((m) => !m.locked && m.status !== "completed"),
+    [liveMatchesMap]
+  );
 
   const live = useMemo(() => allMatches.filter((m) => m.status === "live"), [allMatches]);
 
-  const todaySchedule = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    return sortByDate(
-      allMatches.filter((m) => {
-        const day = new Date(m.date).toISOString().slice(0, 10);
-        return m.group && (m.status === "scheduled" || day === today);
-      })
-    ).slice(0, 16);
-  }, [allMatches]);
+  const todaySchedule = useMemo(
+    () =>
+      sortByDate(allMatches.filter((m) => m.status === "scheduled" && Boolean(m.group))).slice(0, 16),
+    [allMatches]
+  );
 
   const primary = live.find((m) => m.id === primaryId) ?? live[0];
   const secondary = live.filter((m) => m.id !== primary?.id).slice(0, 6);
@@ -77,7 +77,10 @@ export function LiveView() {
         <section className="dashboard-section">
           <div className="idle-banner">
             <span className="section-kicker">No live matches</span>
-            <p>Check today&apos;s schedule below or open the Simulator to model outcomes.</p>
+            <p>
+              No live matches right now. Check the Results tab for completed matches or the schedule
+              for upcoming kickoffs.
+            </p>
           </div>
         </section>
       )}

@@ -1,6 +1,7 @@
 import type { MergedMatch } from "../types";
 import { deriveStandingsIfScored, standingsEqual } from "../lib/qualification";
 import { isApiEnabled } from "../config/apiFlags";
+import { getLockedSet } from "../store/slices/matchSlice";
 import { useStore } from "../store";
 import { fetchScoreboard } from "./ESPNClient";
 import { applyLiveScore } from "./DataMerger";
@@ -14,6 +15,15 @@ const IDLE_INTERVAL_MS = 300_000;
 
 function hasGroupStageLive(matches: Record<string, MergedMatch>): boolean {
   return Object.values(matches).some((m) => m.status === "live" && Boolean(m.group));
+}
+
+function allMatchesLocked(
+  matches: Record<string, MergedMatch>,
+  lockedMatchIds: Record<string, true>
+): boolean {
+  const ids = Object.keys(matches);
+  if (ids.length === 0) return false;
+  return ids.every((id) => lockedMatchIds[id] === true);
 }
 
 export function selectPrimaryMatch(
@@ -144,6 +154,12 @@ class PollingEngine {
       }
     }
 
+    for (const m of Object.values(merged)) {
+      if (m.locked) {
+        store.addLockedMatchId(m.id);
+      }
+    }
+
     const liveCount = Object.values(merged).filter((m) => m.status === "live" && m.group).length;
     const primary = selectPrimaryMatch(Object.values(merged), store.primaryLiveMatchId);
 
@@ -177,6 +193,18 @@ class PollingEngine {
 
     const store = useStore.getState();
     let consecutiveErrors = store.consecutiveErrors;
+
+    const matchIds = Object.keys(store.liveMatches);
+    if (
+      matchIds.length > 0 &&
+      allMatchesLocked(store.liveMatches, store.lockedMatchIds)
+    ) {
+      logger.info("All matches locked — polling paused", "PollingEngine", {
+        lockedCount: getLockedSet(store).size
+      });
+      this.scheduleNext();
+      return;
+    }
 
     try {
       await this.fetchAndMerge();

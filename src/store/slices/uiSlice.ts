@@ -1,4 +1,4 @@
-import type { BracketViewMode, SimulatorMode, SplashPhase, TabId } from "../../types";
+import type { BracketViewMode, GroupsViewMode, SimulatorMode, SplashPhase, TabId } from "../../types";
 
 export type UiSliceState = {
   activeTab: TabId;
@@ -8,6 +8,7 @@ export type UiSliceState = {
   splashMessage: string;
   primaryLiveMatchId: string | null;
   bracketViewMode: BracketViewMode;
+  groupsViewMode: GroupsViewMode;
   activeTeamId: string | null;
   teamSheetOpen: boolean;
   setActiveTab: (tab: TabId) => void;
@@ -16,6 +17,7 @@ export type UiSliceState = {
   setSplashProgress: (progress: number, message?: string) => void;
   setPrimaryMatch: (matchId: string | null) => void;
   setBracketViewMode: (mode: BracketViewMode) => void;
+  setGroupsViewMode: (mode: GroupsViewMode) => void;
   openTeamSheet: (teamId: string) => void;
   closeTeamSheet: () => void;
 };
@@ -30,6 +32,7 @@ export const createUiSlice = (
   splashMessage: "Connecting to live data...",
   primaryLiveMatchId: null,
   bracketViewMode: "projected",
+  groupsViewMode: "flags",
   activeTeamId: null,
   teamSheetOpen: false,
 
@@ -43,6 +46,7 @@ export const createUiSlice = (
     })),
   setPrimaryMatch: (matchId) => set(() => ({ primaryLiveMatchId: matchId })),
   setBracketViewMode: (mode) => set(() => ({ bracketViewMode: mode })),
+  setGroupsViewMode: (mode) => set(() => ({ groupsViewMode: mode })),
   openTeamSheet: (teamId) => set(() => ({ activeTeamId: teamId, teamSheetOpen: true })),
   closeTeamSheet: () => set(() => ({ teamSheetOpen: false }))
 });

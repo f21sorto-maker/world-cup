@@ -1,4 +1,13 @@
 import { useMemo, useState } from "react";
+import {
+  BestThirdsBento,
+  EliminatedBento,
+  InContentionBento,
+  QualifiedBento
+} from "../bentos/QualifiedBento";
+import { BestThirdTableBento } from "../bentos/BestThirdTableBento";
+import { GroupTableBento } from "../bentos/GroupTableBento";
+import { BentoErrorBoundary } from "../shared/ErrorBoundary";
 import { MatchScheduleCard } from "../match/MatchScheduleCard";
 import { StandingThemeRow } from "../team/StandingThemeRow";
 import { TeamThemeRoot } from "../team/TeamThemeRoot";
@@ -13,6 +22,8 @@ import {
 export function GroupsView() {
   const standings = useStore((s) => s.groupStandings);
   const teams = useStore((s) => s.teams);
+  const groupsViewMode = useStore((s) => s.groupsViewMode);
+  const setGroupsViewMode = useStore((s) => s.setGroupsViewMode);
   const completed = useCompletedGroupMatches();
   const upcoming = useUpcomingGroupMatches().slice(0, 20);
   const [resultsSort, setResultsSort] = useState<ResultsSortOrder>("newest");
@@ -49,76 +60,137 @@ export function GroupsView() {
         <p>Live tables color-coded by qualification — green through, yellow in contention, red out.</p>
       </section>
 
-      <section aria-label="Group standings" className="dashboard-section">
-        <div className="section-heading compact">
-          <div>
-            <div className="section-kicker">Standings</div>
-            <h2 className="section-title-text">All groups</h2>
-          </div>
-        </div>
+      <div className="groups-view-toggle" role="group" aria-label="Standings view mode">
+        <button
+          type="button"
+          className={`groups-view-toggle-btn ${groupsViewMode === "flags" ? "active" : ""}`}
+          onClick={() => setGroupsViewMode("flags")}
+          aria-pressed={groupsViewMode === "flags"}
+        >
+          Flags
+        </button>
+        <button
+          type="button"
+          className={`groups-view-toggle-btn ${groupsViewMode === "table" ? "active" : ""}`}
+          onClick={() => setGroupsViewMode("table")}
+          aria-pressed={groupsViewMode === "table"}
+        >
+          Table
+        </button>
+      </div>
 
-        <div className="groups-grid">
-          {standings.map((g) => (
-            <article key={g.group} className="group-panel">
-              <header className="group-header">
-                <div>
-                  <h2>Group {g.group}</h2>
-                  <div className="mini-qualifiers" aria-hidden>
-                    {g.rows.slice(0, 2).map((row) => {
-                      const t = teams[row.teamId];
-                      return t?.logo ? (
-                        <TeamThemeRoot key={row.teamId} teamId={row.teamId} className="qual-crest-wrap">
-                          <img
-                            src={t.logo}
-                            alt=""
-                            className="qual-crest qual-crest-themed"
-                            width={20}
-                            height={20}
-                          />
-                        </TeamThemeRoot>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-              </header>
-              <table className="standing-table">
-                <thead>
-                  <tr>
-                    <th>Team</th>
-                    <th>MP</th>
-                    <th>GD</th>
-                    <th>Pts</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {g.rows.map((row, i) => {
-                    const team = teams[row.teamId];
-                    const rowClass =
-                      i < 2 ? "qualified" : i === 2 ? "at-risk" : i === 3 ? "eliminated" : "";
-                    return (
-                      <StandingThemeRow key={row.teamId} teamId={row.teamId} className={rowClass}>
-                        <td>
-                          <span className="rank">{i + 1}</span>
-                          {team?.logo ? <img src={team.logo} alt="" width={20} height={20} /> : null}
-                          <strong>{team?.shortName ?? row.teamId}</strong>
-                        </td>
-                        <td>{row.played}</td>
-                        <td>
-                          {row.goalDifference >= 0 ? "+" : ""}
-                          {row.goalDifference}
-                        </td>
-                        <td>
-                          <b>{row.points}</b>
-                        </td>
-                      </StandingThemeRow>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </article>
-          ))}
-        </div>
-      </section>
+      {groupsViewMode === "flags" ? (
+        <>
+          <section aria-label="Qualification flags" className="dashboard-section">
+            <div className="section-heading compact">
+              <div>
+                <div className="section-kicker">Qualification</div>
+                <h2 className="section-title-text">Who&apos;s through</h2>
+              </div>
+            </div>
+            <div className="live-qual-row">
+              <BentoErrorBoundary bento="QualifiedBento">
+                <QualifiedBento />
+              </BentoErrorBoundary>
+              <BentoErrorBoundary bento="InContentionBento">
+                <InContentionBento />
+              </BentoErrorBoundary>
+              <BentoErrorBoundary bento="EliminatedBento">
+                <EliminatedBento />
+              </BentoErrorBoundary>
+              <BentoErrorBoundary bento="BestThirdsBento">
+                <BestThirdsBento />
+              </BentoErrorBoundary>
+            </div>
+          </section>
+
+          <section aria-label="Group standings" className="dashboard-section">
+            <div className="section-heading compact">
+              <div>
+                <div className="section-kicker">Standings</div>
+                <h2 className="section-title-text">All groups</h2>
+              </div>
+            </div>
+
+            <div className="groups-grid">
+              {standings.map((g) => (
+                <article key={g.group} className="group-panel">
+                  <header className="group-header">
+                    <div>
+                      <h2>Group {g.group}</h2>
+                      <div className="mini-qualifiers" aria-hidden>
+                        {g.rows.slice(0, 2).map((row) => {
+                          const t = teams[row.teamId];
+                          return t?.logo ? (
+                            <TeamThemeRoot key={row.teamId} teamId={row.teamId} className="qual-crest-wrap">
+                              <img
+                                src={t.logo}
+                                alt=""
+                                className="qual-crest qual-crest-themed"
+                                width={20}
+                                height={20}
+                              />
+                            </TeamThemeRoot>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  </header>
+                  <table className="standing-table">
+                    <thead>
+                      <tr>
+                        <th>Team</th>
+                        <th>MP</th>
+                        <th>GD</th>
+                        <th>Pts</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {g.rows.map((row, i) => {
+                        const team = teams[row.teamId];
+                        const rowClass =
+                          i < 2 ? "qualified" : i === 2 ? "at-risk" : i === 3 ? "eliminated" : "";
+                        return (
+                          <StandingThemeRow key={row.teamId} teamId={row.teamId} className={rowClass}>
+                            <td>
+                              <span className="rank">{i + 1}</span>
+                              {team?.logo ? <img src={team.logo} alt="" width={20} height={20} /> : null}
+                              <strong>{team?.shortName ?? row.teamId}</strong>
+                            </td>
+                            <td>{row.played}</td>
+                            <td>
+                              {row.goalDifference >= 0 ? "+" : ""}
+                              {row.goalDifference}
+                            </td>
+                            <td>
+                              <b>{row.points}</b>
+                            </td>
+                          </StandingThemeRow>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </article>
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        <section aria-label="Group tables" className="dashboard-section">
+          <div className="section-heading compact">
+            <div>
+              <div className="section-kicker">Standings</div>
+              <h2 className="section-title-text">Full tables</h2>
+            </div>
+          </div>
+          <div className="groups-table-grid">
+            {standings.map((g) => (
+              <GroupTableBento key={g.group} standing={g} />
+            ))}
+          </div>
+          <BestThirdTableBento standings={standings} />
+        </section>
+      )}
 
       <section aria-label="Recent results" className="dashboard-section">
         <div className="section-heading compact results-heading">

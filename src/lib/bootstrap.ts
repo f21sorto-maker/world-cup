@@ -80,6 +80,11 @@ export async function bootstrap(): Promise<void> {
       liveMatches[m.id] = enrichMatchWithScheduleId(merged, teamsMap);
     }
     store.setLiveMatches(liveMatches);
+    for (const m of Object.values(liveMatches)) {
+      if (m.locked) {
+        store.addLockedMatchId(m.id);
+      }
+    }
 
     const teamsList = Object.values(useStore.getState().teams);
     const scored = espnData.matches.filter(
