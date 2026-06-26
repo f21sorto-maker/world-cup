@@ -4,22 +4,22 @@ overview: The working tree already implements a dynamic team-identity system (re
 todos:
   - id: expand-overrides
     content: Run seed-team-identity.mjs and expand teamIdentityOverrides.ts to all 48 WC 2026 teams; remove ITA/COL
-    status: pending
+    status: completed
   - id: schedule-theming
     content: Apply match theme to non-live MatchScheduleCard; extend team-identity.css for subtle scheduled/completed styling
-    status: pending
+    status: completed
   - id: groups-crests
     content: Wrap GroupsView mini-qualifiers crests in TeamThemeRoot + qual-crest-themed
-    status: pending
+    status: completed
   - id: team-card-teamsview
     content: Adopt .team-card styling on TeamsView rows (or remove unused .team-card CSS)
-    status: pending
+    status: completed
   - id: fallback-label
     content: Add TeamLabelById for missing Team objects in match cards
-    status: pending
+    status: completed
   - id: tests-cleanup
     content: Add teamIdentity.test.ts; delete unused teamIdentitySelectors and useTeamThemeByTeam
-    status: pending
+    status: completed
 isProject: false
 ---
 

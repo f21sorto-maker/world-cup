@@ -21,11 +21,15 @@
       "destination": "https://inside.fifa.com/:path*"
     },
     {
-      "source": "/api/clubelo/:path*",
-      "destination": "http://api.clubelo.com/:path*"
+      "source": "/api/sofascore/:path*",
+      "destination": "/api/sofascore"
     },
     {
-      "source": "/(.*)",
+      "source": "/api/clubelo/:path*",
+      "destination": "/api/clubelo"
+    },
+    {
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ],

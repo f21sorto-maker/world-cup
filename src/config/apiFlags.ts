@@ -68,13 +68,13 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     disableReason: "FIFA API blocked — ratings use strength-index fallback",
   },
   sofascore: {
-    enabled: true,
+    enabled: false,
     splashPath: false,
     label: "SofaScore Live",
-    lastAudit: "untested",
-    lastLatencyMs: 213,
-    failureReason: "HTTP 403 without Edge proxy headers — now fixed via api/sofascore/[...path].ts",
-    disableReason: undefined,
+    lastAudit: "fail",
+    lastLatencyMs: 800,
+    failureReason: "Akamai TLS fingerprinting returns 403 challenge (headers alone insufficient)",
+    disableReason: "Blocked by Akamai — live polling uses ESPN scoreboard instead",
   },
   clubElo: {
     enabled: true,

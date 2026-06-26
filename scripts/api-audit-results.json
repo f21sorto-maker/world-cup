@@ -1,11 +1,11 @@
 {
-  "testedAt": "2026-06-25T21:43:46.636Z",
+  "testedAt": "2026-06-26T02:07:18.022Z",
   "results": [
     {
       "label": "ESPN scoreboard (direct)",
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260611-20260719&limit=300",
       "ok": true,
-      "ms": 412,
+      "ms": 334,
       "detail": "events=104",
       "splashBlocking": true
     },
@@ -13,7 +13,7 @@
       "label": "ESPN scoreboard (vite proxy)",
       "url": "http://127.0.0.1:5173/espn/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260611-20260719&limit=300",
       "ok": true,
-      "ms": 179,
+      "ms": 107,
       "detail": "events=104",
       "splashBlocking": true
     },
@@ -21,7 +21,7 @@
       "label": "ESPN play-by-play (direct)",
       "url": "https://site.web.api.espn.com/apis/site/v2/sports/soccer/fifa.world/playbyplay?event=401234567",
       "ok": true,
-      "ms": 347,
+      "ms": 227,
       "detail": "HTTP 200 (endpoint reachable)",
       "splashBlocking": false
     },
@@ -29,7 +29,7 @@
       "label": "ESPN play-by-play (vite proxy)",
       "url": "http://127.0.0.1:5173/espn-web/apis/site/v2/sports/soccer/fifa.world/playbyplay?event=401234567",
       "ok": false,
-      "ms": 143,
+      "ms": 280,
       "detail": "HTTP 403 (endpoint reachable)",
       "splashBlocking": false
     },
@@ -37,7 +37,7 @@
       "label": "Polymarket winner (direct)",
       "url": "https://gamma-api.polymarket.com/events/slug/world-cup-winner",
       "ok": true,
-      "ms": 146,
+      "ms": 449,
       "detail": "markets=60",
       "splashBlocking": false
     },
@@ -45,7 +45,7 @@
       "label": "Polymarket winner (vite proxy)",
       "url": "http://127.0.0.1:5173/poly/events/slug/world-cup-winner",
       "ok": true,
-      "ms": 90,
+      "ms": 117,
       "detail": "markets=60",
       "splashBlocking": false
     },
@@ -53,7 +53,7 @@
       "label": "FIFA rankings (direct)",
       "url": "https://www.fifa.com/api/v3/rankings?gender=1&count=211&locale=en",
       "ok": false,
-      "ms": 94,
+      "ms": 375,
       "detail": "FAIL: HTML response (API blocked)",
       "splashBlocking": false
     },
@@ -61,47 +61,47 @@
       "label": "FIFA rankings (vite proxy)",
       "url": "http://127.0.0.1:5173/fifa-api/api/v3/rankings?gender=1&count=211&locale=en",
       "ok": false,
-      "ms": 102,
+      "ms": 442,
       "detail": "FAIL: HTML response (API blocked)",
       "splashBlocking": false
     },
     {
       "label": "SofaScore scheduled (direct)",
-      "url": "https://api.sofascore.com/api/v1/sport/football/scheduled-events/20260625",
+      "url": "https://api.sofascore.com/api/v1/sport/football/scheduled-events/20260626",
       "ok": false,
-      "ms": 213,
+      "ms": 120,
       "detail": "FAIL: 403 forbidden",
       "splashBlocking": false
     },
     {
       "label": "SofaScore scheduled (vite proxy)",
-      "url": "http://127.0.0.1:5173/api/sofascore/sport/football/scheduled-events/20260625",
+      "url": "http://127.0.0.1:5173/api/sofascore/sport/football/scheduled-events/20260626",
       "ok": false,
-      "ms": 100,
+      "ms": 79,
       "detail": "FAIL: 403 forbidden",
       "splashBlocking": false
     },
     {
       "label": "ClubElo Brazil (direct)",
       "url": "http://api.clubelo.com/Brazil",
-      "ok": true,
-      "ms": 738,
-      "detail": "elo row ok",
+      "ok": false,
+      "ms": 1362,
+      "detail": "FAIL: unexpected format",
       "splashBlocking": false
     },
     {
       "label": "ClubElo Brazil (vite proxy)",
       "url": "http://127.0.0.1:5173/api/clubelo/Brazil",
-      "ok": true,
-      "ms": 631,
-      "detail": "elo row ok",
+      "ok": false,
+      "ms": 870,
+      "detail": "FAIL: unexpected format",
       "splashBlocking": false
     },
     {
       "label": "Polymarket games offset=0 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=0&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 118,
+      "ms": 31,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -109,7 +109,7 @@
       "label": "Polymarket games offset=100 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=100&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 42,
+      "ms": 46,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -117,7 +117,7 @@
       "label": "Polymarket games offset=200 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=200&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 41,
+      "ms": 39,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -125,7 +125,7 @@
       "label": "Polymarket games offset=300 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=300&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 79,
+      "ms": 65,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -133,7 +133,7 @@
       "label": "Polymarket games offset=400 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=400&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 40,
+      "ms": 33,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -141,7 +141,7 @@
       "label": "Polymarket games offset=500 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=500&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 108,
+      "ms": 32,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -149,7 +149,7 @@
       "label": "Polymarket games offset=600 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=600&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 45,
+      "ms": 31,
       "detail": "events=100",
       "splashBlocking": false
     },
@@ -157,7 +157,7 @@
       "label": "Polymarket games offset=700 (direct)",
       "url": "https://gamma-api.polymarket.com/events?tag_slug=games&active=true&closed=false&limit=100&offset=700&end_date_min=2026-06-11T00:00:00Z&end_date_max=2026-07-20T23:59:00Z",
       "ok": true,
-      "ms": 42,
+      "ms": 52,
       "detail": "events=100",
       "splashBlocking": false
     }
