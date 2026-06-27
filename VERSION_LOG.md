@@ -56,6 +56,14 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+## [4.0.0] build 32 — 2026-06-27 (build)
+- 6 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, version.json — 6 files changed, 60 insertions(+), 40 deletions(-)
+
+## [4.0.0] build 31 — 2026-06-27 (build)
+- Flatten rapid and proxy to top-level Vercel API files
+
 ## [4.0.0] build 30 — 2026-06-27 (build)
 - 6 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, version.json — 6 files changed, 15 insertions(+), 2 deletions(-)
 

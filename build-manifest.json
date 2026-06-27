@@ -1,6 +1,22 @@
 {
-  "updatedAt": "2026-06-27T19:17:00.974Z",
+  "updatedAt": "2026-06-27T19:23:13.112Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 32,
+      "kind": "build",
+      "message": "6 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, version.json — 6 files changed, 60 insertions(+), 40 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T19:23:13.112Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 31,
+      "kind": "build",
+      "message": "Flatten rapid and proxy to top-level Vercel API files",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T19:23:04.187Z"
+    },
     {
       "version": "4.0.0",
       "build": 30,
@@ -304,25 +320,17 @@
       "message": "6 file(s) in build-manifest.json, src — 6 files changed, 66 insertions(+), 19 deletions(-)",
       "date": "2026-06-27",
       "timestamp": "2026-06-27T06:39:24.592Z"
-    },
-    {
-      "version": "3.0.0",
-      "build": 13,
-      "kind": "build",
-      "message": "87 file(s) in .cursor, .githooks, build-manifest.json, docs, package.json, public — 87 files changed, 4970 insertions(+), 900 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T06:38:23.108Z"
-    },
-    {
-      "version": "3.0.0",
-      "build": 12,
-      "kind": "build",
-      "message": "Auto version pipeline: git hooks, build-manifest, release dashboard canvas, CHANGELOG [Unreleased] builds, agent rule + version-bump skill",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T06:37:10.267Z"
     }
   ],
   "commits": [
+    {
+      "hash": "eac83bc9ca7f70163c0c653d69b3c1b6994c13cb",
+      "shortHash": "eac83bc",
+      "message": "Fix Vercel API proxy: use [...path] instead of [[...path]] catch-all",
+      "version": "4.0.0",
+      "build": 30,
+      "timestamp": "2026-06-27T19:17:01.068Z"
+    },
     {
       "hash": "499e1a1601142938c63d836edb54fa8ced93585b",
       "shortHash": "499e1a1",
@@ -554,14 +562,6 @@
       "version": "3.0.0",
       "build": 20,
       "timestamp": "2026-06-27T07:06:12.955Z"
-    },
-    {
-      "hash": "58517e0a23cd9833319c4e9aa256f2d719126949",
-      "shortHash": "58517e0",
-      "message": "Sync build-manifest commit record for c3b333f.",
-      "version": "3.0.0",
-      "build": 20,
-      "timestamp": "2026-06-27T07:06:02.421Z"
     }
   ],
   "deploys": [

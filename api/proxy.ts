@@ -18,19 +18,16 @@ function isEspnWebAllowed(path: string): boolean {
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const prefix = "/api/proxy";
-  let remainder = url.pathname.startsWith(prefix) ? url.pathname.slice(prefix.length) : url.pathname;
-  if (!remainder.startsWith("/")) remainder = `/${remainder}`;
+  let path = url.pathname;
 
-  const segments = remainder.split("/").filter(Boolean);
-  if (segments[0] !== "espn-web") {
-    return new Response(JSON.stringify({ error: "Unknown proxy service", service: segments[0] }), {
-      status: 404,
-      headers: JSON_HEADERS,
-    });
+  if (path.startsWith("/api/proxy/espn-web")) {
+    path = path.slice("/api/proxy/espn-web".length);
+  } else if (path.startsWith("/api/espn-web")) {
+    path = path.slice("/api/espn-web".length);
   }
 
-  const path = `/${segments.slice(1).join("/")}`;
+  if (!path.startsWith("/")) path = `/${path}`;
+
   if (!isEspnWebAllowed(path)) {
     return new Response(JSON.stringify({ error: "Path not in allowlist", path }), {
       status: 403,

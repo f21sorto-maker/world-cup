@@ -3,34 +3,52 @@ import {
   buildUpstreamHeaders,
   isMethodAllowed,
   isPathAllowed,
-} from "../_lib/rapidProxyRoutes";
+} from "./_lib/rapidProxyRoutes";
 
 export const config = { runtime: "edge" };
 
 const JSON_HEADERS = { "Content-Type": "application/json" };
 
+const LEGACY_PREFIXES = Object.keys(RAPID_PROXY_ROUTES).map((id) => `/api/${id}`);
+
 function jsonError(status: number, body: Record<string, unknown>): Response {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
-export default async function handler(request: Request): Promise<Response> {
-  const url = new URL(request.url);
-  const prefix = "/api/rapid";
-  let remainder = url.pathname.startsWith(prefix) ? url.pathname.slice(prefix.length) : url.pathname;
-  if (!remainder.startsWith("/")) remainder = `/${remainder}`;
-
-  const segments = remainder.split("/").filter(Boolean);
-  if (segments.length === 0) {
-    return jsonError(404, { error: "Unknown RapidAPI service", path: remainder });
+function resolveRapidPath(pathname: string): { serviceId: string; upstreamPath: string } | null {
+  if (pathname.startsWith("/api/rapid/")) {
+    const remainder = pathname.slice("/api/rapid".length);
+    const segments = remainder.split("/").filter(Boolean);
+    if (segments.length === 0) return null;
+    return {
+      serviceId: segments[0],
+      upstreamPath: `/${segments.slice(1).join("/")}` || "/",
+    };
   }
 
-  const serviceId = segments[0];
+  for (const prefix of LEGACY_PREFIXES) {
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
+      const serviceId = prefix.slice("/api/".length);
+      const upstreamPath = pathname.slice(prefix.length) || "/";
+      return { serviceId, upstreamPath: upstreamPath.startsWith("/") ? upstreamPath : `/${upstreamPath}` };
+    }
+  }
+
+  return null;
+}
+
+export default async function handler(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const resolved = resolveRapidPath(url.pathname);
+  if (!resolved) {
+    return jsonError(404, { error: "Unknown RapidAPI service", path: url.pathname });
+  }
+
+  const { serviceId, upstreamPath } = resolved;
   const route = RAPID_PROXY_ROUTES[serviceId];
   if (!route) {
     return jsonError(404, { error: "Unknown RapidAPI service", serviceId });
   }
-
-  const upstreamPath = `/${segments.slice(1).join("/")}` || "/";
 
   if (!isPathAllowed(route, upstreamPath)) {
     return jsonError(403, { error: "Path not in allowlist", serviceId, path: upstreamPath });
