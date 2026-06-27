@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T07:05:40.992Z",
+  "updatedAt": "2026-06-27T07:06:02.632Z",
   "builds": [
     {
       "version": "3.0.0",
@@ -75,6 +75,22 @@
     }
   ],
   "commits": [
+    {
+      "hash": "58517e0a23cd9833319c4e9aa256f2d719126949",
+      "shortHash": "58517e0",
+      "message": "Sync build-manifest commit record for c3b333f.",
+      "version": "3.0.0",
+      "build": 20,
+      "timestamp": "2026-06-27T07:06:02.421Z"
+    },
+    {
+      "hash": "c3b333f5f1f956609a889c5821b1e4e9ebcc8f0d",
+      "shortHash": "c3b333f",
+      "message": "Polish team identity, schedule/venue rows, and simulator bracket alignment.",
+      "version": "3.0.0",
+      "build": 20,
+      "timestamp": "2026-06-27T07:05:41.545Z"
+    },
     {
       "hash": "a46badc194ca52a508fde81747de52011464d303",
       "shortHash": "a46badc",
