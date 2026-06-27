@@ -279,9 +279,22 @@
   margin: calc(var(--fixture-glow-spread, 16px) + 4px) calc(var(--fixture-glow-spread, 16px) / 2 + 2px);
 }
 
+.live-command-hero .live-hero-card-wrap {
+  margin-inline: calc(var(--fixture-glow-spread, 16px) / 4);
+}
+
 .live-now-strip {
   gap: calc(var(--module-gap) + var(--fixture-glow-spread, 16px));
-  padding: calc(var(--fixture-glow-spread, 16px) / 2 + 4px) 0;
+}
+
+.live-now-strip .fixture-glow-wrap {
+  margin-inline: calc(var(--fixture-glow-spread, 16px) / 4);
+}
+
+.recent-results-bento,
+.qual-dashboard-row {
+  overflow: visible;
+  padding-block: calc(var(--surface-shadow-bleed) / 3);
 }
 
 .live-hero-card-wrap {

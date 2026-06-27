@@ -10,6 +10,9 @@
   --layout-gutter: clamp(12px, 2.5vw, 24px);
   --layout-gutter-inline: clamp(12px, 3vw, 32px);
   --layout-section-gap: clamp(16px, 2.5vw, 28px);
+  /* Room for fixture glow pseudo-elements + feathered card shadows at column edges */
+  --surface-shadow-bleed: clamp(20px, 2.8vw, 40px);
+  --fixture-glow-bleed: calc(var(--fixture-glow-spread, 16px) + 32px);
   --touch-target-min: 44px;
   --content-readable: min(100%, 72ch);
   --chrome-bottom-nav: calc(56px + var(--safe-bottom));

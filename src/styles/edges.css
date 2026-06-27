@@ -23,7 +23,6 @@
   .teams-group-panel--open,
   .idle-banner,
   .best-third-timeline,
-  .best-third-live-panel,
   .hero-panel,
   .bracket-match,
   .bracket-slot,
@@ -35,13 +34,23 @@
   .bento-error,
   .sim-panel,
   .groups-view-toggle,
-  .bracket-toggle,
-  .live-bracket-embed__panel
+  .bracket-toggle
 ) {
   border-color: var(--edge-border);
   border-radius: var(--edge-radius-lg);
   box-shadow: var(--shadow-feather);
   overflow: clip;
+}
+
+/* Panels beside fixture glows — don't clip feather shadows at column edges */
+:is(
+  .best-third-live-panel,
+  .live-bracket-embed__panel
+) {
+  border-color: var(--edge-border);
+  border-radius: var(--edge-radius-lg);
+  box-shadow: var(--shadow-feather);
+  overflow: visible;
 }
 
 /* Compact cards & rows */

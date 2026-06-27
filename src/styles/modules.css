@@ -103,6 +103,7 @@
 
 .dashboard-section {
   margin-bottom: var(--module-gap-lg);
+  overflow: visible;
 }
 
 .dashboard-section + .dashboard-section {
@@ -299,6 +300,8 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     grid-auto-rows: var(--live-secondary-card-height);
     overflow: visible;
+    padding-block: calc(var(--fixture-glow-bleed) / 2 + 4px);
+    margin-block: calc(var(--fixture-glow-bleed) / -2);
   }
 
   .live-now-strip-item {
