@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T14:28:01.873Z",
+  "updatedAt": "2026-06-27T14:28:25.293Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -139,6 +139,14 @@
     }
   ],
   "commits": [
+    {
+      "hash": "5393ac0fa19d43fc2bda0e679efe62244ed69eb0",
+      "shortHash": "5393ac0",
+      "message": "Sync build-manifest commit record for cd21e5f.",
+      "version": "4.0.0",
+      "build": 7,
+      "timestamp": "2026-06-27T14:28:25.293Z"
+    },
     {
       "hash": "cd21e5f0aa599e5832e794147cc7267a02b4cf29",
       "shortHash": "cd21e5f",
@@ -370,14 +378,6 @@
       "version": "3.0.0",
       "build": 17,
       "timestamp": "2026-06-27T06:51:26.426Z"
-    },
-    {
-      "hash": "098eab2aef3c17d4220b80c8f9ac97f9e34b2bb1",
-      "shortHash": "098eab2",
-      "message": "Polish team click targets in groups and tournament stats; add SLS normalize helpers.",
-      "version": "3.0.0",
-      "build": 16,
-      "timestamp": "2026-06-27T06:48:34.812Z"
     }
   ],
   "deploys": [
