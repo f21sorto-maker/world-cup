@@ -92,7 +92,7 @@ const rapidApiProxies = {
   "/api/weather": rapidApiProxy("https://open-weather13.p.rapidapi.com", "/api/weather"),
   "/api/odds": rapidApiProxy("https://sports-odds-intelligence-api.p.rapidapi.com", "/api/odds"),
   "/api/football-prediction": rapidApiProxy(
-    "https://today-football-prediction.p.rapidapi.com",
+    "https://football-prediction-api.p.rapidapi.com",
     "/api/football-prediction"
   ),
   "/api/world-cup-history": rapidApiProxy(

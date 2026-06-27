@@ -2,7 +2,7 @@ export const config = {
   runtime: "edge",
 };
 
-const HOST = "today-football-prediction.p.rapidapi.com";
+const HOST = "football-prediction-api.p.rapidapi.com";
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);

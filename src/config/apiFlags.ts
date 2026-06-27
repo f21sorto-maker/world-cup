@@ -145,7 +145,7 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
   footballPrediction: {
     enabled: true,
     splashPath: false,
-    label: "Today Football Prediction",
+    label: "Football Prediction API (Boggio v2)",
     lastAudit: "pass",
     lastLatencyMs: 200,
   },

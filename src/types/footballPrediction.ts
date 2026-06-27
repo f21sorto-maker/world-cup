@@ -6,10 +6,14 @@ import type {
 
 export type FootballPredictionBundle = {
   fetchedAt: string;
+  federations: string[];
+  markets: string[];
   leagues: FootballPredictionLeague[];
   performance: FootballPredictionPerformance | null;
   dailyPredictions: FootballPredictionMatch[];
+  /** v1-only — always empty on Boggio v2 API. */
   vipFeatured: FootballPredictionMatch[];
+  /** v1-only — always empty on Boggio v2 API. */
   vipScores: FootballPredictionMatch[];
   unavailable: string[];
 };

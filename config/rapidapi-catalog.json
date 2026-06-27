@@ -442,42 +442,90 @@
   },
   {
     "id": "footballPrediction",
-    "label": "Today Football Prediction",
-    "host": "today-football-prediction.p.rapidapi.com",
-    "marketplaceSlug": "today-football-prediction",
+    "label": "Football Prediction (Boggio v2)",
+    "host": "football-prediction-api.p.rapidapi.com",
+    "marketplaceSlug": "boggio-analytics/api/football-prediction",
     "client": "FootballPredictionClient.ts",
     "devProxyPrefix": "/api/football-prediction",
-    "testPath": "/leagues/",
+    "testPath": "/api/v2/list-federations",
     "endpoints": [
       {
-        "id": "leagues",
-        "fn": "fetchLeagues",
-        "path": "/leagues/",
-        "acceptStatuses": [200]
+        "id": "listFederations",
+        "fn": "fetchFederations",
+        "path": "/api/v2/list-federations",
+        "acceptStatuses": [200, 403]
       },
       {
-        "id": "dailyPredictions",
+        "id": "listMarkets",
+        "fn": "fetchMarkets",
+        "path": "/api/v2/list-markets",
+        "acceptStatuses": [200, 403]
+      },
+      {
+        "id": "listCountries",
+        "fn": "fetchLeagues",
+        "path": "/api/v2/list-countries",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "listLeagues",
+        "fn": "fetchLeagues",
+        "path": "/api/v2/list-leagues?federation=UEFA",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "predictions",
         "fn": "fetchDailyPredictionsPage",
-        "path": "/predictions/list?page=1",
-        "acceptStatuses": [200]
+        "path": "/api/v2/predictions?market=classic&federation=UEFA",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "predictionDetails",
+        "fn": "fetchPredictionDetails",
+        "path": "/api/v2/predictions/1",
+        "acceptStatuses": [200, 403, 404]
       },
       {
         "id": "performanceStats",
         "fn": "fetchPerformanceStats",
-        "path": "/stats/performance",
-        "acceptStatuses": [200]
+        "path": "/api/v2/performance-stats?market=classic",
+        "acceptStatuses": [200, 403]
       },
       {
-        "id": "vipFeatured",
-        "fn": "fetchVipFeatured",
-        "path": "/predictions/featured?page=1",
-        "acceptStatuses": [200, 401]
+        "id": "fixtureIds",
+        "fn": "fetchFixtureIds",
+        "path": "/api/v2/get-list-of-fixture-ids?market=classic&federation=CONCACAF",
+        "acceptStatuses": [200, 403, 404]
       },
       {
-        "id": "vipScores",
-        "fn": "fetchVipScores",
-        "path": "/predictions/scores?page=1",
-        "acceptStatuses": [200, 401]
+        "id": "headToHead",
+        "fn": "fetchPredictionDetails",
+        "path": "/api/v2/head-to-head/1",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "homeLeagueStats",
+        "fn": "fetchPredictionDetails",
+        "path": "/api/v2/home-league-stats/1",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "awayLeagueStats",
+        "fn": "fetchPredictionDetails",
+        "path": "/api/v2/away-league-stats/1",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "homeLast10",
+        "fn": "fetchPredictionDetails",
+        "path": "/api/v2/home-last-10/1",
+        "acceptStatuses": [200, 403, 404]
+      },
+      {
+        "id": "awayLast10",
+        "fn": "fetchPredictionDetails",
+        "path": "/api/v2/away-last-10/1",
+        "acceptStatuses": [200, 403, 404]
       }
     ]
   },
