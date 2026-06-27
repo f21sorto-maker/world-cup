@@ -26,6 +26,7 @@ import { OddsRow } from "../../components/match/OddsRow";
 import { WeatherBadge } from "../../components/match/WeatherBadge";
 import { getBroadcast, getBroadcastByKickoff } from "../../services/BroadcastLookup";
 import { TeamFlag } from "../../components/team/TeamFlag";
+import { TeamClickTarget } from "../../components/team/TeamClickTarget";
 import { GoalScorerCard } from "../../components/match/GoalScorerCard";
 import { PlayerPhoto } from "../../components/player/PlayerPhoto";
 import { useGoalScorerProfiles } from "../../hooks/useGoalScorerProfiles";
@@ -216,7 +217,16 @@ export function MatchDetailView() {
               ) : (
                 <span className={styles.headerTeamFlag}>🏳️</span>
               )}
-              <span className={`${styles.headerTeamName} team-name-text`}>{homeTeamName}</span>
+              {match?.homeTeamId ? (
+                <TeamClickTarget
+                  teamId={match.homeTeamId}
+                  className={styles.headerTeamNameBtn}
+                >
+                  <span className={`${styles.headerTeamName} team-name-text`}>{homeTeamName}</span>
+                </TeamClickTarget>
+              ) : (
+                <span className={`${styles.headerTeamName} team-name-text`}>{homeTeamName}</span>
+              )}
             </div>
 
             {/* Score + status */}
@@ -257,7 +267,16 @@ export function MatchDetailView() {
               ) : (
                 <span className={styles.headerTeamFlag}>🏳️</span>
               )}
-              <span className={`${styles.headerTeamName} team-name-text`}>{awayTeamName}</span>
+              {match?.awayTeamId ? (
+                <TeamClickTarget
+                  teamId={match.awayTeamId}
+                  className={styles.headerTeamNameBtn}
+                >
+                  <span className={`${styles.headerTeamName} team-name-text`}>{awayTeamName}</span>
+                </TeamClickTarget>
+              ) : (
+                <span className={`${styles.headerTeamName} team-name-text`}>{awayTeamName}</span>
+              )}
             </div>
           </div>
 

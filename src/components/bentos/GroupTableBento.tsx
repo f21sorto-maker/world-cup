@@ -9,6 +9,7 @@ import { useStore } from "../../store";
 import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
 import { StandingThemeRow } from "../team/StandingThemeRow";
 import { TeamFlag } from "../team/TeamFlag";
+import { TeamClickTarget } from "../team/TeamClickTarget";
 
 export interface GroupTableBentoProps {
   standing: GroupStanding;
@@ -18,7 +19,6 @@ export function GroupTableBento({ standing }: GroupTableBentoProps) {
   const teams = useStore((s) => s.teams);
   const standings = useStore((s) => s.groupStandings);
   const liveMatches = useStore((s) => s.liveMatches);
-  const openTeamSheet = useStore((s) => s.openTeamSheet);
   const qualContext = useMemo(
     () => buildQualificationContext(Object.values(liveMatches), Object.values(teams)),
     [liveMatches, teams]
@@ -70,14 +70,10 @@ export function GroupTableBento({ standing }: GroupTableBentoProps) {
                     </div>
                   </td>
                   <td className="group-table-team">
-                    <button
-                      type="button"
-                      className="group-table-team-btn"
-                      onClick={() => openTeamSheet(row.teamId)}
-                    >
+                    <TeamClickTarget teamId={row.teamId} className="group-table-team-btn">
                       <TeamFlag team={team} teamId={row.teamId} />
                       <span className="team-name-text">{teamDisplayName(team, row.teamId)}</span>
-                    </button>
+                    </TeamClickTarget>
                   </td>
                   <td>{row.played}</td>
                   <td>{row.wins}</td>

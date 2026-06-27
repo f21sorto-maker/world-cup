@@ -68,7 +68,15 @@ export function buildTeamQualificationView(
   bestThirdRank?: number
 ): TeamQualificationView {
   const status = computeQualificationStatus(teamId, standings, context);
-  const tier = deriveQualificationTierView(status);
+  let tier = deriveQualificationTierView(status);
+  if (
+    bestThirdRank !== undefined &&
+    bestThirdRank <= 8 &&
+    status.canQualify &&
+    tier === "projected_out"
+  ) {
+    tier = "alive";
+  }
   return {
     teamId,
     status,
@@ -115,8 +123,15 @@ export function buildLiveQualificationLayout(
 
   for (const view of views.values()) {
     if (view.liveColumn !== "in_contention") continue;
-    if (view.tier === "projected_out") projectedOut.push(view.teamId);
-    else alive.push(view.teamId);
+    if (view.tier === "projected_out") {
+      if (view.bestThirdRank !== undefined && view.bestThirdRank <= 8) {
+        alive.push(view.teamId);
+      } else {
+        projectedOut.push(view.teamId);
+      }
+    } else {
+      alive.push(view.teamId);
+    }
   }
 
   return {

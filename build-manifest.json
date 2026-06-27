@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-06-27T06:38:23.108Z",
+  "updatedAt": "2026-06-27T06:39:24.592Z",
   "builds": [
+    {
+      "version": "3.0.0",
+      "build": 14,
+      "kind": "build",
+      "message": "6 file(s) in build-manifest.json, src — 6 files changed, 66 insertions(+), 19 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T06:39:24.592Z"
+    },
     {
       "version": "3.0.0",
       "build": 13,
@@ -18,6 +26,15 @@
       "timestamp": "2026-06-27T06:37:10.267Z"
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "hash": "daad4c241952aee206d080a1d1c4c75d75b35976",
+      "shortHash": "daad4c2",
+      "message": "Fix live layout regressions and ship qualification UX build 12.",
+      "version": "3.0.0",
+      "build": 13,
+      "timestamp": "2026-06-27T06:38:28.037Z"
+    }
+  ],
   "deploys": []
 }

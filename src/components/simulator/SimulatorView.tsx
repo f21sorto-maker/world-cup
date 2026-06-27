@@ -338,17 +338,22 @@ export function SimulatorView() {
 
   const projection = useMemo(() => {
     if (!data) return null;
-    const scoredOnly = data.matches.filter(
+    const storeMatches = Object.values(storeLiveMatches);
+    const baseMatches = storeMatches.length > 0 ? storeMatches : data.matches;
+    const scoredOnly = baseMatches.filter(
       (m) => m.homeScore !== undefined && m.awayScore !== undefined
     );
+    const qualContext = buildQualificationContext(baseMatches, data.teams);
     return projectTournament(
       data.teams,
       scoredOnly,
-      data.knockoutMarkets,
+      storeKnockoutMarkets.length > 0 ? storeKnockoutMarkets : data.knockoutMarkets,
       overrides,
-      bracketPicks
+      bracketPicks,
+      qualContext.lockedGroupMatchCount,
+      qualContext.lockedStandingsByGroup
     );
-  }, [data, overrides, bracketPicks]);
+  }, [data, storeLiveMatches, storeKnockoutMarkets, overrides, bracketPicks]);
   const teamsById = useMemo(() => (data ? toTeamsById(data.teams) : {}), [data]);
   const teamSimulation = useMemo(() => {
     if (!simulations || !selectedTeamId) return null;

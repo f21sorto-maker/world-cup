@@ -4,6 +4,7 @@ import { getBestThirdBubbleTeamIds } from "../../lib/thirdPlaceLiveStatus";
 import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
 import { StandingThemeRow } from "../team/StandingThemeRow";
 import { TeamFlag } from "../team/TeamFlag";
+import { TeamClickTarget } from "../team/TeamClickTarget";
 import { BentoErrorBoundary } from "../shared/ErrorBoundary";
 import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
 import { MatchScheduleCard } from "../match/MatchScheduleCard";
@@ -175,7 +176,9 @@ export function GroupsView() {
                               <span className="rank">{i + 1}</span>
                               <QualificationStatusBadge qual={qual} size="xs" />
                               <TeamFlag team={team} teamId={row.teamId} size="sm" />
-                              <strong className="team-name-text">{teamDisplayName(team, row.teamId)}</strong>
+                              <TeamClickTarget teamId={row.teamId} className="group-standing-team-btn">
+                                <strong className="team-name-text">{teamDisplayName(team, row.teamId)}</strong>
+                              </TeamClickTarget>
                             </td>
                             <td>{row.played}</td>
                             <td>
