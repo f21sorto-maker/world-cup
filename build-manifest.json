@@ -1,6 +1,22 @@
 {
-  "updatedAt": "2026-06-27T19:29:55.564Z",
+  "updatedAt": "2026-06-27T19:31:38.935Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 38,
+      "kind": "build",
+      "message": "7 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, vercel.json, version.json — 7 files changed, 56 insertions(+), 45 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T19:31:38.935Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 37,
+      "kind": "build",
+      "message": "Use path query param for Vercel rapid rewrites",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T19:31:38.882Z"
+    },
     {
       "version": "4.0.0",
       "build": 36,
@@ -304,25 +320,17 @@
       "message": "21 file(s) in build-manifest.json, scripts, src — 21 files changed, 348 insertions(+), 56 deletions(-)",
       "date": "2026-06-27",
       "timestamp": "2026-06-27T07:05:40.992Z"
-    },
-    {
-      "version": "3.0.0",
-      "build": 19,
-      "kind": "build",
-      "message": "8 file(s) in build-manifest.json, src — 8 files changed, 187 insertions(+), 19 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T07:02:14.166Z"
-    },
-    {
-      "version": "3.0.0",
-      "build": 18,
-      "kind": "build",
-      "message": "8 file(s) in build-manifest.json, src — 8 files changed, 240 insertions(+), 10 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T06:56:47.980Z"
     }
   ],
   "commits": [
+    {
+      "hash": "67c1e5f3fb294c657ade98cfc186a020869e23b2",
+      "shortHash": "67c1e5f",
+      "message": "Fix vercel.json rewrite syntax (named upstream param passthrough)",
+      "version": "4.0.0",
+      "build": 36,
+      "timestamp": "2026-06-27T19:29:55.645Z"
+    },
     {
       "hash": "8b3c16d9f5d4c7aa67ca826775e7f3ee2b2eac3e",
       "shortHash": "8b3c16d",
@@ -554,14 +562,6 @@
       "version": "3.0.0",
       "build": 20,
       "timestamp": "2026-06-27T07:09:15.680Z"
-    },
-    {
-      "hash": "eef1b92a632f23b8958cd9ce9bbe2dcd80e16e05",
-      "shortHash": "eef1b92",
-      "message": "Record production deploy for v3.0.0 build 20.",
-      "version": "3.0.0",
-      "build": 20,
-      "timestamp": "2026-06-27T07:07:51.982Z"
     }
   ],
   "deploys": [

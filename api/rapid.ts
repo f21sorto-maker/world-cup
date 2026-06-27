@@ -17,7 +17,7 @@ function jsonError(status: number, body: Record<string, unknown>): Response {
 
 function resolveRapidPath(url: URL): { serviceId: string; upstreamPath: string } | null {
   const service = url.searchParams.get("service");
-  const upstream = url.searchParams.get("upstream");
+  const upstream = url.searchParams.get("upstream") ?? url.searchParams.get("path");
   if (service) {
     const upstreamPath =
       upstream == null || upstream === ""
@@ -85,6 +85,7 @@ export default async function handler(request: Request): Promise<Response> {
   const forwardSearch = new URLSearchParams(url.searchParams);
   forwardSearch.delete("service");
   forwardSearch.delete("upstream");
+  forwardSearch.delete("path");
   const qs = forwardSearch.toString();
   const upstreamUrl = `https://${route.host}${upstreamPath}${qs ? `?${qs}` : ""}`;
   const body =

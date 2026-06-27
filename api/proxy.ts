@@ -18,15 +18,15 @@ function isEspnWebAllowed(path: string): boolean {
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const upstream = url.searchParams.get("upstream");
+  const captured = url.searchParams.get("path") ?? url.searchParams.get("upstream");
   let path =
-    upstream != null && upstream !== ""
-      ? upstream.startsWith("/")
-        ? upstream
-        : `/${upstream}`
+    captured != null && captured !== ""
+      ? captured.startsWith("/")
+        ? captured
+        : `/${captured}`
       : url.pathname;
 
-  if (!upstream) {
+  if (!captured) {
     if (path.startsWith("/api/proxy/espn-web")) {
       path = path.slice("/api/proxy/espn-web".length);
     } else if (path.startsWith("/api/espn-web")) {
@@ -43,9 +43,14 @@ export default async function handler(request: Request): Promise<Response> {
     });
   }
 
-  const upstream = `https://${ESPN_WEB_HOST}${path}${url.search}`;
+  const forwardSearch = new URLSearchParams(url.searchParams);
+  forwardSearch.delete("path");
+  forwardSearch.delete("upstream");
+  const qs = forwardSearch.toString();
+  const upstreamUrl = `https://${ESPN_WEB_HOST}${path}${qs ? `?${qs}` : ""}`;
+
   try {
-    const res = await fetch(upstream, { headers: BROWSER_HEADERS });
+    const res = await fetch(upstreamUrl, { headers: BROWSER_HEADERS });
     return new Response(res.body, {
       status: res.status,
       headers: { "Content-Type": res.headers.get("Content-Type") ?? "application/json" },
