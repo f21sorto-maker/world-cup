@@ -141,8 +141,8 @@ export function LiveView() {
             <div className="section-kicker">Qualification</div>
             <h2 className="section-title-text">Who&apos;s through</h2>
             <p className="section-note">
-              <strong>Confirmed</strong> = mathematically locked. <strong>Projected</strong> = based on current
-              standings only.
+              <strong>Confirmed</strong> = 100% locked in by FIFA math — no remaining result can change it.{" "}
+              <strong>Projected</strong> = based on live results; outcome can still change.
             </p>
           </div>
         </div>

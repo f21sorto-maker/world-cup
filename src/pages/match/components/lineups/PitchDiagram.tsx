@@ -92,7 +92,7 @@ export function PitchDiagram({ homeLineup, awayLineup }: Props) {
           width={WIDTH - PADDING * 2}
           height={HEIGHT - PADDING * 2}
           fill="none"
-          stroke="rgba(255,255,255,0.25)"
+          stroke="var(--ss-pitch-line, rgba(255,255,255,0.25))"
           strokeWidth={1}
         />
         {/* Center line */}
@@ -101,7 +101,7 @@ export function PitchDiagram({ homeLineup, awayLineup }: Props) {
           y1={HEIGHT / 2}
           x2={WIDTH - PADDING}
           y2={HEIGHT / 2}
-          stroke="rgba(255,255,255,0.25)"
+          stroke="var(--ss-pitch-line, rgba(255,255,255,0.25))"
           strokeWidth={1}
         />
         {/* Center circle */}
@@ -110,7 +110,7 @@ export function PitchDiagram({ homeLineup, awayLineup }: Props) {
           cy={HEIGHT / 2}
           r={36}
           fill="none"
-          stroke="rgba(255,255,255,0.2)"
+          stroke="var(--ss-pitch-line, rgba(255,255,255,0.2))"
           strokeWidth={1}
         />
         {/* Penalty areas */}
@@ -120,7 +120,7 @@ export function PitchDiagram({ homeLineup, awayLineup }: Props) {
           width={120}
           height={56}
           fill="none"
-          stroke="rgba(255,255,255,0.2)"
+          stroke="var(--ss-pitch-line, rgba(255,255,255,0.2))"
           strokeWidth={1}
         />
         <rect
@@ -129,7 +129,7 @@ export function PitchDiagram({ homeLineup, awayLineup }: Props) {
           width={120}
           height={56}
           fill="none"
-          stroke="rgba(255,255,255,0.2)"
+          stroke="var(--ss-pitch-line, rgba(255,255,255,0.2))"
           strokeWidth={1}
         />
 

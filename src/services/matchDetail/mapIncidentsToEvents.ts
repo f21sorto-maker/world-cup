@@ -91,6 +91,7 @@ export function mapIncidentsToEvents(
       type: eventType,
       teamId: resolveTeamId(inc, homeTeamId, awayTeamId),
       playerName: resolvePlayerName(inc),
+      playerId: inc.player?.id != null ? String(inc.player.id) : undefined,
       assistName:
         inc.assistPlayerName ??
         inc.assistPlayer?.name ??

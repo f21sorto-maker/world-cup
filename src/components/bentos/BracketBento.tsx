@@ -168,9 +168,11 @@ function BracketTeamReadonly({
             data-team-id={team.id}
             style={{ opacity: 0.55 }}
           >
-            {team.logo
-              ? <img src={team.logo} alt="" className="bracket-team-flag" />
-              : <span className="bracket-dot" />}
+            {team ? (
+              <TeamFlag team={team} teamId={team.id} size="sm" />
+            ) : (
+              <span className="bracket-dot" />
+            )}
             <span className="team-name-text">{teamDisplayName(team, seedLabel ?? "TBD")}</span>
           </div>
           <CertaintyBadge certainty="projected" size="xs" />

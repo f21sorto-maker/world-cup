@@ -1,6 +1,7 @@
 import { useStore } from "../../store";
 import { APP_BRAND } from "../../config/appMeta";
 import { AppVersionLabel } from "../shared/AppVersionLabel";
+import { ThemeToggle } from "../shared/ThemeToggle";
 
 export function TopNavBar({ hidden = false }: { hidden?: boolean }) {
   const lastPollAt = useStore((s) => s.lastPollAt);
@@ -26,6 +27,7 @@ export function TopNavBar({ hidden = false }: { hidden?: boolean }) {
         </span>
       </div>
       <div className="wc-topbar-meta">
+        <ThemeToggle compact />
         <AppVersionLabel className="wc-topbar-version" />
         {liveCount > 0 ? (
           <span className="stat-chip">

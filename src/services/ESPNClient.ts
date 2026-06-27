@@ -1,5 +1,6 @@
-import type { GroupLetter, Match, MatchPeriod, Team } from "../types";
+import type { GroupLetter, Match, MatchEvent, MatchPeriod, Team } from "../types";
 import { isApiEnabled } from "../config/apiFlags";
+import { mapEspnDetailsToEvents } from "./matchDetail/mapEspnToEvents";
 import { logger } from "./Logger";
 
 const SCOREBOARD_PATH =
@@ -106,10 +107,15 @@ export function parseEspnClockFields(status: EspnCompetitionStatus | undefined):
   };
 }
 
-export function parseEspnScoreboard(scoreboard: unknown): { teams: Team[]; matches: Match[] } {
+export function parseEspnScoreboard(scoreboard: unknown): {
+  teams: Team[];
+  matches: Match[];
+  eventsByMatchId: Record<string, MatchEvent[]>;
+} {
   const sb = scoreboard as { events?: unknown[] };
   const teams = new Map<string, Team>();
   const matches: Match[] = [];
+  const eventsByMatchId: Record<string, MatchEvent[]> = {};
 
   for (const event of sb?.events ?? []) {
     const e = event as {
@@ -203,18 +209,34 @@ export function parseEspnScoreboard(scoreboard: unknown): { teams: Team[]; match
       match.group = group;
     }
 
+    const espnId = String(e.id);
+    const detailEvents = mapEspnDetailsToEvents(
+      competition.details ?? [],
+      espnId,
+      home.team.id,
+      away.team.id
+    );
+    if (detailEvents.length > 0) {
+      eventsByMatchId[espnId] = detailEvents;
+    }
+
     matches.push(match);
   }
 
   return {
     teams: [...teams.values()].sort((a, b) => a.group.localeCompare(b.group) || a.name.localeCompare(b.name)),
-    matches: matches.sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
+    matches: matches.sort((a, b) => Date.parse(a.date) - Date.parse(b.date)),
+    eventsByMatchId,
   };
 }
 
 const ESPN_FETCH_TIMEOUT_MS = 10_000;
 
-export async function fetchScoreboard(): Promise<{ teams: Team[]; matches: Match[] }> {
+export async function fetchScoreboard(): Promise<{
+  teams: Team[];
+  matches: Match[];
+  eventsByMatchId: Record<string, MatchEvent[]>;
+}> {
   if (!isApiEnabled("espnScoreboard")) {
     throw new Error("ESPN scoreboard disabled in apiFlags");
   }

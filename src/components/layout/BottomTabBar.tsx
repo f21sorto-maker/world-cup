@@ -1,5 +1,6 @@
 import type { TabId } from "../../types";
 import { useStore } from "../../store";
+import { ThemeToggle } from "../shared/ThemeToggle";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "live", label: "Live" },
@@ -25,6 +26,9 @@ export function BottomTabBar() {
 
   return (
     <nav className="bottom-tab-bar" aria-label="Main navigation">
+      <div className="bottom-tab-theme" aria-label="Theme">
+        <ThemeToggle compact />
+      </div>
       {TABS.map((tab) => (
         <button
           key={tab.id}

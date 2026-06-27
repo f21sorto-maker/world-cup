@@ -1,4 +1,9 @@
 import type { BracketViewMode, GroupsViewMode, SimulatorMode, SplashPhase, TabId } from "../../types";
+import {
+  readStoredColorScheme,
+  writeStoredColorScheme,
+  type ColorSchemePreference,
+} from "../../lib/colorScheme";
 
 export type UiSliceState = {
   activeTab: TabId;
@@ -11,6 +16,7 @@ export type UiSliceState = {
   groupsViewMode: GroupsViewMode;
   activeTeamId: string | null;
   teamSheetOpen: boolean;
+  colorScheme: ColorSchemePreference;
   setActiveTab: (tab: TabId) => void;
   setSimulatorMode: (mode: SimulatorMode) => void;
   setSplashPhase: (phase: SplashPhase) => void;
@@ -18,6 +24,7 @@ export type UiSliceState = {
   setPrimaryMatch: (matchId: string | null) => void;
   setBracketViewMode: (mode: BracketViewMode) => void;
   setGroupsViewMode: (mode: GroupsViewMode) => void;
+  setColorScheme: (scheme: ColorSchemePreference) => void;
   openTeamSheet: (teamId: string) => void;
   closeTeamSheet: () => void;
 };
@@ -35,6 +42,7 @@ export const createUiSlice = (
   groupsViewMode: "flags",
   activeTeamId: null,
   teamSheetOpen: false,
+  colorScheme: readStoredColorScheme(),
 
   setActiveTab: (tab) => set(() => ({ activeTab: tab })),
   setSimulatorMode: (mode) => set(() => ({ simulatorMode: mode })),
@@ -47,6 +55,10 @@ export const createUiSlice = (
   setPrimaryMatch: (matchId) => set(() => ({ primaryLiveMatchId: matchId })),
   setBracketViewMode: (mode) => set(() => ({ bracketViewMode: mode })),
   setGroupsViewMode: (mode) => set(() => ({ groupsViewMode: mode })),
+  setColorScheme: (scheme) => {
+    writeStoredColorScheme(scheme);
+    set(() => ({ colorScheme: scheme }));
+  },
   openTeamSheet: (teamId) => set(() => ({ activeTeamId: teamId, teamSheetOpen: true })),
   closeTeamSheet: () => set(() => ({ teamSheetOpen: false }))
 });

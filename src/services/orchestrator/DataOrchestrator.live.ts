@@ -13,6 +13,7 @@ import { findStoreMatchForExternalVote } from "../matchLinking";
 import { fetchLive as fetchWcLive } from "../WorldCup2026LiveClient";
 import { fetchLiveEvents as fetchSportApiLive } from "../SportAPI7Client";
 import { normalizeWCLiveMatch } from "../adapters/normalizeMatch";
+import { publishMatchEvents, fetchMatchEvents } from "../matchDetail/fetchMatchEvents";
 import { scheduleSimulation } from "../SimulationScheduler";
 import { logger } from "../Logger";
 import { computeScoreConsensus, type ScoreVote } from "./LiveScoreConsensus";
@@ -177,7 +178,21 @@ export async function runLiveTick(): Promise<number> {
   for (const m of espn.matches) {
     const incoming = applyLiveScore(undefined, { ...m, espnEventId: m.id }, "espn");
     mergeEspnMatchIntoStore(merged, incoming, teams);
+
+    const detailEvents = espn.eventsByMatchId[m.id];
+    const storeMatch = merged[m.id] ?? Object.values(merged).find((x) => x.espnEventId === m.id);
+    if (detailEvents?.length && storeMatch) {
+      publishMatchEvents(storeMatch, detailEvents);
+    }
   }
+
+  const liveMatches = Object.values(merged).filter((m) => m.status === "live" && !m.locked);
+  await Promise.allSettled(
+    liveMatches.slice(0, 6).map(async (m) => {
+      const events = await fetchMatchEvents(m, m.matchId ?? m.id);
+      publishMatchEvents(m, events);
+    })
+  );
 
   const votesByMatch = await collectAllVotes(merged, teams, espn.matches);
   for (const [storeKey, votes] of votesByMatch) {

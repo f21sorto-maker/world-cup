@@ -4,6 +4,7 @@ import { TopNavBar } from "./TopNavBar";
 import { SplashScreen } from "./SplashScreen";
 import { DebugPanel } from "../shared/DebugPanel";
 import { ApiSetupBanner } from "../shared/ApiSetupBanner";
+import { useColorScheme } from "../../hooks/useColorScheme";
 import { useHashSync } from "../../hooks/useHashSync";
 import { useQualificationChangeLogger } from "../../hooks/useQualificationChangeLogger";
 import { useStore } from "../../store";
@@ -28,6 +29,7 @@ export function AppShell() {
   const mainRef = useRef<HTMLElement>(null);
 
   useHashSync();
+  useColorScheme();
   useQualificationChangeLogger();
 
   useEffect(() => {

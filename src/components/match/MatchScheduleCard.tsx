@@ -8,8 +8,10 @@ import { TeamLabelById } from "../team/TeamLabelById";
 import { BroadcastBar } from "./BroadcastBar";
 import { OddsRow } from "./OddsRow";
 import { WeatherBadge } from "./WeatherBadge";
+import { MatchGoalScorers } from "./MatchGoalScorers";
 import { VenueLabel } from "../venue/VenueLabel";
 import { teamDisplayName } from "../../lib/teamIdentity";
+import { useStore } from "../../store";
 
 type Props = {
   match: MergedMatch;
@@ -20,6 +22,12 @@ type Props = {
 };
 
 export function MatchScheduleCard({ match, home, away, compact, onSelect }: Props) {
+  const matchEvents = useStore((s) => s.matchEvents);
+  const events =
+    matchEvents[match.id] ??
+    matchEvents[match.matchId ?? ""] ??
+    matchEvents[match.espnEventId ?? ""] ??
+    [];
   const broadcast =
     (match.matchId ? getBroadcast(match.matchId) : undefined) ?? getBroadcastByKickoff(match.date);
   const kickoffUtc = match.date;
@@ -78,6 +86,14 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
           <TeamLabelById teamId={match.awayTeamId} align="right" />
         )}
       </div>
+
+      {(isLive || isDone) && events.length > 0 ? (
+        <MatchGoalScorers
+          events={events}
+          homeTeamId={match.homeTeamId}
+          awayTeamId={match.awayTeamId}
+        />
+      ) : null}
 
       {!isDone && match ? (
         <OddsRow

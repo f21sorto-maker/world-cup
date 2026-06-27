@@ -1,0 +1,54 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  width: fit-content;
+  line-height: 1.2;
+  border: 1px solid transparent;
+}
+
+.sm {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+}
+
+.xs {
+  font-size: 0.55rem;
+  padding: 1px 6px;
+}
+
+/* Qualified — green family */
+.confirmedQualified {
+  background: #059669;
+  color: #ecfdf5;
+  border-color: #34d399;
+}
+
+.projectedQualified {
+  background: color-mix(in srgb, #059669 22%, transparent);
+  color: #6ee7b7;
+  border-color: color-mix(in srgb, #34d399 55%, transparent);
+}
+
+/* Eliminated — red family */
+.confirmedEliminated {
+  background: #dc2626;
+  color: #fef2f2;
+  border-color: #f87171;
+}
+
+.projectedEliminated {
+  background: color-mix(in srgb, #dc2626 18%, transparent);
+  color: #fca5a5;
+  border-color: color-mix(in srgb, #f87171 45%, transparent);
+}
+
+/* Bubble / live race */
+.inContention {
+  background: color-mix(in srgb, #d97706 20%, transparent);
+  color: #fcd34d;
+  border-color: color-mix(in srgb, #f59e0b 50%, transparent);
+}

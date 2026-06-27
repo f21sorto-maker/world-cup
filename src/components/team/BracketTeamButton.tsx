@@ -3,6 +3,7 @@ import type { Team } from "../../types";
 import { formatPercent } from "../../lib/normalize";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useTeamTheme } from "../../hooks/useTeamTheme";
+import { TeamFlag } from "./TeamFlag";
 import type { TeamThemeStatus } from "./TeamThemeRoot";
 
 type Props = {
@@ -40,7 +41,7 @@ export function BracketTeamButton({
           : undefined
       }
     >
-      {team ? <img src={team.logo} alt="" /> : <span className="bracket-dot" />}
+      {team ? <TeamFlag team={team} teamId={team.id} size="sm" /> : <span className="bracket-dot" />}
       <span className="team-name-text">{teamDisplayName(team)}</span>
       {typeof probability === "number" ? <b>{formatPercent(probability, 0)}</b> : null}
     </button>

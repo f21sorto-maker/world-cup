@@ -1,6 +1,10 @@
-import type { MatchEvent, MergedMatch } from "../../../../types";
+import type { MatchEvent, MergedMatch, Team } from "../../../../types";
 import type { MatchBundle } from "../../../../services/matchDetail/fetchMatchBundle";
+import { MatchFactsPanel } from "../summary/MatchFactsPanel";
 import { MatchEventTimeline } from "../summary/MatchEventTimeline";
+import { GoalScorersPanel } from "../../../../components/match/GoalScorersPanel";
+import { useGoalScorerProfiles } from "../../../../hooks/useGoalScorerProfiles";
+import { useStore } from "../../../../store";
 import styles from "../../MatchDetailView.module.css";
 
 type Props = {
@@ -9,9 +13,26 @@ type Props = {
   events: MatchEvent[];
   homeTeamName: string;
   awayTeamName: string;
+  homeTeam?: Team;
+  awayTeam?: Team;
 };
 
-export function MatchSummaryTab({ match, bundle: _bundle, events, homeTeamName, awayTeamName }: Props) {
+export function MatchSummaryTab({
+  match,
+  bundle: _bundle,
+  events,
+  homeTeamName,
+  awayTeamName,
+  homeTeam,
+  awayTeam,
+}: Props) {
+  const matchEvents = useStore((s) => s.matchEvents);
+  const { profiles, loading } = useGoalScorerProfiles({
+    events,
+    homeTeam,
+    awayTeam,
+    allMatchEvents: matchEvents,
+  });
   const hasEvents = events.length > 0;
   const isLive = match.status === "live";
   const isDone = match.status === "completed";
@@ -31,17 +52,35 @@ export function MatchSummaryTab({ match, bundle: _bundle, events, homeTeamName, 
     return (
       <div className={styles.emptyState}>
         <p>No key events recorded yet.</p>
+        <p style={{ marginTop: 8, fontSize: 12 }}>
+          Goals, cards, and substitutions will populate from live feeds as they are reported.
+        </p>
       </div>
     );
   }
 
   return (
-    <MatchEventTimeline
-      events={events}
-      homeTeamId={match.homeTeamId}
-      awayTeamId={match.awayTeamId}
-      homeTeamName={homeTeamName}
-      awayTeamName={awayTeamName}
-    />
+    <>
+      <GoalScorersPanel
+        profiles={profiles}
+        homeTeam={homeTeam}
+        awayTeam={awayTeam}
+        loading={loading}
+      />
+      <MatchFactsPanel
+        events={events}
+        homeConduct={match.homeConduct}
+        awayConduct={match.awayConduct}
+        homeTeamName={homeTeamName}
+        awayTeamName={awayTeamName}
+      />
+      <MatchEventTimeline
+        events={events}
+        homeTeamId={match.homeTeamId}
+        awayTeamId={match.awayTeamId}
+        homeTeamName={homeTeamName}
+        awayTeamName={awayTeamName}
+      />
+    </>
   );
 }

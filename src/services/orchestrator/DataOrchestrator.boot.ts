@@ -7,6 +7,7 @@ import { useStore } from "../../store";
 import { fetchScoreboard } from "../ESPNClient";
 import { applyLiveScore } from "../DataMerger";
 import { mergeEspnMatchIntoStore } from "../espnMatchMerge";
+import { publishMatchEvents } from "../matchDetail/fetchMatchEvents";
 import {
   fetchAllTeams as fetchZafronixTeams,
   fetchBracket as fetchZafronixBracket,
@@ -187,7 +188,11 @@ export async function runBoot(): Promise<void> {
   }, 2000);
 
   try {
-    let espnData: Awaited<ReturnType<typeof fetchScoreboard>> = { teams: [], matches: [] };
+    let espnData: Awaited<ReturnType<typeof fetchScoreboard>> = {
+      teams: [],
+      matches: [],
+      eventsByMatchId: {},
+    };
 
     try {
       const timeoutPromise = sleep(8000).then(() => {
@@ -222,6 +227,12 @@ export async function runBoot(): Promise<void> {
       for (const m of espnData.matches) {
         const incoming = applyLiveScore(undefined, { ...m, espnEventId: m.id }, "espn");
         mergeEspnMatchIntoStore(liveMatches, incoming, teams);
+
+        const detailEvents = espnData.eventsByMatchId[m.id];
+        const storeMatch = liveMatches[m.id] ?? Object.values(liveMatches).find((x) => x.espnEventId === m.id);
+        if (detailEvents?.length && storeMatch) {
+          publishMatchEvents(storeMatch, detailEvents);
+        }
       }
     } else {
       Object.assign(liveMatches, buildStaticMatches(teams));

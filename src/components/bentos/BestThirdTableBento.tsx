@@ -1,10 +1,12 @@
 import { useMemo } from "react";
-import { buildQualificationContext } from "../../lib/qualification";
+import { buildQualificationContext, computeQualificationStatus } from "../../lib/qualification";
+import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
 import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import type { GroupStanding, MergedMatch, TeamRecord } from "../../types";
 import { useStore } from "../../store";
-import { CertaintyBadge } from "../shared/CertaintyBadge";
+import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
+import { TeamFlag } from "../team/TeamFlag";
 
 export interface BestThirdTableBentoProps {
   standings: GroupStanding[];
@@ -71,8 +73,9 @@ function computeH2H(
   return "D";
 }
 
-function rowClass(index: number): string {
-  return index < 8 ? "group-table-row--qualified" : "group-table-row--eliminated";
+function rowClasses(index: number, qualRowClass: string): string {
+  const cut = index === 7 ? "best-third-row--cutline" : "";
+  return [qualRowClass, cut].filter(Boolean).join(" ");
 }
 
 export function BestThirdTableBento({ standings }: BestThirdTableBentoProps) {
@@ -109,7 +112,8 @@ export function BestThirdTableBento({ standings }: BestThirdTableBentoProps) {
       <header className="group-table-bento-header">
         <h3>Best 3rd — FIFA tiebreaker</h3>
         <p className="best-third-table-lead">
-          All twelve third-placed teams ranked for eight berths (eliminated teams excluded).
+          All twelve third-placed teams ranked for eight berths.{" "}
+          <strong>Confirmed</strong> = mathematically locked; <strong>Projected</strong> = live standings only.
         </p>
       </header>
 
@@ -131,16 +135,18 @@ export function BestThirdTableBento({ standings }: BestThirdTableBentoProps) {
             {ranked.map((row: TeamRecord, index: number) => {
               const team = teams[row.teamId];
               const h2h = h2hByTeam.get(row.teamId) ?? "N/A";
+              const qual = computeQualificationStatus(row.teamId, standings, qualContext);
+              const display = resolveQualificationDisplay(qual);
               return (
-                <tr key={row.teamId} className={rowClass(index)}>
+                <tr key={row.teamId} className={rowClasses(index, display.rowClass)}>
                   <td>
                     <div className="group-table-rank">
                       <span>{index + 1}</span>
-                      {index < 8 ? <CertaintyBadge certainty="projected" size="xs" /> : null}
+                      <QualificationStatusBadge qual={qual} size="xs" />
                     </div>
                   </td>
                   <td className="group-table-team">
-                    {team?.logo ? <img src={team.logo} alt="" width={20} height={20} /> : null}
+                    <TeamFlag team={team} teamId={row.teamId} size="sm" />
                     <span className="team-name-text">{teamDisplayName(team, row.teamId)}</span>
                   </td>
                   <td>

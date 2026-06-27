@@ -7,7 +7,8 @@ import {
 } from "../../lib/qualification";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import type { GroupLetter } from "../../types";
-import { CertaintyBadge, type CertaintyBadgeVariant } from "../shared/CertaintyBadge";
+import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
+import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
 import { TeamFlag } from "../team/TeamFlag";
 import { useStore } from "../../store";
 import { useTeamTheme } from "../../hooks/useTeamTheme";
@@ -23,17 +24,12 @@ const GROUPS: GroupLetter[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
 
 const filterConfig: { id: QualFilter; label: string; activeClass: string }[] = [
   { id: "all", label: "All", activeClass: "teams-filter-pill--all" },
-  { id: "qualified", label: "Qualified ✓", activeClass: "teams-filter-pill--qualified" },
-  { id: "projected", label: "Projected", activeClass: "teams-filter-pill--projected" },
-  { id: "at_risk", label: "At Risk", activeClass: "teams-filter-pill--at-risk" },
+  { id: "qualified", label: "Confirmed Qualified ✓", activeClass: "teams-filter-pill--qualified" },
+  { id: "projected", label: "Projected to Qualify", activeClass: "teams-filter-pill--projected" },
+  { id: "at_risk", label: "In Contention", activeClass: "teams-filter-pill--at-risk" },
   { id: "eliminated", label: "Eliminated ✕", activeClass: "teams-filter-pill--eliminated" },
-  { id: "contention", label: "In Contention", activeClass: "teams-filter-pill--contention" }
+  { id: "contention", label: "All Active", activeClass: "teams-filter-pill--contention" }
 ];
-
-function toBadgeCertainty(certainty: string): CertaintyBadgeVariant {
-  if (certainty === "confirmed") return "confirmed";
-  return "projected";
-}
 
 function TeamRow({
   teamId,
@@ -54,18 +50,19 @@ function TeamRow({
   const team = teams[teamId];
   const theme = useTeamTheme(teamId);
   const qual = computeQualificationStatus(teamId, standings, qualContext);
+  const display = resolveQualificationDisplay(qual);
 
   return (
     <li>
       <button
         type="button"
-        className="teams-row teams-row--accent"
+        className={`teams-row teams-row--accent ${display.rowClass}`}
         style={{ borderLeftColor: teamPrimaryColor(theme) }}
         onClick={() => openTeamSheet(teamId)}
       >
         <TeamFlag team={team} teamId={teamId} />
         <span className="teams-row-name team-name-text">{teamDisplayName(team, teamId)}</span>
-        <CertaintyBadge certainty={toBadgeCertainty(qual.certainty)} size="xs" />
+        <QualificationStatusBadge qual={qual} size="xs" />
         <span className="teams-stats">
           Rank {rank} · {points}pts · {gd >= 0 ? "+" : ""}
           {gd} GD

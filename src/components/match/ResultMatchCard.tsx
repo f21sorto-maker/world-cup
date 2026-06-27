@@ -5,6 +5,7 @@ import { useStore } from "../../store";
 import { TeamLabel } from "../team/TeamLabel";
 import { TeamLabelById } from "../team/TeamLabelById";
 import { VenueLabel } from "../venue/VenueLabel";
+import { MatchGoalScorers } from "./MatchGoalScorers";
 
 export interface ResultMatchCardProps {
   match: MergedMatch;
@@ -15,6 +16,13 @@ export function ResultMatchCard({ match, openTeamOnClick }: ResultMatchCardProps
   const teams = useStore((s) => s.teams);
   const openMatchDetail = useStore((s) => s.openMatchDetail);
   const openTeamSheet = useStore((s) => s.openTeamSheet);
+  const matchEvents = useStore((s) => s.matchEvents);
+
+  const events =
+    matchEvents[match.id] ??
+    matchEvents[match.matchId ?? ""] ??
+    matchEvents[match.espnEventId ?? ""] ??
+    [];
 
   const home = teams[match.homeTeamId];
   const away = teams[match.awayTeamId];
@@ -53,6 +61,12 @@ export function ResultMatchCard({ match, openTeamOnClick }: ResultMatchCardProps
           <TeamLabelById teamId={match.awayTeamId} align="right" />
         )}
       </div>
+
+      <MatchGoalScorers
+        events={events}
+        homeTeamId={match.homeTeamId}
+        awayTeamId={match.awayTeamId}
+      />
     </button>
   );
 }

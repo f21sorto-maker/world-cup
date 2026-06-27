@@ -4,6 +4,7 @@ import { fetchCommentary, fetchLineups, fetchStats } from "../WorldCup2026LiveCl
 import { TtlCache } from "../cache/TtlCache";
 import { mapWcLineups } from "./mapWcLineups";
 import { mapWcStats } from "./mapWcStats";
+import { fetchMatchEvents } from "./fetchMatchEvents";
 
 const TTL_LIVE_MS = 30_000; // 30 seconds for live matches
 const TTL_FINISHED_MS = 5 * 60_000; // 5 minutes for finished matches
@@ -26,7 +27,8 @@ function getTtl(match: MergedMatch): number {
 export async function fetchMatchBundle(
   match: MergedMatch,
   wcMatchId: string | null,
-  forceRefresh = false
+  forceRefresh = false,
+  opts?: { homeName?: string; awayName?: string }
 ): Promise<MatchBundle> {
   const cacheKey = `bundle-${match.id}-${wcMatchId ?? "noid"}`;
 
@@ -48,12 +50,18 @@ export async function fetchMatchBundle(
 
   const lineups = mapWcLineups(rawLineups);
 
+  const events = await fetchMatchEvents(match, wcMatchId, {
+    commentary: rawCommentary ?? [],
+    homeName: opts?.homeName,
+    awayName: opts?.awayName,
+  });
+
   const bundle: MatchBundle = {
     match,
     statistics,
     lineups,
     commentary: rawCommentary ?? [],
-    events: [], // populated separately via incident mapping
+    events,
     fetchedAt: Date.now()
   };
 

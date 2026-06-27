@@ -3,6 +3,9 @@ import type { Lineup, MatchStatisticsBundle, MergedMatch, CommentaryEntry } from
 import { useMatchEnrichment } from "./useMatchEnrichment";
 import { DataOrchestrator } from "../services/orchestrator/DataOrchestrator";
 import { fetchMatchBundle } from "../services/matchDetail/fetchMatchBundle";
+import { fetchMatchEvents, publishMatchEvents } from "../services/matchDetail/fetchMatchEvents";
+import { teamDisplayName } from "../lib/teamIdentity";
+import { useStore } from "../store";
 import { isApiEnabled } from "../config/apiFlags";
 import { isWc2026LiveDisabled } from "../services/WorldCup2026LiveClient";
 
@@ -46,32 +49,51 @@ export function useMatchDetailBundle(
     }
   }, [enrichment.enrichment]);
 
+  const teams = useStore((s) => s.teams);
+
   useEffect(() => {
-    if (!match || !wcMatchId) return;
-    if (!isApiEnabled("wc2026Live") || isWc2026LiveDisabled()) return;
+    if (!match) return;
 
-    let cancelled = false;
-    setDirectLoading(true);
+    const homeName = teamDisplayName(teams[match.homeTeamId], match.homeTeamId);
+    const awayName = teamDisplayName(teams[match.awayTeamId], match.awayTeamId);
 
-    void fetchMatchBundle(match, wcMatchId, forceKey > 0).then((bundle) => {
-      if (cancelled) return;
-      setDirect({
-        statistics: bundle.statistics,
-        lineups: bundle.lineups,
-        commentary: bundle.commentary.map((e) => ({
-          minute: typeof e.minute === "number" ? e.minute : Number(e.minute) || 0,
-          text: e.text,
-          type: e.type as CommentaryEntry["type"],
-        })),
+    if (wcMatchId && isApiEnabled("wc2026Live") && !isWc2026LiveDisabled()) {
+      let cancelled = false;
+      setDirectLoading(true);
+
+      void fetchMatchBundle(match, wcMatchId, forceKey > 0, { homeName, awayName }).then((bundle) => {
+        if (cancelled) return;
+        setDirect({
+          statistics: bundle.statistics,
+          lineups: bundle.lineups,
+          commentary: bundle.commentary.map((e) => ({
+            minute: typeof e.minute === "number" ? e.minute : Number(e.minute) || 0,
+            text: e.text,
+            type: e.type as CommentaryEntry["type"],
+          })),
+        });
+        setFetchedAt(bundle.fetchedAt);
+        setDirectLoading(false);
+        if (bundle.events.length > 0) publishMatchEvents(match, bundle.events);
       });
-      setFetchedAt(bundle.fetchedAt);
-      setDirectLoading(false);
-    });
 
-    return () => {
-      cancelled = true;
-    };
-  }, [match, wcMatchId, forceKey]);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    if (match.status === "live" || match.status === "completed") {
+      let cancelled = false;
+      void fetchMatchEvents(match, wcMatchId, { homeName, awayName }).then((events) => {
+        if (!cancelled && events.length > 0) publishMatchEvents(match, events);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    return undefined;
+  }, [match, wcMatchId, forceKey, teams]);
 
   const refetch = () => {
     if (match) {

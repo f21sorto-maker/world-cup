@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0a0f1e" />
+    <meta name="theme-color" content="#0a0c0e" />
+    <meta name="color-scheme" content="dark light" />
     <meta name="description" content="Road to the World Cup Final 2026 — live scores, bracket paths, venue hubs, and tournament intelligence." />
     <meta property="og:title" content="Road to the World Cup Final 2026" />
     <meta property="og:description" content="Live scores, qualification tracking, venue hubs, and tournament simulator for FIFA World Cup 2026™." />
@@ -21,6 +22,24 @@
     />
   </head>
   <body>
+    <script>
+      (function () {
+        try {
+          var pref = localStorage.getItem("wc-color-scheme") || "system";
+          var theme =
+            pref === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : pref;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.dataset.themePref = pref;
+          document.documentElement.style.colorScheme = theme;
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", theme === "light" ? "#e8ece9" : "#0a0c0e");
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

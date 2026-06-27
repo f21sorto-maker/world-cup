@@ -5,6 +5,7 @@ import {
   buildQualificationContext,
   computeQualificationStatus
 } from "../../lib/qualification";
+import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
 import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
@@ -12,7 +13,7 @@ import { getTeamElo } from "../../services/ClubEloClient";
 import { getHistoricalMatchesForTeam, type ZafronixMatch } from "../../services/ZafronixClient";
 import { TeamThemeRoot } from "../team/TeamThemeRoot";
 import { TeamFlag } from "../team/TeamFlag";
-import { CertaintyBadge } from "../shared/CertaintyBadge";
+import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
 import type { MergedMatch } from "../../types";
 
 type Tab = "overview" | "fixtures" | "stats" | "betting";
@@ -104,8 +105,7 @@ export function TeamDetailSheet() {
 
   if (!open || !team || !teamId) return null;
 
-  const certaintyBadge =
-    qual?.certainty === "confirmed" ? "confirmed" : qual?.certainty ? "projected" : "projected";
+  const qualDisplay = qual ? resolveQualificationDisplay(qual) : null;
 
   const sheet = (
     <div className="team-sheet-backdrop team-sheet-backdrop--portal" role="presentation" onClick={close}>
@@ -126,7 +126,7 @@ export function TeamDetailSheet() {
                   Group {team.group} · FIFA rank {team.fifaRank ?? "—"}
                 </p>
               </div>
-              <CertaintyBadge certainty={certaintyBadge} size="xs" />
+              {qual ? <QualificationStatusBadge qual={qual} size="sm" /> : null}
             </div>
             <button type="button" onClick={close} aria-label="Close">
               ×
@@ -191,18 +191,22 @@ export function TeamDetailSheet() {
                 </table>
               ) : null}
 
-              {qual ? (
-                <div className="team-sheet-qual">
-                  <h3>Qualification</h3>
-                  <p>
-                    <strong>{qual.lifeState.toUpperCase()}</strong>
-                    {qual.certainty === "confirmed" ? " · CONFIRMED" : qual.canQualify ? " · RULE-BASED PROJECTION" : " · ELIMINATED"}
+              {qual && qualDisplay ? (
+                <div className={`team-sheet-qual ${qualDisplay.rowClass}`}>
+                  <h3>Knockout qualification</h3>
+                  <p className="team-sheet-qual-label">
+                    <strong>{qualDisplay.label}</strong>
                   </p>
+                  <p className="team-sheet-qual-hint">{qualDisplay.hint}</p>
                   <p>{qual.reason}</p>
                   {qual.canQualify && qual.projectionScore > 0 ? (
-                    <p>Confidence score: {qual.projectionScore}/100 (rule-based, not a true probability)</p>
+                    <p className="team-sheet-qual-meta">
+                      Projection score: {qual.projectionScore}/100 (rule-based model, not a betting probability)
+                    </p>
                   ) : null}
-                  {qual.eliminationReason ? <p>{qual.eliminationReason}</p> : null}
+                  {qual.eliminationReason && qual.eliminationReason !== qual.reason ? (
+                    <p>{qual.eliminationReason}</p>
+                  ) : null}
                   {qual.canQualify && qual.status === "at_risk" && thirdRank >= 0 ? (
                     <p>
                       Best-third rank (alive teams): {thirdRank + 1} — cut line is top 8.

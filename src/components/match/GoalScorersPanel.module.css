@@ -1,0 +1,204 @@
+.panel {
+  padding: 16px;
+  border-bottom: 1px solid var(--ss-border);
+}
+
+.panelTitle {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ss-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.skeletonCard {
+  height: 160px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    var(--ss-elevated) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    var(--ss-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.card {
+  background: var(--ss-elevated);
+  border: 1px solid var(--ss-border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.avatarWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--ss-border);
+  background: var(--ss-surface);
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ss-muted);
+  background: var(--ss-surface);
+}
+
+.avatarFallbackHidden {
+  display: none;
+}
+
+.avatarSkeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ss-surface) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    var(--ss-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.headerText {
+  min-width: 0;
+  flex: 1;
+}
+
+.playerName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ss-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ogBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.metaLine {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--ss-muted);
+}
+
+.minuteLine {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ss-brand);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.statCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 10px;
+  color: var(--ss-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.statValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ss-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.placeholderNote {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ss-muted);
+  line-height: 1.4;
+}
+
+.compactCard {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.compactCard .avatar {
+  width: 24px;
+  height: 24px;
+  font-size: 11px;
+}
+
+.compactName {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ss-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compactMinute {
+  font-size: 10px;
+  color: var(--ss-brand);
+  flex-shrink: 0;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}

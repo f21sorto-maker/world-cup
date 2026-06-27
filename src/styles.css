@@ -75,8 +75,8 @@ body {
   color: var(--text);
   background: var(--bg);
   background-image:
-    radial-gradient(900px 520px at 84% -10%, rgba(54, 232, 160, 0.09), transparent 60%),
-    radial-gradient(700px 420px at 6% 2%, rgba(111, 183, 255, 0.05), transparent 55%);
+    radial-gradient(900px 520px at 84% -10%, var(--body-gradient-a), transparent 60%),
+    radial-gradient(700px 420px at 6% 2%, var(--body-gradient-b), transparent 55%);
 }
 
 body::before {
@@ -85,7 +85,7 @@ body::before {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.022;
+  opacity: var(--body-noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -811,15 +811,13 @@ h2 {
 
 .mini-qualifiers {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   margin-top: 9px;
 }
 
-.mini-qualifiers img {
-  width: 19px;
-  height: 19px;
-  object-fit: contain;
-  border-radius: 3px;
+.mini-qualifiers .team-flag-wrap {
+  flex-shrink: 0;
 }
 
 .tap-hint {
@@ -888,6 +886,10 @@ h2 {
   text-align: left;
 }
 
+.standing-table .team-flag-wrap {
+  flex-shrink: 0;
+}
+
 .standing-table tr.qualified td {
   color: var(--text);
 }
@@ -907,12 +909,12 @@ h2 {
   color: var(--accent);
 }
 
-.standing-table img,
-.team-label img,
-.third-row img,
-.opponent-row img,
-.team-picker img,
-.bracket-team img {
+.standing-table img:not(.team-flag-img),
+.team-label img:not(.team-flag-img),
+.third-row img:not(.team-flag-img),
+.opponent-row img:not(.team-flag-img),
+.team-picker img:not(.team-flag-img),
+.bracket-team img:not(.team-flag-img) {
   width: 20px;
   height: 20px;
   object-fit: contain;

@@ -28,6 +28,8 @@ export type Team = {
   marketAdjustment?: number;
   resultAdjustment?: number;
   titleCalibrationAdjustment?: number;
+  /** World Cup 2026 Teams API id (for roster / player photos). */
+  wc2026TeamId?: string;
 };
 
 export type OutcomeProbabilities = {
@@ -214,6 +216,27 @@ export type PlayerRef = {
   position?: string;
 };
 
+/** Enriched profile for a goal scorer in a match. */
+export type GoalScorerProfile = {
+  eventId: string;
+  playerId?: string;
+  displayName: string;
+  minute: number;
+  minuteExtra?: number;
+  teamId: string;
+  isOwnGoal: boolean;
+  photoUrl?: string;
+  age?: number;
+  hometown?: string;
+  nationality?: string;
+  currentClub?: string;
+  position?: string;
+  jerseyNumber?: string;
+  tournamentGoals?: number;
+  internationalGoals?: number;
+  internationalAppearances?: number;
+};
+
 export type LineupPlayer = {
   player: PlayerRef;
   gridPosition?: { x: number; y: number };
@@ -377,6 +400,8 @@ export type MatchEvent = {
   type: MatchEventType;
   teamId: string;
   playerName: string;
+  /** Provider player id when incidents/lineups include it. */
+  playerId?: string;
   assistName?: string;
   isVarReviewed?: boolean;
   varOutcome?: "confirmed" | "overturned";

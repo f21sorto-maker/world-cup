@@ -314,10 +314,10 @@ export function computeQualificationStatus(
 
     if (rank === 4) {
       return finalizeStatus(
-        "pending",
+        "projected_out",
         "projected_weak",
         22,
-        "Fourth place — must win out and need other results to climb the table.",
+        "Fourth place — must win out and need other results; projected to be eliminated unless the table shifts.",
         { canQualify: true, lifeState: "alive" }
       );
     }

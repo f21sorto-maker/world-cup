@@ -3,16 +3,8 @@ import { bucketQualificationTeams, buildQualificationContext, computeQualificati
 import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
-import type { QualificationCertainty } from "../../types";
-import { CertaintyBadge, type CertaintyBadgeVariant } from "../shared/CertaintyBadge";
-import { TeamThemeRoot } from "../team/TeamThemeRoot";
-
-function toBadgeCertainty(certainty: QualificationCertainty): CertaintyBadgeVariant {
-  if (certainty === "confirmed") return "confirmed";
-  if (certainty === "projected_strong") return "projected_strong";
-  if (certainty === "projected_weak") return "projected_weak";
-  return "projected";
-}
+import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
+import { TeamFlag } from "../team/TeamFlag";
 
 function QualTeamChip({ teamId, dim }: { teamId: string; dim?: boolean }) {
   const teams = useStore((s) => s.teams);
@@ -28,22 +20,8 @@ function QualTeamChip({ teamId, dim }: { teamId: string; dim?: boolean }) {
 
   return (
     <div className={`qual-team-chip ${dim ? "qual-team-chip--dim" : ""}`} title={qual.reason ?? team?.name ?? label}>
-      <CertaintyBadge certainty={toBadgeCertainty(qual.certainty)} size="xs" />
-      {team?.logo ? (
-        <TeamThemeRoot teamId={teamId} className="qual-crest-wrap">
-          <img
-            src={team.logo}
-            alt=""
-            className={`qual-crest qual-crest-themed ${dim ? "qual-crest--dim" : ""}`}
-            width={32}
-            height={32}
-          />
-        </TeamThemeRoot>
-      ) : (
-        <span className="qual-team-fallback" aria-hidden>
-          {label.slice(0, 3).toUpperCase()}
-        </span>
-      )}
+      <QualificationStatusBadge qual={qual} size="xs" />
+      <TeamFlag team={team} teamId={teamId} size="lg" dim={dim} />
       <span className="qual-team-name team-name-text">{label}</span>
     </div>
   );
@@ -95,18 +73,21 @@ export function QualifiedBento() {
 
   return (
     <section className="qual-bento qual-bento--qualified" aria-label="Qualified teams">
-      <h3 className="qual-bento-title">Through</h3>
-      <p className="qual-bento-lead">Top-two places — automatic group qualification.</p>
+      <h3 className="qual-bento-title">Qualified</h3>
+      <p className="qual-bento-lead">
+        Top-two places — <strong>Confirmed</strong> when the group stage is final; <strong>Projected</strong> while
+        matches remain.
+      </p>
       {hasAny ? (
         <>
           <QualSection
-            title="Through"
-            hint="Mathematically locked in — group stage complete and final rank is top two."
+            title="Confirmed · Qualified"
+            hint="100% through — group stage complete and final rank is top two. No remaining result can change this."
             teamIds={buckets.confirmedThrough}
           />
           <QualSection
-            title="Projected Through"
-            hint="Currently in the top two, but group stage is not fully complete or position may still change."
+            title="Projected · To Qualify"
+            hint="Currently in the top two based on live results, but remaining group matches could still change the outcome."
             teamIds={buckets.projectedThrough}
           />
         </>
@@ -135,19 +116,22 @@ export function EliminatedBento() {
 
   return (
     <section className="qual-bento qual-bento--eliminated" aria-label="Eliminated teams">
-      <h3 className="qual-bento-title">Out</h3>
-      <p className="qual-bento-lead">Teams with no realistic path to the knockout round.</p>
+      <h3 className="qual-bento-title">Eliminated</h3>
+      <p className="qual-bento-lead">
+        <strong>Confirmed</strong> when mathematically out; <strong>Projected</strong> when likely out but not yet
+        100% ruled out.
+      </p>
       {hasAny ? (
         <>
           <QualSection
-            title="Mathematically out"
-            hint="Cannot qualify — even maximum points from here would not be enough."
+            title="Confirmed · Eliminated"
+            hint="Mathematically eliminated — even maximum points from here cannot reach knockout qualification."
             teamIds={buckets.confirmedOut}
             dim
           />
           <QualSection
-            title="Likely Out"
-            hint="Still playing, but must win out and need other results — not mathematically eliminated yet."
+            title="Projected · To Be Eliminated"
+            hint="Likely out based on live standings and remaining fixtures, but not yet mathematically confirmed."
             teamIds={buckets.projectedOut}
             dim
           />

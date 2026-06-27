@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { buildQualificationContext, computeQualificationStatus } from "../../lib/qualification";
+import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
 import { StandingThemeRow } from "../team/StandingThemeRow";
-import { TeamThemeRoot } from "../team/TeamThemeRoot";
+import { TeamFlag } from "../team/TeamFlag";
 import { BentoErrorBoundary } from "../shared/ErrorBoundary";
-import { CertaintyBadge } from "../shared/CertaintyBadge";
+import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
 import { MatchScheduleCard } from "../match/MatchScheduleCard";
 import {
   BestThirdsBento,
@@ -66,7 +67,12 @@ export function GroupsView() {
         <h1>
           Twelve groups. <span className="accent">Forty-eight teams.</span>
         </h1>
-        <p>Live tables color-coded by qualification — green through, yellow in contention, red out.</p>
+        <p>
+          Live tables use color accents: <strong className="qual-legend qual-legend--confirmed-qualified">Confirmed Qualified</strong>,{" "}
+          <strong className="qual-legend qual-legend--projected-qualified">Projected to Qualify</strong>,{" "}
+          <strong className="qual-legend qual-legend--confirmed-eliminated">Confirmed Eliminated</strong>,{" "}
+          <strong className="qual-legend qual-legend--projected-eliminated">Projected to Be Eliminated</strong>.
+        </p>
       </section>
 
       <div className="groups-view-toggle" role="group" aria-label="Standings view mode">
@@ -130,16 +136,8 @@ export function GroupsView() {
                       <div className="mini-qualifiers" aria-hidden>
                         {g.rows.slice(0, 2).map((row) => {
                           const t = teams[row.teamId];
-                          return t?.logo ? (
-                            <TeamThemeRoot key={row.teamId} teamId={row.teamId} className="qual-crest-wrap">
-                              <img
-                                src={t.logo}
-                                alt=""
-                                className="qual-crest qual-crest-themed"
-                                width={20}
-                                height={20}
-                              />
-                            </TeamThemeRoot>
+                          return t ? (
+                            <TeamFlag key={row.teamId} team={t} teamId={row.teamId} size="sm" />
                           ) : null;
                         })}
                       </div>
@@ -158,20 +156,13 @@ export function GroupsView() {
                       {g.rows.map((row, i) => {
                         const team = teams[row.teamId];
                         const qual = computeQualificationStatus(row.teamId, standings, qualContext);
-                        const rowClass =
-                          i < 2 ? "qualified" : i === 2 ? "at-risk" : i === 3 ? "eliminated" : "";
-                        const showBadge = i < 2;
+                        const display = resolveQualificationDisplay(qual);
                         return (
-                          <StandingThemeRow key={row.teamId} teamId={row.teamId} className={rowClass}>
+                          <StandingThemeRow key={row.teamId} teamId={row.teamId} className={display.rowClass}>
                             <td>
                               <span className="rank">{i + 1}</span>
-                              {showBadge ? (
-                                <CertaintyBadge
-                                  certainty={qual.certainty === "confirmed" ? "confirmed" : "projected"}
-                                  size="xs"
-                                />
-                              ) : null}
-                              {team?.logo ? <img src={team.logo} alt="" width={20} height={20} /> : null}
+                              <QualificationStatusBadge qual={qual} size="xs" />
+                              <TeamFlag team={team} teamId={row.teamId} size="sm" />
                               <strong className="team-name-text">{teamDisplayName(team, row.teamId)}</strong>
                             </td>
                             <td>{row.played}</td>

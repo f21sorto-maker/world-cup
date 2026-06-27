@@ -19,6 +19,11 @@ import type { MatchDetailTab, MatchEvent } from "../../types";
 import { APP_BRAND } from "../../config/appMeta";
 import { VenueLabel } from "../../components/venue/VenueLabel";
 import { OddsRow } from "../../components/match/OddsRow";
+import { WeatherBadge } from "../../components/match/WeatherBadge";
+import { getBroadcast, getBroadcastByKickoff } from "../../services/BroadcastLookup";
+import { TeamFlag } from "../../components/team/TeamFlag";
+import { GoalScorerCard } from "../../components/match/GoalScorerCard";
+import { useGoalScorerProfiles } from "../../hooks/useGoalScorerProfiles";
 import styles from "./MatchDetailView.module.css";
 
 const TABS: { id: MatchDetailTab; label: string }[] = [
@@ -95,6 +100,26 @@ export function MatchDetailView() {
     }
   }, [activeMatchTab]);
 
+  const homeTeam = match ? teams[match.homeTeamId] : undefined;
+  const awayTeam = match ? teams[match.awayTeamId] : undefined;
+
+  const { profiles: scorerProfiles, loading: scorersLoading } = useGoalScorerProfiles({
+    events,
+    homeTeam,
+    awayTeam,
+    allMatchEvents: matchEvents,
+  });
+
+  const broadcast = useMemo(
+    () =>
+      match?.matchId
+        ? getBroadcast(match.matchId) ?? getBroadcastByKickoff(match.date)
+        : match?.date
+          ? getBroadcastByKickoff(match.date)
+          : undefined,
+    [match?.matchId, match?.date]
+  );
+
   // Handle back navigation
   const handleBack = () => {
     const ctx = returnContext;
@@ -130,13 +155,15 @@ export function MatchDetailView() {
 
   if (!activeMatchId) return null;
 
-  const homeTeam = match ? teams[match.homeTeamId] : null;
-  const awayTeam = match ? teams[match.awayTeamId] : null;
-  const homeTeamName = teamDisplayName(homeTeam ?? undefined, match?.homeTeamId ?? "Home");
-  const awayTeamName = teamDisplayName(awayTeam ?? undefined, match?.awayTeamId ?? "Away");
+  const homeTeamName = teamDisplayName(homeTeam, match?.homeTeamId ?? "Home");
+  const awayTeamName = teamDisplayName(awayTeam, match?.awayTeamId ?? "Away");
 
   const isLive = match?.status === "live";
   const isDone = match?.status === "completed";
+
+  const homeScorers = scorerProfiles.filter((p) => p.teamId === match?.homeTeamId);
+  const awayScorers = scorerProfiles.filter((p) => p.teamId === match?.awayTeamId);
+  const hasScorers = homeScorers.length > 0 || awayScorers.length > 0;
 
   return (
     <div className={styles.root}>
@@ -155,13 +182,8 @@ export function MatchDetailView() {
           <div className={styles.headerScore}>
             {/* Home team */}
             <div className={styles.headerTeam}>
-              {homeTeam?.logo ? (
-                <img
-                  src={homeTeam.logo}
-                  alt=""
-                  className={styles.headerTeamFlag}
-                  style={{ width: 32, height: 32, objectFit: "contain" }}
-                />
+              {homeTeam ? (
+                <TeamFlag team={homeTeam} teamId={homeTeam.id} size="lg" />
               ) : (
                 <span className={styles.headerTeamFlag}>🏳️</span>
               )}
@@ -201,13 +223,8 @@ export function MatchDetailView() {
 
             {/* Away team */}
             <div className={styles.headerTeam}>
-              {awayTeam?.logo ? (
-                <img
-                  src={awayTeam.logo}
-                  alt=""
-                  className={styles.headerTeamFlag}
-                  style={{ width: 32, height: 32, objectFit: "contain" }}
-                />
+              {awayTeam ? (
+                <TeamFlag team={awayTeam} teamId={awayTeam.id} size="lg" />
               ) : (
                 <span className={styles.headerTeamFlag}>🏳️</span>
               )}
@@ -247,6 +264,12 @@ export function MatchDetailView() {
               />
             </>
           ) : null}
+          {broadcast?.venue.city && !isDone ? (
+            <>
+              <span className={styles.contextSep}>·</span>
+              <WeatherBadge city={broadcast.venue.city} />
+            </>
+          ) : null}
         </div>
 
         {match && !isDone ? (
@@ -256,11 +279,36 @@ export function MatchDetailView() {
         ) : null}
 
         {/* Goal scorers strip (when events available) */}
-        {events.length > 0 ? (
+        {hasScorers || scorersLoading ? (
+          <div className={styles.scorersStrip}>
+            <div className={styles.scorerList}>
+              {homeScorers.map((profile) => (
+                <GoalScorerCard
+                  key={profile.eventId}
+                  profile={profile}
+                  teamName={homeTeamName}
+                  loading={scorersLoading}
+                  compact
+                />
+              ))}
+            </div>
+            <div className={`${styles.scorerList} ${styles["scorerList--right"]}`}>
+              {awayScorers.map((profile) => (
+                <GoalScorerCard
+                  key={profile.eventId}
+                  profile={profile}
+                  teamName={awayTeamName}
+                  loading={scorersLoading}
+                  compact
+                />
+              ))}
+            </div>
+          </div>
+        ) : events.some((e) => e.type === "goal" || e.type === "own_goal") ? (
           <div className={styles.scorersStrip}>
             <div className={styles.scorerList}>
               {events
-                .filter((e) => e.type === "goal" && e.teamId === match?.homeTeamId)
+                .filter((e) => (e.type === "goal" || e.type === "own_goal") && e.teamId === match?.homeTeamId)
                 .map((e) => (
                   <span key={e.providerId} className={styles.scorerItem}>
                     <strong>{e.playerName}</strong> {e.minute}&apos;
@@ -269,7 +317,7 @@ export function MatchDetailView() {
             </div>
             <div className={`${styles.scorerList} ${styles["scorerList--right"]}`}>
               {events
-                .filter((e) => e.type === "goal" && e.teamId === match?.awayTeamId)
+                .filter((e) => (e.type === "goal" || e.type === "own_goal") && e.teamId === match?.awayTeamId)
                 .map((e) => (
                   <span key={e.providerId} className={styles.scorerItem}>
                     {e.minute}&apos; <strong>{e.playerName}</strong>
@@ -304,6 +352,8 @@ export function MatchDetailView() {
             events={events}
             homeTeamName={homeTeamName}
             awayTeamName={awayTeamName}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
           />
         ) : null}
 

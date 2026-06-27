@@ -1,39 +1,56 @@
-import type { CSSProperties } from "react";
-import { useTeamTheme } from "../../hooks/useTeamTheme";
 import type { Team } from "../../types";
-
-function teamPrimary(theme: CSSProperties): string {
-  const v = theme["--team-primary" as keyof CSSProperties];
-  return typeof v === "string" ? v : "#6b7280";
-}
+import { getTeamWorldCupTitles } from "../../lib/worldCupTitles";
+import { TeamThemeRoot } from "./TeamThemeRoot";
+import { WorldCupStars } from "./WorldCupStars";
 
 type Props = {
   team?: Team;
   teamId: string;
   size?: "sm" | "lg" | "xl";
+  /** Muted treatment for eliminated / out-of-contention teams */
+  dim?: boolean;
+  className?: string;
 };
 
-const sizeClass: Record<NonNullable<Props["size"]>, string> = {
-  sm: "team-flag",
-  lg: "team-flag team-flag--lg",
-  xl: "team-flag team-flag--xl"
+const wrapSizeClass: Record<NonNullable<Props["size"]>, string> = {
+  sm: "team-flag-wrap--sm",
+  lg: "team-flag-wrap--lg",
+  xl: "team-flag-wrap--xl",
 };
 
-export function TeamFlag({ team, teamId, size = "sm" }: Props) {
-  const theme = useTeamTheme(team?.id ?? teamId);
+const innerSizeClass: Record<NonNullable<Props["size"]>, string> = {
+  sm: "sm",
+  lg: "lg",
+  xl: "xl",
+};
+
+export function TeamFlag({ team, teamId, size = "sm", dim, className }: Props) {
+  const id = team?.id ?? teamId;
   const label = team?.shortName ?? teamId;
-
-  if (team?.logo) {
-    return <img src={team.logo} alt="" className={sizeClass[size]} />;
-  }
+  const titles = getTeamWorldCupTitles(team);
+  const wrapClass = [
+    "team-flag-wrap",
+    wrapSizeClass[size],
+    dim ? "team-flag-wrap--dim" : "",
+    className ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <span
-      className={`team-flag-fallback ${sizeClass[size]}`}
-      style={{ background: teamPrimary(theme) }}
-      aria-hidden
-    >
-      {label.slice(0, 3).toUpperCase()}
+    <span className="team-flag-badge">
+      <WorldCupStars count={titles} size={size} />
+      <TeamThemeRoot teamId={id} className={wrapClass}>
+        <span className={`team-flag-inner ${innerSizeClass[size]}`}>
+          {team?.logo ? (
+            <img src={team.logo} alt="" className="team-flag-img" />
+          ) : (
+            <span className="team-flag-fallback" aria-hidden>
+              {label.slice(0, 3).toUpperCase()}
+            </span>
+          )}
+        </span>
+      </TeamThemeRoot>
     </span>
   );
 }

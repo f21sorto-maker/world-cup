@@ -80,7 +80,11 @@
   max-width: 100%;
 }
 
+.team-label .team-flag-badge,
+.team-label .team-flag-wrap,
+.team-label .team-flag-inner,
 .team-label .team-flag,
+.team-label .team-flag-img,
 .team-label img,
 .team-label .team-flag-fallback {
   flex-shrink: 0;
@@ -146,10 +150,10 @@
 }
 
 .qual-crest-themed {
-  padding: 3px;
-  border-radius: 6px;
-  border: 2px solid color-mix(in srgb, var(--team-primary) 55%, transparent);
-  background: color-mix(in srgb, var(--team-primary) 8%, transparent);
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
 }
 
 .schedule-card-themed {

@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import App from "./App";
 import { bootstrap } from "./lib/bootstrap";
 import "./styles.css";
+import "./styles/themes.css";
 import "./styles/tokens.css";
 import "./styles/team-identity.css";
 import "./styles/layout.css";

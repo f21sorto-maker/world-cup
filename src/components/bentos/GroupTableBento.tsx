@@ -1,20 +1,15 @@
 import { useMemo } from "react";
 import type { GroupStanding } from "../../types";
 import { buildQualificationContext, computeQualificationStatus } from "../../lib/qualification";
+import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
-import { CertaintyBadge } from "../shared/CertaintyBadge";
+import { QualificationStatusBadge } from "../shared/QualificationStatusBadge";
 import { StandingThemeRow } from "../team/StandingThemeRow";
 import { TeamFlag } from "../team/TeamFlag";
 
 export interface GroupTableBentoProps {
   standing: GroupStanding;
-}
-
-function rowClass(index: number): string {
-  if (index < 2) return "group-table-row--qualified";
-  if (index === 2) return "group-table-row--at-risk";
-  return "group-table-row--eliminated";
 }
 
 export function GroupTableBento({ standing }: GroupTableBentoProps) {
@@ -52,19 +47,17 @@ export function GroupTableBento({ standing }: GroupTableBentoProps) {
             {standing.rows.map((row, index) => {
               const team = teams[row.teamId];
               const qual = computeQualificationStatus(row.teamId, standings, qualContext);
-              const showBadge = index < 2;
+              const display = resolveQualificationDisplay(qual);
               return (
                 <StandingThemeRow
                   key={row.teamId}
                   teamId={row.teamId}
-                  className={rowClass(index)}
+                  className={display.rowClass}
                 >
                   <td>
                     <div className="group-table-rank">
                       <span>{index + 1}</span>
-                      {showBadge ? (
-                        <CertaintyBadge certainty={qual.certainty} size="xs" />
-                      ) : null}
+                      <QualificationStatusBadge qual={qual} size="xs" />
                     </div>
                   </td>
                   <td className="group-table-team">

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { buildQualificationContext, computeQualificationStatus } from "../../lib/qualification";
 import { rankAliveBestThirds } from "../../lib/bestThirds";
 import { formatLiveClock } from "../../lib/formatMatchClock";
+import { resolveQualificationDisplay } from "../../lib/qualificationDisplay";
 import type { GroupStanding, MergedMatch, TeamRecord } from "../../types";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
@@ -14,11 +15,17 @@ function statusLabel(
   qualContext: ReturnType<typeof buildQualificationContext>
 ): { text: string; className: string } {
   const qual = computeQualificationStatus(teamId, standings, qualContext);
-  if (!qual.canQualify || qual.lifeState === "eliminated") {
-    return { text: "✕ Out", className: "best-third-status--out" };
+  const display = resolveQualificationDisplay(qual);
+  if (display.variant === "confirmed-eliminated") {
+    return { text: "Eliminated ✕", className: "best-third-status--out" };
   }
-  if (rank <= 8) return { text: rank === 8 ? "~ Cut" : "✓ In", className: rank === 8 ? "best-third-status--cut" : "best-third-status--in" };
-  return { text: "⚠ Out", className: "best-third-status--warn" };
+  if (display.variant === "projected-eliminated") {
+    return { text: "Proj. Out", className: "best-third-status--warn" };
+  }
+  if (display.variant === "projected-qualified" || display.variant === "confirmed-qualified") {
+    if (rank <= 8) return { text: rank === 8 ? "Cut line" : "Proj. Qualify", className: rank === 8 ? "best-third-status--cut" : "best-third-status--in" };
+  }
+  return { text: "In contention", className: "best-third-status--warn" };
 }
 
 export function BestThirdRacePanel() {

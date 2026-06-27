@@ -251,5 +251,6 @@ export const DEFAULT_MATCH_ENRICHMENT_SOURCES: EnrichmentSource[] = [
   "commentary",
   "lineups",
   "stats",
+  "weather",
   "teamForm",
 ];
