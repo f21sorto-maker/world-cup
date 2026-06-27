@@ -7,6 +7,10 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+## [3.0.0] build 3 — 2026-06-27 (build)
+- Migrate SofaScore proxy to edge runtime (fixes Vercel TS build)
+
 ## [3.0.0] build 2 — 2026-06-27 (build)
 - Splash logo blend-edges for cleaner trophy hero on load
 
