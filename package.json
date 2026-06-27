@@ -38,7 +38,9 @@
     "mcp:zafronix": "node scripts/mcp-zafronix-config.mjs",
     "mcp:endpoints": "node scripts/mcp-endpoint-config.mjs",
     "env:sync-vercel": "node scripts/sync-vercel-env.mjs",
-    "deploy:vercel": "npx vercel deploy --prod --yes"
+    "deploy:vercel": "npx vercel deploy --prod --yes",
+    "ui:debug-sweep": "node scripts/ui-debug-sweep.mjs",
+    "ui:debug-sync-canvas": "node scripts/sync-ui-debug-canvas.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
