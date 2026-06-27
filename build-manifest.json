@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T07:35:33.868Z",
+  "updatedAt": "2026-06-27T07:35:35.522Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -107,6 +107,14 @@
     }
   ],
   "commits": [
+    {
+      "hash": "c3bca5651de6a4045c9a83cd28ef6b2492e4813f",
+      "shortHash": "c3bca56",
+      "message": "Fix Live upcoming fixture glow clipped at row edges.",
+      "version": "4.0.0",
+      "build": 2,
+      "timestamp": "2026-06-27T07:35:35.502Z"
+    },
     {
       "hash": "a0dfcbb922a062c7a958ed24ae32a5c0db44deb9",
       "shortHash": "a0dfcbb",
