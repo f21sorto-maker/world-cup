@@ -47,29 +47,58 @@ const fifaApiProxy = {
   configure: configureFifaApiProxy,
 };
 
-const rapidApiProxy = (target: string, rewriteFrom: string) => ({
+const ESPN_BROWSER_HEADERS: Record<string, string> = {
+  Accept: "application/json, text/plain, */*",
+  "Accept-Language": "en-US,en;q=0.9",
+  "User-Agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+};
+
+function configureEspnWebProxy(proxy: Server) {
+  proxy.on("proxyReq", (proxyReq) => {
+    for (const [key, value] of Object.entries(ESPN_BROWSER_HEADERS)) {
+      proxyReq.setHeader(key, value);
+    }
+  });
+}
+
+/** Strip a path prefix — order matters: longer prefixes must be registered first in the proxy map. */
+const stripPrefix = (prefix: string) => (path: string) => {
+  if (!path.startsWith(prefix)) return path;
+  const rest = path.slice(prefix.length);
+  return rest.startsWith("/") ? rest : `/${rest}`;
+};
+
+const rapidApiProxy = (target: string, prefix: string) => ({
   target,
   changeOrigin: true,
-  rewrite: (path: string) => path.replace(new RegExp(`^${rewriteFrom}`), ""),
+  rewrite: stripPrefix(prefix),
 });
 
+// Longer /rapidapi-* keys MUST come before /rapidapi (prefix collision).
 const rapidApiProxies = {
-  "/rapidapi": rapidApiProxy("https://free-api-live-football-data.p.rapidapi.com", "^/rapidapi"),
-  "/rapidapi-sportapi": rapidApiProxy("https://sportapi7.p.rapidapi.com", "^/rapidapi-sportapi"),
-  "/rapidapi-wc2026": rapidApiProxy("https://world-cup-2026.p.rapidapi.com", "^/rapidapi-wc2026"),
-  "/rapidapi-wc-live": rapidApiProxy("https://world-cup-2026-live-api.p.rapidapi.com", "^/rapidapi-wc-live"),
-  "/rapidapi-weather": rapidApiProxy("https://open-weather13.p.rapidapi.com", "^/rapidapi-weather"),
-  "/rapidapi-odds": rapidApiProxy("https://sports-odds-intelligence-api.p.rapidapi.com", "^/rapidapi-odds"),
-  "/api/footballdata": rapidApiProxy("https://free-api-live-football-data.p.rapidapi.com", "^/api/footballdata"),
-  "/api/sportapi": rapidApiProxy("https://sportapi7.p.rapidapi.com", "^/api/sportapi"),
-  "/api/wc2026": rapidApiProxy("https://world-cup-2026.p.rapidapi.com", "^/api/wc2026"),
-  "/api/wc-live": rapidApiProxy("https://world-cup-2026-live-api.p.rapidapi.com", "^/api/wc-live"),
-  "/api/weather": rapidApiProxy("https://open-weather13.p.rapidapi.com", "^/api/weather"),
-  "/api/odds": rapidApiProxy("https://sports-odds-intelligence-api.p.rapidapi.com", "^/api/odds"),
+  "/rapidapi-sportapi": rapidApiProxy("https://sportapi7.p.rapidapi.com", "/rapidapi-sportapi"),
+  "/rapidapi-wc2026": rapidApiProxy("https://world-cup-2026.p.rapidapi.com", "/rapidapi-wc2026"),
+  "/rapidapi-wc-live": rapidApiProxy("https://world-cup-2026-live-api.p.rapidapi.com", "/rapidapi-wc-live"),
+  "/rapidapi-weather": rapidApiProxy("https://open-weather13.p.rapidapi.com", "/rapidapi-weather"),
+  "/rapidapi-odds": rapidApiProxy("https://sports-odds-intelligence-api.p.rapidapi.com", "/rapidapi-odds"),
+  "/rapidapi": rapidApiProxy("https://free-api-live-football-data.p.rapidapi.com", "/rapidapi"),
+  "/api/footballdata": rapidApiProxy("https://free-api-live-football-data.p.rapidapi.com", "/api/footballdata"),
+  "/api/sportapi": rapidApiProxy("https://sportapi7.p.rapidapi.com", "/api/sportapi"),
+  "/api/wc2026": rapidApiProxy("https://world-cup-2026.p.rapidapi.com", "/api/wc2026"),
+  "/api/wc-live": rapidApiProxy("https://world-cup-2026-live-api.p.rapidapi.com", "/api/wc-live"),
+  "/api/weather": rapidApiProxy("https://open-weather13.p.rapidapi.com", "/api/weather"),
+  "/api/odds": rapidApiProxy("https://sports-odds-intelligence-api.p.rapidapi.com", "/api/odds"),
+  "/api/espn-web": {
+    target: "https://site.web.api.espn.com",
+    changeOrigin: true,
+    rewrite: stripPrefix("/api/espn-web"),
+    configure: configureEspnWebProxy,
+  },
   "/api/zafronix": {
     target: "https://zafronix-fifa-world-cup-api.p.rapidapi.com",
     changeOrigin: true,
-    rewrite: (path: string) => path.replace(/^\/api\/zafronix/, ""),
+    rewrite: stripPrefix("/api/zafronix"),
   },
 };
 
@@ -104,7 +133,8 @@ export default defineConfig({
       "/espn-web": {
         target: "https://site.web.api.espn.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/espn-web/, ""),
+        rewrite: stripPrefix("/espn-web"),
+        configure: configureEspnWebProxy,
       },
       "/api/clubelo": {
         target: "http://api.clubelo.com",
@@ -122,7 +152,8 @@ export default defineConfig({
       "/espn-web": {
         target: "https://site.web.api.espn.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/espn-web/, ""),
+        rewrite: stripPrefix("/espn-web"),
+        configure: configureEspnWebProxy,
       },
       "/api/clubelo": {
         target: "http://api.clubelo.com",

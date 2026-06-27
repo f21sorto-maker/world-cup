@@ -18,7 +18,9 @@ function shouldFetchOdds(status: MatchStatus | undefined): boolean {
 export function useLiveOdds(
   matchId: string | null,
   espnEventId: string | null | undefined,
-  matchStatus?: MatchStatus
+  matchStatus?: MatchStatus,
+  homeTeam?: string,
+  awayTeam?: string
 ): {
   odds: OddsSnapshot | null;
   futures: FuturesOdds | null;
@@ -38,7 +40,10 @@ export function useLiveOdds(
     let cancelled = false;
     setLoading(true);
 
-    void getOdds(espnEventId).then((eventOdds) => {
+    void getOdds(
+      espnEventId,
+      homeTeam && awayTeam ? { home: homeTeam, away: awayTeam } : undefined
+    ).then((eventOdds) => {
       if (cancelled) return;
       setLoading(false);
       if (!eventOdds?.bestHome || !eventOdds.bestDraw || !eventOdds.bestAway) {
@@ -57,7 +62,7 @@ export function useLiveOdds(
     return () => {
       cancelled = true;
     };
-  }, [matchId, espnEventId, matchStatus]);
+  }, [matchId, espnEventId, matchStatus, homeTeam, awayTeam]);
 
   useEffect(() => {
     const stale = Date.now() - futuresCache.fetchedAt > FUTURES_TTL_MS;

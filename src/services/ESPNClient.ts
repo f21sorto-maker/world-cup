@@ -245,7 +245,10 @@ export async function fetchMatchPlayByPlay(espnEventId: string): Promise<unknown
     throw new Error("ESPN play-by-play disabled in apiFlags");
   }
   const path = `/apis/site/v2/sports/soccer/fifa.world/playbyplay?event=${espnEventId}`;
-  const url = typeof window !== "undefined" ? `/espn-web${path}` : `https://site.web.api.espn.com${path}`;
+  const url =
+    typeof window !== "undefined"
+      ? `/api/espn-web${path}`
+      : `https://site.web.api.espn.com${path}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${res.status}`);
   return res.json();

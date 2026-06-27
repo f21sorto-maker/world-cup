@@ -34,8 +34,7 @@ const SEED_KEYS: SeedKeyDef[] = [
     label: "RapidAPI Shared Key (browser)",
     envVarName: "VITE_RAPIDAPI_KEY",
     value: "FILL_ME_IN",
-    endpoint:
-      "https://zafronix-fifa-world-cup-api.p.rapidapi.com/fifa/worldcup/v1/tournaments/2026",
+    endpoint: "https://zafronix-fifa-world-cup-api.p.rapidapi.com/health",
     testMethod: "GET",
     testHeaders: {
       "x-rapidapi-host": "zafronix-fifa-world-cup-api.p.rapidapi.com",
@@ -51,14 +50,42 @@ const SEED_KEYS: SeedKeyDef[] = [
     label: "RapidAPI Shared Key (server)",
     envVarName: "RAPIDAPI_KEY",
     value: "FILL_ME_IN",
-    endpoint:
-      "https://free-api-live-football-data.p.rapidapi.com/football-get-matches-by-date?date=20260626",
+    endpoint: "https://free-api-live-football-data.p.rapidapi.com/football-get-matches-by-date?date=20260626",
     testMethod: "GET",
     testHeaders: {
       "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com",
     },
     notes:
       "Same value as VITE_RAPIDAPI_KEY — used by Vercel edge proxies (api/footballdata, sportapi, wc2026, wc-live, weather, odds, zafronix). Sync mirrors browser key automatically.",
+  },
+
+  {
+    _seedId: "world-cup:VITE_ZAFRONIX_API_KEY",
+    serviceGroup: "Zafronix",
+    label: "Zafronix API Key (browser)",
+    envVarName: "VITE_ZAFRONIX_API_KEY",
+    value: "FILL_ME_IN",
+    endpoint: "https://zafronix-fifa-world-cup-api.p.rapidapi.com/teams/Brazil",
+    testMethod: "GET",
+    testHeaders: {
+      "x-rapidapi-host": "zafronix-fifa-world-cup-api.p.rapidapi.com",
+    },
+    notes:
+      "Free key from https://api.zafronix.com/signup — NOT the RapidAPI key. Required for H2H, bracket, team profiles on the Zafronix hub. Sent as X-API-Key header.",
+  },
+
+  {
+    _seedId: "world-cup:ZAFRONIX_API_KEY",
+    serviceGroup: "Zafronix",
+    label: "Zafronix API Key (server)",
+    envVarName: "ZAFRONIX_API_KEY",
+    value: "FILL_ME_IN",
+    endpoint: "https://zafronix-fifa-world-cup-api.p.rapidapi.com/teams/Brazil",
+    testMethod: "GET",
+    testHeaders: {
+      "x-rapidapi-host": "zafronix-fifa-world-cup-api.p.rapidapi.com",
+    },
+    notes: "Same value as VITE_ZAFRONIX_API_KEY — used by api/zafronix edge proxy. Sync mirrors browser key automatically.",
   },
 
   // ── Textbook Manager: Sentry renderer ────────────────────────────────────
@@ -149,7 +176,12 @@ const SEED_TARGETS: SeedTarget[] = [
   {
     name: "World Cup Tracker",
     envFilePath: join(HOME, "Developer/world-cup/.env.local"),
-    seedKeyIds: ["world-cup:VITE_RAPIDAPI_KEY", "world-cup:RAPIDAPI_KEY"],
+    seedKeyIds: [
+      "world-cup:VITE_RAPIDAPI_KEY",
+      "world-cup:RAPIDAPI_KEY",
+      "world-cup:VITE_ZAFRONIX_API_KEY",
+      "world-cup:ZAFRONIX_API_KEY",
+    ],
   },
   {
     name: "Textbook Manager",

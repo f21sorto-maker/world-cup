@@ -3,6 +3,42 @@ import type { TournamentStatsBundle } from "../../../../services/matchDetail/fet
 import { fetchTournamentStats } from "../../../../services/matchDetail/fetchTournamentStats";
 import styles from "../../TournamentView.module.css";
 
+function StandingsPreview({ standings }: { standings: TournamentStatsBundle["standings"] }) {
+  if (standings.length === 0) return null;
+
+  return (
+    <div className={styles.statsSection}>
+      <h3 className={styles.statsSectionTitle}>Group standings</h3>
+      <p style={{ fontSize: 12, color: "var(--ss-muted)", marginBottom: 12 }}>
+        Player leaderboards are not available yet — showing live group tables instead.
+      </p>
+      {standings.map((group) => (
+        <div key={group.group} style={{ marginBottom: 16 }}>
+          <div className={styles.standingsSectionTitle}>Group {group.group}</div>
+          <table className={styles.standingsTable}>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Team</th>
+                <th>Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {group.teams.slice(0, 4).map((team, i) => (
+                <tr key={team.name}>
+                  <td>{i + 1}</td>
+                  <td>{team.name}</td>
+                  <td className={styles.standingsPts}>{team.points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function TournamentStatsTab() {
   const [bundle, setBundle] = useState<TournamentStatsBundle | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,20 +70,26 @@ export function TournamentStatsTab() {
   const topScorers = bundle?.topScorers ?? [];
   const topAssists = bundle?.topAssists ?? [];
   const cleanSheets = bundle?.cleanSheets ?? [];
+  const standings = bundle?.standings ?? [];
 
   const isEmpty = topScorers.length === 0 && topAssists.length === 0 && cleanSheets.length === 0;
 
   if (isEmpty) {
     return (
       <div className={styles.tabPanel}>
-        <div className={styles.statsSection}>
-          <div className={styles.statsPlaceholder}>
-            <p>📊 Player statistics will be available once the tournament begins.</p>
-            <p style={{ marginTop: 8, fontSize: 12 }}>
-              Top scorers, assists, and clean sheets will appear here.
-            </p>
+        {standings.length > 0 ? (
+          <StandingsPreview standings={standings} />
+        ) : (
+          <div className={styles.statsSection}>
+            <div className={styles.statsPlaceholder}>
+              <p>Player statistics will be available once the tournament begins.</p>
+              <p style={{ marginTop: 8, fontSize: 12 }}>
+                Top scorers, assists, and clean sheets require a provider endpoint not yet wired.
+                Group standings will appear here when WC 2026 Live API publishes tables.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }

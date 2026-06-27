@@ -28,6 +28,14 @@ export async function syncToEnvFile(
     toWrite.set("RAPIDAPI_KEY", viteRapid);
   }
 
+  const viteZafronix = toWrite.get("VITE_ZAFRONIX_API_KEY");
+  if (
+    viteZafronix &&
+    target.keyIds.some((id) => vault.keys.find((k) => k.id === id)?.envVarName === "ZAFRONIX_API_KEY")
+  ) {
+    toWrite.set("ZAFRONIX_API_KEY", viteZafronix);
+  }
+
   // Read existing env file (may not exist yet)
   let existingLines: string[] = [];
   if (existsSync(target.envFilePath)) {

@@ -25,9 +25,6 @@ function baseUrl(): string {
   if (typeof window === "undefined") {
     return `https://${RAPIDAPI_HOST}`;
   }
-  if (import.meta.env.DEV) {
-    return "/rapidapi-wc2026";
-  }
   return "/api/wc2026";
 }
 

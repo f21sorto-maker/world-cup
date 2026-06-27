@@ -14,6 +14,7 @@ import { getBestLines } from "../OddsIntelligenceClient";
 import { getWeatherByCity } from "../WeatherClient";
 import { fetchEventDetail } from "../SofaScoreClient";
 import { fetchMatchBundle } from "../matchDetail/fetchMatchBundle";
+import { materializeFullSchedule } from "../../lib/materializeFullSchedule";
 import { logger } from "../Logger";
 import { useStore } from "../../store";
 
@@ -190,6 +191,21 @@ async function runEnrichment(
   return result;
 }
 
+/** Looks up match in live store, then materialized schedule. */
+function resolveMatchForEnrichment(matchId: string): MergedMatch | null {
+  const store = useStore.getState();
+  const live = store.liveMatches[matchId];
+  if (live) return live;
+
+  const fromSchedule = Object.values(store.liveMatches).find(
+    (m) => m.matchId === matchId || m.id === matchId
+  );
+  if (fromSchedule) return fromSchedule;
+
+  const all = materializeFullSchedule(store.teams, store.liveMatches);
+  return all.find((m) => m.id === matchId || m.matchId === matchId) ?? null;
+}
+
 /** Enqueues lazy enrichment for a match (deduped per session). */
 export function enqueue(job: EnrichmentJob): Promise<EnrichmentResult> {
   const cached = sessionCache.get(job.matchId);
@@ -198,7 +214,7 @@ export function enqueue(job: EnrichmentJob): Promise<EnrichmentResult> {
   const existing = inFlight.get(job.matchId);
   if (existing) return existing;
 
-  const match = useStore.getState().liveMatches[job.matchId];
+  const match = resolveMatchForEnrichment(job.matchId);
   if (!match) {
     return Promise.resolve({ matchId: job.matchId, sources: {} });
   }

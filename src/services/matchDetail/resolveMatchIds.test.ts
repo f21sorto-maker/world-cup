@@ -48,6 +48,13 @@ describe("resolveMatchIds", () => {
     expect(result.espnEventId).toBe("espn-42");
   });
 
+  it("returns wcMatchId for known schedule match not in live store", () => {
+    const result = resolveMatchIds("M1", {});
+    expect(result.officialMatchId).toBe("M1");
+    expect(result.wcMatchId).toBe("M1");
+    expect(result.espnEventId).toBeNull();
+  });
+
   it("returns nulls for unknown match not in store", () => {
     const result = resolveMatchIds("M999", {});
     expect(result.officialMatchId).toBe("M999");

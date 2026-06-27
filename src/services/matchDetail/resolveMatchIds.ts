@@ -12,24 +12,22 @@ export type ResolvedMatchIds = {
  * Resolve a match by its official schedule ID (e.g. "M89") into all known
  * provider IDs by looking up the live store, then the static schedule.
  *
- * Falls back gracefully — callers must handle null provider IDs.
+ * WC Live API uses the same M{number} ids as our schedule (e.g. M65).
  */
 export function resolveMatchIds(
   officialMatchId: string,
   liveMatches: Record<string, MergedMatch>
 ): ResolvedMatchIds {
-  // 1. Check live matches store (has espnEventId, sofaEventId)
   const liveEntry = findLiveByOfficialId(officialMatchId, liveMatches);
   if (liveEntry) {
     return {
       officialMatchId,
       espnEventId: liveEntry.espnEventId ?? null,
-      wcMatchId: liveEntry.matchId ?? null,
-      sofaEventId: liveEntry.sofaEventId ?? null
+      wcMatchId: liveEntry.matchId ?? liveEntry.id ?? null,
+      sofaEventId: liveEntry.sofaEventId ?? null,
     };
   }
 
-  // 2. Fall back to static schedule for the match number
   const matchNumber = parseInt(officialMatchId.replace(/^M/i, ""), 10);
   if (!isNaN(matchNumber)) {
     const entries = getAllScheduleEntries();
@@ -38,8 +36,8 @@ export function resolveMatchIds(
       return {
         officialMatchId,
         espnEventId: null,
-        wcMatchId: null,
-        sofaEventId: null
+        wcMatchId: officialMatchId,
+        sofaEventId: null,
       };
     }
   }
@@ -48,15 +46,10 @@ export function resolveMatchIds(
     officialMatchId,
     espnEventId: null,
     wcMatchId: null,
-    sofaEventId: null
+    sofaEventId: null,
   };
 }
 
-/**
- * Find a live match by checking:
- * 1. `m.matchId === officialMatchId`
- * 2. `m.id === officialMatchId`
- */
 function findLiveByOfficialId(
   officialMatchId: string,
   liveMatches: Record<string, MergedMatch>
@@ -66,9 +59,6 @@ function findLiveByOfficialId(
   );
 }
 
-/**
- * Reverse lookup: given an ESPN event ID, find the official schedule ID.
- */
 export function resolveOfficialIdFromEspn(
   espnEventId: string,
   liveMatches: Record<string, MergedMatch>

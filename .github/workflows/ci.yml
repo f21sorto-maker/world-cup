@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npm run build
+
+  rapidapi-smoke:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: RapidAPI smoke test
+        env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          VITE_RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          ZAFRONIX_API_KEY: ${{ secrets.ZAFRONIX_API_KEY }}
+          VITE_ZAFRONIX_API_KEY: ${{ secrets.ZAFRONIX_API_KEY }}
+        run: |
+          if [ -z "$RAPIDAPI_KEY" ]; then
+            echo "RAPIDAPI_KEY secret not set — skipping RapidAPI smoke test"
+            exit 0
+          fi
+          npm run test:rapidapi

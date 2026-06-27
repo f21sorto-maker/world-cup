@@ -49,9 +49,6 @@ function baseUrl(): string {
   if (typeof window === "undefined") {
     return `https://${RAPIDAPI_HOST}`;
   }
-  if (import.meta.env.DEV) {
-    return "/rapidapi-odds";
-  }
   return "/api/odds";
 }
 
@@ -65,13 +62,18 @@ async function fetchJson<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${baseUrl()}${path}`, { headers: rapidHeaders() });
 
-    if (res.status === 401 || res.status === 403 || res.status === 429) {
+    if (res.status === 401 || res.status === 403) {
       oddsSessionDisabled = true;
       const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "");
       logger.warn("OddsIntelligence blocked for session", "OddsIntelligenceClient", {
         status: res.status,
         bodySnippet,
       });
+      return null;
+    }
+
+    if (res.status === 429) {
+      logger.warn("OddsIntelligence rate limited", "OddsIntelligenceClient", { status: 429 });
       return null;
     }
 
@@ -131,6 +133,29 @@ export async function getBestLines(eventId: string): Promise<EventOdds | null> {
   if (!data) return null;
   const mapped = mapRawToEventOdds(data);
   return mapped[0] ?? null;
+}
+
+function normalizeTeamName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function teamsMatch(a: string, b: string): boolean {
+  const na = normalizeTeamName(a);
+  const nb = normalizeTeamName(b);
+  return na === nb || na.includes(nb) || nb.includes(na);
+}
+
+/** Resolve odds when ESPN event IDs differ from Odds Intelligence event IDs. */
+export async function findOddsByTeams(
+  homeTeam: string,
+  awayTeam: string
+): Promise<EventOdds | null> {
+  const lines = await getLiveOdds();
+  return (
+    lines.find(
+      (e) => teamsMatch(e.homeTeam, homeTeam) && teamsMatch(e.awayTeam, awayTeam)
+    ) ?? null
+  );
 }
 
 /** Test-only reset */

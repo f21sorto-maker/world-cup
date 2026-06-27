@@ -313,6 +313,14 @@
   height: 16px;
 }
 
+.oddsStrip {
+  padding: 0 16px 8px;
+}
+
+.oddsStrip :global(.odds-row) {
+  margin-top: 0;
+}
+
 @keyframes shimmer {
   from { background-position: 200% 0; }
   to { background-position: -200% 0; }

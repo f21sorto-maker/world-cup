@@ -1,12 +1,15 @@
 import type { WcCommentaryEntry } from "../../../../services/WorldCup2026LiveClient";
+import type { MatchStatus } from "../../../../types";
+import { MatchTabEmptyState } from "../../../../components/shared/MatchTabEmptyState";
 import styles from "../../MatchDetailView.module.css";
 
 type Props = {
   commentary: WcCommentaryEntry[];
   loading: boolean;
+  matchStatus?: MatchStatus;
 };
 
-export function MatchCommentaryTab({ commentary, loading }: Props) {
+export function MatchCommentaryTab({ commentary, loading, matchStatus }: Props) {
   if (loading && commentary.length === 0) {
     return (
       <div className={styles.tabPanel}>
@@ -20,7 +23,17 @@ export function MatchCommentaryTab({ commentary, loading }: Props) {
   }
 
   if (commentary.length === 0) {
-    return <div className={styles.emptyState}>No commentary available.</div>;
+    const isUpcoming = matchStatus === "scheduled" || matchStatus === undefined;
+    return (
+      <MatchTabEmptyState
+        title={isUpcoming ? "Commentary starts at kickoff." : "No commentary available."}
+        detail={
+          isUpcoming
+            ? "Live play-by-play from WC 2026 Live API appears once the match is in progress."
+            : "This match may not have commentary coverage yet, or the feed returned no entries."
+        }
+      />
+    );
   }
 
   return (

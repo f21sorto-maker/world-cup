@@ -1,6 +1,6 @@
 /**
  * Central API kill-switches. Flip `enabled` to isolate splash/bootstrap issues.
- * Last audited: 2026-06-25 via `node scripts/test-all-apis.mjs`
+ * Last audited: 2026-06-27 via `npm run test:rapidapi:full` + `npm run test:apis`
  */
 
 export type ApiSourceId =
@@ -43,13 +43,11 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     lastLatencyMs: 412,
   },
   espnPlayByPlay: {
-    enabled: false,
+    enabled: true,
     splashPath: false,
     label: "ESPN Play-by-Play",
-    lastAudit: "fail",
-    lastLatencyMs: 143,
-    failureReason: "Vite proxy returns HTTP 403 (direct API works)",
-    disableReason: "Proxy blocked — disabled until espn-web proxy is fixed",
+    lastAudit: "pass",
+    lastLatencyMs: 200,
   },
   polymarketWinner: {
     enabled: true,
@@ -78,29 +76,29 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     enabled: true,
     splashPath: false,
     label: "RapidAPI FotMob Live",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 607,
   },
   sportApi7: {
     enabled: true,
     splashPath: false,
     label: "SportAPI7 (WC)",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 260,
   },
   wc2026Teams: {
     enabled: true,
     splashPath: false,
     label: "WC 2026 Teams API",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 250,
   },
   wc2026Live: {
     enabled: true,
     splashPath: false,
     label: "WC 2026 Live API",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 238,
   },
   sofascore: {
     enabled: false,
@@ -122,22 +120,23 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     enabled: true,
     splashPath: false,
     label: "Zafronix Historical Form",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 230,
+    failureReason: "Protected routes need VITE_ZAFRONIX_API_KEY from api.zafronix.com/signup",
   },
   oddsIntelligence: {
     enabled: true,
     splashPath: false,
     label: "Sports Odds Intelligence",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 216,
   },
   openWeather: {
     enabled: true,
     splashPath: false,
     label: "Open Weather 13",
-    lastAudit: "untested",
-    lastLatencyMs: 0,
+    lastAudit: "pass",
+    lastLatencyMs: 331,
   },
 };
 

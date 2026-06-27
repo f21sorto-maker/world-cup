@@ -1,4 +1,5 @@
-import type { Lineup } from "../../../../types";
+import type { Lineup, MatchStatus } from "../../../../types";
+import { MatchTabEmptyState } from "../../../../components/shared/MatchTabEmptyState";
 import { PitchDiagram } from "../lineups/PitchDiagram";
 import { SubstitutesBench } from "../lineups/SubstitutesBench";
 import { ManagerRow } from "../lineups/ManagerRow";
@@ -10,9 +11,10 @@ type Props = {
   loading: boolean;
   homeTeamName: string;
   awayTeamName: string;
+  matchStatus?: MatchStatus;
 };
 
-export function MatchLineupsTab({ lineups, loading, homeTeamName, awayTeamName }: Props) {
+export function MatchLineupsTab({ lineups, loading, homeTeamName, awayTeamName, matchStatus }: Props) {
   if (loading && lineups.length === 0) {
     return (
       <div className={styles.tabPanel}>
@@ -26,10 +28,16 @@ export function MatchLineupsTab({ lineups, loading, homeTeamName, awayTeamName }
   }
 
   if (lineups.length === 0) {
+    const isUpcoming = matchStatus === "scheduled" || matchStatus === undefined;
     return (
-      <div className={styles.emptyState}>
-        <p>Lineups not yet announced.</p>
-      </div>
+      <MatchTabEmptyState
+        title={isUpcoming ? "Lineups not yet announced." : "Lineups unavailable."}
+        detail={
+          isUpcoming
+            ? "Starting elevens are usually published about an hour before kickoff."
+            : "WC 2026 Live API did not return lineup data for this match."
+        }
+      />
     );
   }
 

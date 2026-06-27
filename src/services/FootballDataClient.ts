@@ -20,9 +20,6 @@ function baseUrl(): string {
   if (typeof window === "undefined") {
     return `https://${RAPIDAPI_HOST}`;
   }
-  if (import.meta.env.DEV) {
-    return "/rapidapi";
-  }
   return "/api/footballdata";
 }
 

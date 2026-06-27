@@ -24,13 +24,19 @@ const INITIAL_STATE: BundleState = {
   fetchedAt: null,
 };
 
-/** Match detail bundle — delegates to DataOrchestrator enrichment. */
+/** Match detail bundle — orchestrator enrichment + direct WC Live fetch. */
 export function useMatchDetailBundle(
   match: MergedMatch | null,
   wcMatchId: string | null
 ): BundleState & { refetch: () => void } {
   const matchId = match?.id ?? null;
   const enrichment = useMatchEnrichment(matchId);
+  const [direct, setDirect] = useState<Pick<BundleState, "statistics" | "lineups" | "commentary">>({
+    statistics: null,
+    lineups: [],
+    commentary: [],
+  });
+  const [directLoading, setDirectLoading] = useState(false);
   const [fetchedAt, setFetchedAt] = useState<number | null>(null);
   const [forceKey, setForceKey] = useState(0);
 
@@ -41,23 +47,49 @@ export function useMatchDetailBundle(
   }, [enrichment.enrichment]);
 
   useEffect(() => {
-    if (forceKey === 0 || !match) return;
+    if (!match || !wcMatchId) return;
     if (!isApiEnabled("wc2026Live") || isWc2026LiveDisabled()) return;
 
-    void fetchMatchBundle(match, wcMatchId, true).then((bundle) => {
-      setFetchedAt(bundle.fetchedAt);
-    });
-    DataOrchestrator.getInstance().clearEnrichmentCache(match.id);
-    void DataOrchestrator.getInstance().enrichMatch(match.id);
-  }, [forceKey, match, wcMatchId]);
+    let cancelled = false;
+    setDirectLoading(true);
 
-  const refetch = () => setForceKey((k) => k + 1);
+    void fetchMatchBundle(match, wcMatchId, forceKey > 0).then((bundle) => {
+      if (cancelled) return;
+      setDirect({
+        statistics: bundle.statistics,
+        lineups: bundle.lineups,
+        commentary: bundle.commentary.map((e) => ({
+          minute: typeof e.minute === "number" ? e.minute : Number(e.minute) || 0,
+          text: e.text,
+          type: e.type as CommentaryEntry["type"],
+        })),
+      });
+      setFetchedAt(bundle.fetchedAt);
+      setDirectLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [match, wcMatchId, forceKey]);
+
+  const refetch = () => {
+    if (match) {
+      DataOrchestrator.getInstance().clearEnrichmentCache(match.id);
+      void DataOrchestrator.getInstance().enrichMatch(match.id);
+    }
+    setForceKey((k) => k + 1);
+  };
+
+  const statistics = enrichment.statistics ?? direct.statistics;
+  const lineups = enrichment.lineups.length > 0 ? enrichment.lineups : direct.lineups;
+  const commentary = enrichment.commentary.length > 0 ? enrichment.commentary : direct.commentary;
 
   return {
-    statistics: enrichment.statistics,
-    lineups: enrichment.lineups,
-    commentary: enrichment.commentary,
-    loading: enrichment.loading,
+    statistics,
+    lineups,
+    commentary,
+    loading: enrichment.loading || directLoading,
     error: enrichment.error,
     fetchedAt,
     refetch,

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { MatchStatisticsBundle } from "../../../../types";
+import type { MatchStatisticsBundle, MatchStatus } from "../../../../types";
+import { MatchTabEmptyState } from "../../../../components/shared/MatchTabEmptyState";
 import { StatComparisonRow } from "../statistics/StatComparisonRow";
 import { StatPeriodFilter } from "../statistics/StatPeriodFilter";
 import styles from "../../MatchDetailView.module.css";
@@ -9,6 +10,7 @@ type Props = {
   loading: boolean;
   homeTeamName: string;
   awayTeamName: string;
+  matchStatus?: MatchStatus;
 };
 
 type StatDef = {
@@ -34,7 +36,7 @@ const STAT_ROWS: StatDef[] = [
   { key: "saves", label: "Goalkeeper Saves" }
 ];
 
-export function MatchStatisticsTab({ statistics, loading, homeTeamName, awayTeamName }: Props) {
+export function MatchStatisticsTab({ statistics, loading, homeTeamName, awayTeamName, matchStatus }: Props) {
   const [_period, setPeriod] = useState<"all" | "first_half" | "second_half">("all");
 
   if (loading && !statistics) {
@@ -50,7 +52,17 @@ export function MatchStatisticsTab({ statistics, loading, homeTeamName, awayTeam
   }
 
   if (!statistics) {
-    return <div className={styles.emptyState}>Statistics not available for this match.</div>;
+    const isUpcoming = matchStatus === "scheduled" || matchStatus === undefined;
+    return (
+      <MatchTabEmptyState
+        title={isUpcoming ? "Statistics available during the match." : "Statistics not available for this match."}
+        detail={
+          isUpcoming
+            ? "Possession, shots, and xG appear once play begins via WC 2026 Live API."
+            : "The stats feed returned no data — try again during or after a live match."
+        }
+      />
+    );
   }
 
   const availableRows = STAT_ROWS.filter(

@@ -18,6 +18,7 @@ import { MatchH2HTab } from "./components/tabs/MatchH2HTab";
 import type { MatchDetailTab, MatchEvent } from "../../types";
 import { APP_BRAND } from "../../config/appMeta";
 import { VenueLabel } from "../../components/venue/VenueLabel";
+import { OddsRow } from "../../components/match/OddsRow";
 import styles from "./MatchDetailView.module.css";
 
 const TABS: { id: MatchDetailTab; label: string }[] = [
@@ -248,6 +249,12 @@ export function MatchDetailView() {
           ) : null}
         </div>
 
+        {match && !isDone ? (
+          <div className={styles.oddsStrip}>
+            <OddsRow match={match} homeTeam={homeTeamName} awayTeam={awayTeamName} />
+          </div>
+        ) : null}
+
         {/* Goal scorers strip (when events available) */}
         {events.length > 0 ? (
           <div className={styles.scorersStrip}>
@@ -306,6 +313,7 @@ export function MatchDetailView() {
             loading={loading}
             homeTeamName={homeTeamName}
             awayTeamName={awayTeamName}
+            matchStatus={match?.status}
           />
         ) : null}
 
@@ -315,11 +323,16 @@ export function MatchDetailView() {
             loading={loading}
             homeTeamName={homeTeamName}
             awayTeamName={awayTeamName}
+            matchStatus={match?.status}
           />
         ) : null}
 
         {activeMatchTab === "commentary" ? (
-          <MatchCommentaryTab commentary={commentary} loading={loading} />
+          <MatchCommentaryTab
+            commentary={commentary}
+            loading={loading}
+            matchStatus={match?.status}
+          />
         ) : null}
 
         {activeMatchTab === "h2h" && match ? (

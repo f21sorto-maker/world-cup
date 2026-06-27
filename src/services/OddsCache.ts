@@ -1,5 +1,5 @@
 import { isApiEnabled } from "../config/apiFlags";
-import { getBestLines, isOddsDisabled, type EventOdds } from "./OddsIntelligenceClient";
+import { findOddsByTeams, getBestLines, isOddsDisabled, type EventOdds } from "./OddsIntelligenceClient";
 
 const TTL_MS = 5 * 60 * 1000;
 
@@ -11,7 +11,10 @@ type CacheEntry = {
 const cache = new Map<string, CacheEntry>();
 const inFlight = new Map<string, Promise<EventOdds | null>>();
 
-export async function getOdds(eventId: string): Promise<EventOdds | null> {
+export async function getOdds(
+  eventId: string,
+  teams?: { home: string; away: string }
+): Promise<EventOdds | null> {
   if (!isApiEnabled("oddsIntelligence") || isOddsDisabled()) return null;
 
   const cached = cache.get(eventId);
@@ -22,13 +25,17 @@ export async function getOdds(eventId: string): Promise<EventOdds | null> {
   const existing = inFlight.get(eventId);
   if (existing) return existing;
 
-  const promise = getBestLines(eventId).then((data) => {
+  const promise = (async () => {
+    let data = await getBestLines(eventId);
+    if (!data && teams) {
+      data = await findOddsByTeams(teams.home, teams.away);
+    }
     inFlight.delete(eventId);
     if (data) {
       cache.set(eventId, { data, fetchedAt: Date.now() });
     }
     return data;
-  });
+  })();
 
   inFlight.set(eventId, promise);
   return promise;

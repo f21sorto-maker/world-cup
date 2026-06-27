@@ -79,13 +79,12 @@ export function MatchScheduleCard({ match, home, away, compact, onSelect }: Prop
         )}
       </div>
 
-      {!isDone && !isLive && match.id ? (
+      {!isDone && match ? (
         <OddsRow
-          espnEventId={match.espnEventId ?? match.id}
-          matchId={match.id}
-          matchStatus={match.status}
+          match={match}
           homeTeam={teamDisplayName(home, match.homeTeamId)}
           awayTeam={teamDisplayName(away, match.awayTeamId)}
+          compact={compact}
         />
       ) : null}
 

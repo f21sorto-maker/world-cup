@@ -516,6 +516,11 @@ export type OddsSnapshot = {
   draw: number;
   awayWin: number;
   fetchedAt: number;
+  /** Where these prices came from — shown in the UI. */
+  source?: "polymarket" | "sportsbook";
+  marketSlug?: string;
+  /** Knockout advance market — no draw price. */
+  twoWay?: boolean;
 };
 
 export type FuturesOdds = {

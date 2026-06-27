@@ -84,7 +84,7 @@
     "host": "free-api-live-football-data.p.rapidapi.com",
     "marketplaceSlug": "free-api-live-football-data",
     "client": "FootballDataClient.ts",
-    "devProxyPrefix": "/rapidapi",
+    "devProxyPrefix": "/api/footballdata",
     "testPath": "/football-get-matches-by-date?date={todayYyyymmdd}",
     "endpoints": [
       {
@@ -115,7 +115,7 @@
     "host": "sportapi7.p.rapidapi.com",
     "marketplaceSlug": "sportapi7",
     "client": "SportAPI7Client.ts",
-    "devProxyPrefix": "/rapidapi-sportapi",
+    "devProxyPrefix": "/api/sportapi",
     "testPath": "/api/v1/category/1468/scheduled-events/{todayIso}",
     "endpoints": [
       {
@@ -146,7 +146,7 @@
     "host": "world-cup-2026.p.rapidapi.com",
     "marketplaceSlug": "world-cup-2026",
     "client": "WorldCup2026Client.ts",
-    "devProxyPrefix": "/rapidapi-wc2026",
+    "devProxyPrefix": "/api/wc2026",
     "testPath": "/world-cup-2026/teams",
     "endpoints": [
       {
@@ -177,7 +177,7 @@
     "host": "world-cup-2026-live-api.p.rapidapi.com",
     "marketplaceSlug": "world-cup-2026-live-api",
     "client": "WorldCup2026LiveClient.ts",
-    "devProxyPrefix": "/rapidapi-wc-live",
+    "devProxyPrefix": "/api/wc-live",
     "testPath": "/wc/live",
     "endpoints": [
       {
@@ -230,7 +230,7 @@
     "host": "open-weather13.p.rapidapi.com",
     "marketplaceSlug": "open-weather13",
     "client": "WeatherClient.ts",
-    "devProxyPrefix": "/rapidapi-weather",
+    "devProxyPrefix": "/api/weather",
     "testPath": "/city?city=New%20York&lang=EN",
     "endpoints": [
       {
@@ -247,7 +247,7 @@
     "host": "sports-odds-intelligence-api.p.rapidapi.com",
     "marketplaceSlug": "sports-odds-intelligence-api",
     "client": "OddsIntelligenceClient.ts",
-    "devProxyPrefix": "/rapidapi-odds",
+    "devProxyPrefix": "/api/odds",
     "testPath": "/soccer/",
     "endpoints": [
       {

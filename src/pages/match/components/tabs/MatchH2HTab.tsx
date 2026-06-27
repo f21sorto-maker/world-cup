@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { H2HBundle, MergedMatch } from "../../../../types";
 import { getHistoricalMatchesForTeam } from "../../../../services/ZafronixClient";
-import { useStore } from "../../../../store";
+import { hasZafronixKey, zafronixSignupUrl } from "../../../../lib/apiSetup";
+import { MatchTabEmptyState } from "../../../../components/shared/MatchTabEmptyState";
 import styles from "../../MatchDetailView.module.css";
 
 type Props = {
@@ -72,7 +73,6 @@ function buildH2HFromZafronix(
 export function MatchH2HTab({ match, homeTeamName, awayTeamName }: Props) {
   const [h2h, setH2h] = useState<H2HBundle | null>(null);
   const [loading, setLoading] = useState(true);
-  const openTeamSheet = useStore((s) => s.openTeamSheet);
 
   useEffect(() => {
     let cancelled = false;
@@ -115,42 +115,18 @@ export function MatchH2HTab({ match, homeTeamName, awayTeamName }: Props) {
   }
 
   if (!h2h || h2h.summary.total === 0) {
+    const zafronixConfigured = hasZafronixKey();
     return (
-      <div className={styles.emptyState}>
-        <p>No head-to-head history found.</p>
-        <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 12 }}>
-          <button
-            type="button"
-            style={{
-              background: "var(--ss-elevated)",
-              border: "1px solid var(--ss-border)",
-              color: "var(--ss-text)",
-              padding: "6px 14px",
-              borderRadius: 6,
-              cursor: "pointer",
-              fontSize: 12
-            }}
-            onClick={() => openTeamSheet(match.homeTeamId)}
-          >
-            {homeTeamName} profile
-          </button>
-          <button
-            type="button"
-            style={{
-              background: "var(--ss-elevated)",
-              border: "1px solid var(--ss-border)",
-              color: "var(--ss-text)",
-              padding: "6px 14px",
-              borderRadius: 6,
-              cursor: "pointer",
-              fontSize: 12
-            }}
-            onClick={() => openTeamSheet(match.awayTeamId)}
-          >
-            {awayTeamName} profile
-          </button>
-        </div>
-      </div>
+      <MatchTabEmptyState
+        title="No head-to-head history found."
+        detail={
+          zafronixConfigured
+            ? "These teams may not have met recently, or Zafronix returned no overlapping fixtures."
+            : "Add a free Zafronix key (separate from RapidAPI) to unlock historical H2H data."
+        }
+        actionLabel={zafronixConfigured ? undefined : "Get free Zafronix key"}
+        actionUrl={zafronixConfigured ? undefined : zafronixSignupUrl()}
+      />
     );
   }
 

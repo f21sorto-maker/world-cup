@@ -3,6 +3,7 @@ import { BottomTabBar } from "./BottomTabBar";
 import { TopNavBar } from "./TopNavBar";
 import { SplashScreen } from "./SplashScreen";
 import { DebugPanel } from "../shared/DebugPanel";
+import { ApiSetupBanner } from "../shared/ApiSetupBanner";
 import { useHashSync } from "../../hooks/useHashSync";
 import { useQualificationChangeLogger } from "../../hooks/useQualificationChangeLogger";
 import { useStore } from "../../store";
@@ -46,6 +47,7 @@ export function AppShell() {
 
   return (
     <div className="wc-chrome">
+      <ApiSetupBanner />
       <TopNavBar hidden={activeTab === "simulator" || !!activeMatchId || !!activeVenueSlug} />
       <main ref={mainRef} className="wc-main">
         {activeTab === "live" ? <LiveView /> : null}
