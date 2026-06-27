@@ -30,6 +30,10 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+## [4.0.0] build 5 — 2026-06-27 (build)
+- Fix UI debug sweep scan bridge timing; archive sweep runs under .cursor/ui-debug-runs
+
 ## [4.0.0] build 4 — 2026-06-27 (build)
 - 16 file(s) in scripts, src — 16 files changed, 374 insertions(+), 205 deletions(-)
 
