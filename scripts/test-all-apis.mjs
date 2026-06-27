@@ -335,6 +335,25 @@ const tests = [
       return `ok, keys=${Object.keys(d).join(",")}`;
     },
   },
+  {
+    label: "TVView getAll (direct)",
+    url: "https://tvview.p.rapidapi.com/getAll",
+    headers: rapidHeaders("tvview.p.rapidapi.com"),
+    skip: !RAPIDAPI_KEY,
+    parse: ({ status, body }) => {
+      if (status === 401 || status === 403) return `FAIL: HTTP ${status} (subscription/key required)`;
+      if (status === 429) return "HTTP 429 (quota reached)";
+      const d = JSON.parse(body);
+      const count = Array.isArray(d)
+        ? d.length
+        : Array.isArray(d.data)
+          ? d.data.length
+          : Array.isArray(d.items)
+            ? d.items.length
+            : 0;
+      return `entries=${count}`;
+    },
+  },
   ...Array.from({ length: 8 }, (_, i) => i * 100).map((offset) => ({
     label: `Polymarket games offset=${offset} (direct)`,
     url: `https://gamma-api.polymarket.com${polyGames(offset)}`,
@@ -352,7 +371,7 @@ for (const t of tests) {
     (
       t.label.includes("(vite proxy)") ||
       /offset=(100|200|300|400|500|600|700)/.test(t.label) ||
-      /(world-cup1|sport-highlights|all-sport-live-stream|sports-live-scores|free-daily-xtream-iptv|cloud-api-hub-iptv)/.test(t.url)
+      /(world-cup1|sport-highlights|all-sport-live-stream|sports-live-scores|free-daily-xtream-iptv|cloud-api-hub-iptv|tvview)/.test(t.url)
     )
   ) {
     results.push({

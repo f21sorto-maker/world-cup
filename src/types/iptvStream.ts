@@ -24,7 +24,7 @@ export type IptvLiveChannel = {
 
 export type IptvStreamLookupResult = {
   available: boolean;
-  sources: Array<"xtreamDaily" | "cloudSubscriber">;
+  sources: Array<"xtreamDaily" | "cloudSubscriber" | "tvview">;
   credentials: XtreamServerCredentials[];
   m3uUrls: string[];
   channels: IptvLiveChannel[];

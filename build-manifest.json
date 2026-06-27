@@ -1,6 +1,22 @@
 {
-  "updatedAt": "2026-06-27T16:56:32.979Z",
+  "updatedAt": "2026-06-27T17:02:26.938Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 21,
+      "kind": "build",
+      "message": "14 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, config, scripts — 14 files changed, 235 insertions(+), 22 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T17:02:26.938Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 20,
+      "kind": "build",
+      "message": "Add TVView RapidAPI IPTV source and wire API audit coverage",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T17:02:11.726Z"
+    },
     {
       "version": "4.0.0",
       "build": 19,
@@ -236,6 +252,14 @@
   ],
   "commits": [
     {
+      "hash": "39ef43287811ce7573d1e663f6af2f99d07b6042",
+      "shortHash": "39ef432",
+      "message": "Wire IPTV RapidAPI providers as stream fallback on match watch tab",
+      "version": "4.0.0",
+      "build": 19,
+      "timestamp": "2026-06-27T16:56:33.074Z"
+    },
+    {
       "hash": "fbfaaab412a575a589b4f1e13de01a7361653c85",
       "shortHash": "fbfaaab",
       "message": "Unify standings and simulation on canonical dataset",
@@ -466,14 +490,6 @@
       "version": "3.0.0",
       "build": 19,
       "timestamp": "2026-06-27T07:02:27.425Z"
-    },
-    {
-      "hash": "a1b8e76563a38f8115bf7424a48cf51e5afe1c6b",
-      "shortHash": "a1b8e76",
-      "message": "Fix qualification display for top-eight thirds and advancement scoring.",
-      "version": "3.0.0",
-      "build": 18,
-      "timestamp": "2026-06-27T06:56:48.921Z"
     }
   ],
   "deploys": [

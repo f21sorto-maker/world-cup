@@ -45,6 +45,14 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+## [4.0.0] build 21 — 2026-06-27 (build)
+- 14 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, config, scripts — 14 files changed, 235 insertions(+), 22 deletions(-)
+
+## [4.0.0] build 20 — 2026-06-27 (build)
+- Add TVView RapidAPI IPTV source and wire API audit coverage
+
 ## [4.0.0] build 19 — 2026-06-27 (build)
 - 19 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, config, scripts — 19 files changed, 828 insertions(+), 7 deletions(-)
 

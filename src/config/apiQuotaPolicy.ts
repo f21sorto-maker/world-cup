@@ -153,6 +153,12 @@ export const API_QUOTA_POLICY: Record<ApiSourceId, ApiQuotaPolicy> = {
     minIntervalMs: { live: 3_600_000, background: 21_600_000, test: 21_600_000 },
     note: "Per-country IPTV subscription; 6h client cache.",
   },
+  iptvTvView: {
+    dailyLimit: 5,
+    reserveForLive: 0,
+    minIntervalMs: { live: 3_600_000, background: 21_600_000, test: 21_600_000 },
+    note: "TVView IPTV index for fallback links; keep conservative usage.",
+  },
   sportsLiveScores: {
     dailyLimit: 5,
     reserveForLive: 1,

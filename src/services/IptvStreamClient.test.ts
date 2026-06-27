@@ -16,6 +16,10 @@ describe("iptvStreamEndpoints", () => {
       "/subscribe/1year_no_adults?countryCode=FR"
     );
   });
+
+  it("builds tvview getAll path", () => {
+    expect(iptvStreamEndpoints.tvViewGetAll()).toBe("/getAll");
+  });
 });
 
 describe("IptvStreamClient helpers", () => {

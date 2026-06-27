@@ -3,6 +3,7 @@ import {
   CLOUD_API_HUB_IPTV_HOST,
   FREE_DAILY_XTREAM_IPTV_HOST,
   IPTV_DEFAULT_COUNTRY_CODE,
+  TVVIEW_IPTV_HOST,
   iptvStreamEndpoints,
 } from "../config/iptvStreamEndpoints";
 import { rapidApiHeaders, providerByHost } from "../config/rapidApiCatalog";
@@ -19,16 +20,19 @@ import { logger } from "./Logger";
 const XTREAM_HOST =
   providerByHost(FREE_DAILY_XTREAM_IPTV_HOST)?.host ?? FREE_DAILY_XTREAM_IPTV_HOST;
 const CLOUD_HOST = providerByHost(CLOUD_API_HUB_IPTV_HOST)?.host ?? CLOUD_API_HUB_IPTV_HOST;
+const TVVIEW_HOST = providerByHost(TVVIEW_IPTV_HOST)?.host ?? TVVIEW_IPTV_HOST;
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 let xtreamSessionDisabled = false;
 let cloudSessionDisabled = false;
+let tvViewSessionDisabled = false;
 
 type CacheEntry<T> = { value: T; expiresAt: number };
 
 let dailyXtreamCache: CacheEntry<XtreamServerCredentials[]> | null = null;
 let subscriptionCache = new Map<string, CacheEntry<IptvSubscriptionResult>>();
+let tvViewServersCache: CacheEntry<LiveStreamServer[]> | null = null;
 
 export function isIptvXtreamDailyDisabled(): boolean {
   return xtreamSessionDisabled || !isApiEnabled("iptvXtreamDaily");
@@ -36,6 +40,10 @@ export function isIptvXtreamDailyDisabled(): boolean {
 
 export function isIptvCloudSubscriberDisabled(): boolean {
   return cloudSessionDisabled || !isApiEnabled("iptvCloudSubscriber");
+}
+
+export function isIptvTvViewDisabled(): boolean {
+  return tvViewSessionDisabled || !isApiEnabled("iptvTvView");
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -54,11 +62,15 @@ function normalizeTeamKey(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-function baseUrl(host: "xtream" | "cloud"): string {
+function baseUrl(host: "xtream" | "cloud" | "tvview"): string {
   if (typeof window === "undefined") {
-    return host === "xtream" ? `https://${XTREAM_HOST}` : `https://${CLOUD_HOST}`;
+    if (host === "xtream") return `https://${XTREAM_HOST}`;
+    if (host === "cloud") return `https://${CLOUD_HOST}`;
+    return `https://${TVVIEW_HOST}`;
   }
-  return host === "xtream" ? "/api/free-daily-xtream-iptv" : "/api/cloud-api-hub-iptv";
+  if (host === "xtream") return "/api/free-daily-xtream-iptv";
+  if (host === "cloud") return "/api/cloud-api-hub-iptv";
+  return "/api/tvview";
 }
 
 function headers(host: string): HeadersInit {
@@ -216,11 +228,16 @@ function normalizeLiveChannel(raw: unknown, creds?: XtreamServerCredentials): Ip
 }
 
 async function fetchJson<T>(
-  host: "xtream" | "cloud",
+  host: "xtream" | "cloud" | "tvview",
   path: string,
-  source: "iptvXtreamDaily" | "iptvCloudSubscriber"
+  source: "iptvXtreamDaily" | "iptvCloudSubscriber" | "iptvTvView"
 ): Promise<T | null> {
-  const disabled = host === "xtream" ? isIptvXtreamDailyDisabled() : isIptvCloudSubscriberDisabled();
+  const disabled =
+    host === "xtream"
+      ? isIptvXtreamDailyDisabled()
+      : host === "cloud"
+        ? isIptvCloudSubscriberDisabled()
+        : isIptvTvViewDisabled();
   if (disabled) return null;
 
   const quota = acquireApiQuota(source, "background");
@@ -229,13 +246,14 @@ async function fetchJson<T>(
     return null;
   }
 
-  const rapidHost = host === "xtream" ? XTREAM_HOST : CLOUD_HOST;
+  const rapidHost = host === "xtream" ? XTREAM_HOST : host === "cloud" ? CLOUD_HOST : TVVIEW_HOST;
 
   try {
     const res = await fetch(`${baseUrl(host)}${path}`, { headers: headers(rapidHost) });
     if (res.status === 401 || res.status === 403 || res.status === 429) {
       if (host === "xtream") xtreamSessionDisabled = true;
-      else cloudSessionDisabled = true;
+      else if (host === "cloud") cloudSessionDisabled = true;
+      else tvViewSessionDisabled = true;
       logger.warn("IptvStream", `Blocked ${res.status} on ${path}`);
       return null;
     }
@@ -278,6 +296,70 @@ export async function fetchIptvSubscription(
   const normalized = normalizeSubscription(raw, countryCode, plan);
   subscriptionCache.set(cacheKey, { value: normalized, expiresAt: Date.now() + CACHE_TTL_MS });
   return normalized;
+}
+
+function maybePushTvViewServer(list: LiveStreamServer[], value: unknown): void {
+  if (!isRecord(value)) return;
+  const baseName = pickString(value, ["name", "title", "channel", "channelName", "label"]);
+  const explicitType = pickString(value, ["type", "format", "kind"]);
+
+  const candidates: Array<{ key: string; label?: string }> = [
+    { key: "url" },
+    { key: "link" },
+    { key: "m3u" },
+    { key: "m3u_url", label: "M3U" },
+    { key: "playlist", label: "M3U" },
+    { key: "playlistUrl", label: "M3U" },
+    { key: "stream_url", label: "HLS" },
+    { key: "streamUrl", label: "HLS" },
+    { key: "low", label: "low" },
+    { key: "mid", label: "mid" },
+    { key: "high", label: "high" },
+    { key: "hd", label: "hd" },
+  ];
+
+  for (const candidate of candidates) {
+    const raw = value[candidate.key];
+    if (typeof raw !== "string" || !raw.trim()) continue;
+    const url = raw.trim();
+    list.push({
+      name: candidate.label ? `${baseName ?? "TVView"} (${candidate.label})` : baseName,
+      url,
+      type: explicitType ?? (url.includes(".m3u") ? "m3u" : "hls"),
+    });
+  }
+}
+
+function normalizeTvViewServers(raw: unknown): LiveStreamServer[] {
+  const out: LiveStreamServer[] = [];
+
+  const walk = (node: unknown): void => {
+    if (Array.isArray(node)) {
+      for (const item of node) walk(item);
+      return;
+    }
+    if (!isRecord(node)) return;
+
+    maybePushTvViewServer(out, node);
+    for (const key of ["data", "items", "results", "streams", "channels", "list"]) {
+      walk(node[key]);
+    }
+  };
+
+  walk(raw);
+  return out.filter((server, index, arr) => arr.findIndex((s) => s.url === server.url) === index);
+}
+
+/** RapidAPI — TVView /getAll index of IPTV stream links. */
+export async function fetchTvViewServers(): Promise<LiveStreamServer[]> {
+  if (tvViewServersCache && tvViewServersCache.expiresAt > Date.now()) {
+    return tvViewServersCache.value;
+  }
+
+  const raw = await fetchJson<unknown>("tvview", iptvStreamEndpoints.tvViewGetAll(), "iptvTvView");
+  const servers = normalizeTvViewServers(raw);
+  tvViewServersCache = { value: servers, expiresAt: Date.now() + CACHE_TTL_MS };
+  return servers;
 }
 
 /** Optional: pull live categories from Xtream player API (direct to IPTV server). */
@@ -329,16 +411,17 @@ export async function resolveIptvStreamsForMatch(
   awayTeamName: string,
   countryCode: string = IPTV_DEFAULT_COUNTRY_CODE
 ): Promise<IptvStreamLookupResult> {
-  const sources: Array<"xtreamDaily" | "cloudSubscriber"> = [];
+  const sources: Array<"xtreamDaily" | "cloudSubscriber" | "tvview"> = [];
   const credentials: XtreamServerCredentials[] = [];
   const m3uUrls: string[] = [];
   const servers: LiveStreamServer[] = [];
   const channels: IptvLiveChannel[] = [];
   const errors: string[] = [];
 
-  const [daily, subscription] = await Promise.all([
+  const [daily, subscription, tvViewServers] = await Promise.all([
     fetchDailyXtreamServers(),
     fetchIptvSubscription(countryCode),
+    fetchTvViewServers(),
   ]);
 
   if (daily.length > 0) {
@@ -370,6 +453,16 @@ export async function resolveIptvStreamsForMatch(
           url: buildXtreamM3uUrl(subscription.credentials),
           type: "m3u",
         });
+      }
+    }
+  }
+
+  if (tvViewServers.length > 0) {
+    sources.push("tvview");
+    servers.push(...tvViewServers);
+    for (const server of tvViewServers) {
+      if (server.url.includes(".m3u") && !m3uUrls.includes(server.url)) {
+        m3uUrls.push(server.url);
       }
     }
   }

@@ -119,6 +119,7 @@ const rapidApiProxies = {
     "https://cloud-api-hub-iptv-auto-subscriber.p.rapidapi.com",
     "/api/cloud-api-hub-iptv"
   ),
+  "/api/tvview": rapidApiProxy("https://tvview.p.rapidapi.com", "/api/tvview"),
   "/api/espn-web": {
     target: "https://site.web.api.espn.com",
     changeOrigin: true,

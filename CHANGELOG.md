@@ -8,6 +8,8 @@
 ## [Unreleased]
 
 ### Builds
+- **4.0.0 build 21** (2026-06-27): 14 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, config, scripts — 14 files changed, 235 insertions(+), 22 deletions(-)
+- **4.0.0 build 20** (2026-06-27): Add TVView RapidAPI IPTV source and wire API audit coverage
 - **4.0.0 build 19** (2026-06-27): 19 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, config, scripts — 19 files changed, 828 insertions(+), 7 deletions(-)
 - **4.0.0 build 18** (2026-06-27): Wire IPTV RapidAPI providers as stream fallback on match watch tab
 - **4.0.0 build 17** (2026-06-27): 18 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, scripts, src — 18 files changed, 666 insertions(+), 45 deletions(-)

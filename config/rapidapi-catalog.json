@@ -678,5 +678,22 @@
         "acceptStatuses": [200, 403, 429]
       }
     ]
+  },
+  {
+    "id": "tvview",
+    "label": "TVView IPTV",
+    "host": "tvview.p.rapidapi.com",
+    "marketplaceSlug": "tvview",
+    "client": "IptvStreamClient.ts",
+    "devProxyPrefix": "/api/tvview",
+    "testPath": "/getAll",
+    "endpoints": [
+      {
+        "id": "getAll",
+        "fn": "fetchTvViewServers",
+        "path": "/getAll",
+        "acceptStatuses": [200, 403, 429]
+      }
+    ]
   }
 ]

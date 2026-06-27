@@ -24,6 +24,7 @@ export type ApiSourceId =
   | "allSportLiveStream"
   | "iptvXtreamDaily"
   | "iptvCloudSubscriber"
+  | "iptvTvView"
   | "sportsLiveScores"
   | "openWeather";
 
@@ -189,6 +190,14 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     lastAudit: "untested",
     lastLatencyMs: 0,
     failureReason: "Requires RapidAPI subscription; cached 6h per country",
+  },
+  iptvTvView: {
+    enabled: true,
+    splashPath: false,
+    label: "TVView IPTV Index",
+    lastAudit: "untested",
+    lastLatencyMs: 0,
+    failureReason: "Requires RapidAPI subscription; fallback-only source",
   },
   sportsLiveScores: {
     enabled: true,
