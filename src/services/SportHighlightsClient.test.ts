@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { sportHighlightsEndpoints } from "../config/sportHighlightsEndpoints";
+import { mapHighlightlyStatistics } from "./matchDetail/fetchHighlightlyMatchBundle";
 
 describe("sportHighlightsEndpoints", () => {
   it("builds football routes", () => {
@@ -18,8 +19,7 @@ describe("sportHighlightsEndpoints", () => {
 });
 
 describe("mapHighlightlyStatistics", () => {
-  it("maps display names to team stats", async () => {
-    const { mapHighlightlyStatistics } = await import("../services/matchDetail/fetchHighlightlyMatchBundle");
+  it("maps display names to team stats", () => {
     const bundle = mapHighlightlyStatistics("m1", "home", "away", [
       {
         team: { id: 1, name: "Home" },

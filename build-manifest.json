@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-06-27T07:08:54.741Z",
+  "updatedAt": "2026-06-27T07:11:18.150Z",
   "builds": [
+    {
+      "version": "3.0.0",
+      "build": 21,
+      "kind": "build",
+      "message": "2 file(s) in build-manifest.json, src — 2 files changed, 11 insertions(+), 3 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T07:11:17.721Z"
+    },
     {
       "version": "3.0.0",
       "build": 20,
@@ -75,6 +83,22 @@
     }
   ],
   "commits": [
+    {
+      "hash": "f66b19b933752ace6d9656b6a88a5ecc70fceaaf",
+      "shortHash": "f66b19b",
+      "message": "Fix flaky SportHighlights test and sync final debug manifest.",
+      "version": "3.0.0",
+      "build": 21,
+      "timestamp": "2026-06-27T07:11:18.149Z"
+    },
+    {
+      "hash": "48e40633606b1ad1561d1659ead27e223726d3bb",
+      "shortHash": "48e4063",
+      "message": "Record deploy metadata for v3.0.0 build 20 production release.",
+      "version": "3.0.0",
+      "build": 20,
+      "timestamp": "2026-06-27T07:09:15.680Z"
+    },
     {
       "hash": "eef1b92a632f23b8958cd9ce9bbe2dcd80e16e05",
       "shortHash": "eef1b92",
