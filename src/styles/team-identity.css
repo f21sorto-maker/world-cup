@@ -237,8 +237,7 @@
 }
 
 .qual-crest-themed {
-  padding: 0;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   border: none;
   background: transparent;
 }
@@ -358,7 +357,7 @@
   font-size: 0.65rem;
   color: rgba(156, 163, 175, 0.85);
   border: 1px dashed rgba(75, 85, 99, 0.4);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   padding: 2px 4px;
 }
 
@@ -366,7 +365,7 @@
 .bracket-ghost-crest {
   width: 14px;
   height: 14px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   object-fit: contain;
   object-position: center;
   flex-shrink: 0;

@@ -15,6 +15,7 @@ import "./styles/components.css";
 import "./styles/responsive.css";
 import "./styles/platform.css";
 import "./styles/modules.css";
+import "./styles/edges.css";
 
 async function init() {
   await bootstrap();

@@ -1,0 +1,180 @@
+/**
+ * Universal rounded, feathered edges — applied across cards, chrome, controls, and overlays.
+ */
+
+:root {
+  --edge-radius: var(--radius-lg);
+  --edge-radius-sm: var(--radius-md);
+  --edge-radius-lg: var(--radius-xl);
+  --edge-radius-sheet: var(--radius-2xl);
+}
+
+/* ── Module shells & major surfaces ─────────────────────────────── */
+
+:is(
+  .qual-bento,
+  .group-table-bento,
+  .best-third-table-bento,
+  .best-third-race-panel,
+  .schedule-card,
+  .live-hero-card,
+  .result-match-card,
+  .recent-result-row,
+  .teams-group-panel--open,
+  .idle-banner,
+  .best-third-timeline,
+  .best-third-live-panel,
+  .hero-panel,
+  .bracket-match,
+  .bracket-slot,
+  .standing-table-wrap,
+  .team-sheet,
+  .team-sheet--portal,
+  .venue-popover,
+  .install-app-banner,
+  .bento-error,
+  .sim-panel,
+  .groups-view-toggle,
+  .bracket-toggle,
+  .live-bracket-embed__panel
+) {
+  border-color: var(--edge-border);
+  border-radius: var(--edge-radius-lg);
+  box-shadow: var(--shadow-feather);
+  overflow: clip;
+}
+
+/* Compact cards & rows */
+:is(
+  .recent-result-row,
+  .qual-bento,
+  .stat-chip,
+  .network-badge,
+  .venue-match-row
+) {
+  border-radius: var(--edge-radius);
+  box-shadow: var(--shadow-feather-sm);
+}
+
+/* ── App chrome ─────────────────────────────────────────────────── */
+
+.wc-topbar {
+  border-radius: 0 0 var(--edge-radius-lg) var(--edge-radius-lg);
+  box-shadow: var(--shadow-feather-sm);
+}
+
+.bottom-tab-bar {
+  border-radius: var(--edge-radius-lg) var(--edge-radius-lg) 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.bottom-tab {
+  border-radius: var(--radius-md);
+}
+
+.bottom-tab--active {
+  background: color-mix(in srgb, var(--fwc-royal-blue) 10%, transparent);
+}
+
+/* ── Controls & toggles ─────────────────────────────────────────── */
+
+:is(
+  button,
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  .groups-view-toggle-btn,
+  .schedule-expand-btn,
+  .bento-retry-btn,
+  .recent-results-link,
+  .theme-toggle,
+  .bracket-toggle button,
+  .teams-filter-pill,
+  .segmented button,
+  .team-sheet-tabs button
+) {
+  border-radius: var(--edge-radius-sm);
+}
+
+/* Pills stay fully round */
+:is(
+  .live-pill,
+  .final-pill,
+  .kickoff-countdown,
+  .stat-chip,
+  .qual-team-badge,
+  .best-third-status,
+  .certainty-badge,
+  .qualification-status-badge,
+  .network-badge,
+  .bottom-tab-badge,
+  .segmented,
+  [class*="pill"],
+  [class*="badge"]:not(.team-flag-badge)
+) {
+  border-radius: var(--radius-full);
+}
+
+/* ── Tables & scroll regions inside rounded shells ──────────────── */
+
+.group-table-scroll,
+.group-table-bento .standing-table,
+.best-third-table-bento table {
+  border-radius: calc(var(--edge-radius) - 2px);
+  overflow: clip;
+}
+
+.group-table-bento-header,
+.best-third-race-head,
+.best-third-race-panel .best-third-race-head {
+  border-radius: var(--edge-radius-lg) var(--edge-radius-lg) 0 0;
+}
+
+/* ── Media & themed match cards ───────────────────────────────── */
+
+.fixture-glow-wrap,
+.schedule-card-themed,
+.live-hero-card-themed,
+.match-card-themed-shell {
+  border-radius: var(--edge-radius-lg);
+  overflow: clip;
+}
+
+.team-flag-wrap,
+.team-flag-badge,
+.team-crest,
+.qual-crest-themed .team-flag-wrap {
+  border-radius: var(--radius-md);
+  overflow: clip;
+}
+
+/* ── Modals, sheets, popovers ───────────────────────────────────── */
+
+.team-sheet--portal,
+.venue-popover,
+.goal-celebration-overlay {
+  border-radius: var(--edge-radius-sheet) var(--edge-radius-sheet) 0 0;
+  box-shadow: var(--shadow-feather-lg);
+  overflow: clip;
+}
+
+@media (min-width: 721px) {
+  .team-sheet--portal,
+  .venue-popover {
+    border-radius: var(--edge-radius-lg);
+  }
+}
+
+/* ── Feathered inner content (clip to parent curve) ─────────────── */
+
+.hero-panel::after,
+.schedule-card > *,
+.live-hero-card > *,
+.group-table-bento > * {
+  border-radius: inherit;
+}
+
+/* Soft corner anti-alias on high-contrast borders */
+:is(.schedule-card, .live-hero-card, .hero-panel, .qual-bento):is(:hover, :focus-within) {
+  border-color: color-mix(in srgb, var(--fwc-royal-blue) 35%, var(--edge-border));
+}

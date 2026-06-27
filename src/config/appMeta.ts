@@ -10,9 +10,9 @@ export const APP_BRAND = {
   shortName: "Road to the Final",
   /** Two-letter mark in top bar (fallback text) */
   mark: "WC",
-  /** Primary trophy logo — cartoon hyperrealistic WC 2026 mark */
+  /** Official-style photographic World Cup trophy mark */
   logoMark: "/logo/wc-trophy-mark.png",
-  /** Full trophy logo for splash & marketing */
+  /** Full trophy for splash & marketing */
   logoFull: "/logo/wc-trophy-logo.png",
   /** Compact splash hero */
   logoSplash: "/logo/wc-trophy-splash.png",

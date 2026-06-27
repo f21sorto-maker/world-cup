@@ -5,7 +5,7 @@
 
 :root {
   /* Shell */
-  --module-radius: clamp(10px, 1.1vw, 14px);
+  --module-radius: clamp(14px, 1.4vw, 20px);
   --module-padding: clamp(12px, 2vw, 20px);
   --module-padding-compact: clamp(10px, 1.5vw, 14px);
   --module-padding-header: clamp(10px, 1.4vw, 14px);
@@ -50,10 +50,11 @@
   .best-third-timeline
 ) {
   box-sizing: border-box;
-  border: 1px solid var(--module-border);
+  border: 1px solid var(--edge-border, var(--module-border));
   border-radius: var(--module-radius);
   background: var(--module-bg-alt);
-  box-shadow: var(--module-shadow);
+  box-shadow: var(--shadow-feather-sm, var(--module-shadow));
+  overflow: clip;
 }
 
 /* Panels that use raised surface */

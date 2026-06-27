@@ -46,9 +46,9 @@
   padding: 0;
   border: none;
   border-bottom: 1px solid var(--surface-border);
-  border-radius: 0;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   background: var(--surface-raised);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-feather-sm);
   overflow: hidden;
 }
 
@@ -121,6 +121,7 @@
   padding: 6px max(8px, var(--safe-left)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-right));
   background: var(--surface-base);
   border-top: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   z-index: 100;
   max-width: 100%;
   box-sizing: border-box;
@@ -142,7 +143,7 @@
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   color: var(--text-muted);
   font-family: var(--font-brand);
   font-size: var(--text-xs);
@@ -231,8 +232,8 @@
 }
 
 .splash-trophy-logo.brand-logo-shell {
-  width: min(240px, 58vw);
-  height: min(240px, 58vw);
+  width: min(280px, 64vw);
+  height: min(320px, 72vw);
   isolation: auto;
 }
 
@@ -240,12 +241,12 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  -webkit-mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 58%, transparent 100%);
-  mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 58%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 98% 98% at 50% 46%, #000 72%, transparent 100%);
+  mask-image: radial-gradient(ellipse 98% 98% at 50% 46%, #000 72%, transparent 100%);
   filter:
-    drop-shadow(0 0 10px color-mix(in srgb, var(--fwc-gold) 42%, transparent))
-    drop-shadow(0 0 22px color-mix(in srgb, var(--fwc-royal-blue) 22%, transparent))
-    drop-shadow(0 0 36px color-mix(in srgb, var(--fwc-sky-blue) 12%, transparent));
+    drop-shadow(0 4px 18px color-mix(in srgb, #000 28%, transparent))
+    drop-shadow(0 0 14px color-mix(in srgb, var(--fwc-gold) 38%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--fwc-gold) 16%, transparent));
 }
 
 .brand-logo-shell--blend-edges {

@@ -90,12 +90,36 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* ── RADIUS SCALE ── */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  /* ── RADIUS SCALE (fluid, universally rounded) ── */
+  --radius-sm: clamp(8px, 0.85vw, 10px);
+  --radius-md: clamp(12px, 1.15vw, 16px);
+  --radius-lg: clamp(16px, 1.5vw, 20px);
+  --radius-xl: clamp(22px, 2vw, 28px);
+  --radius-2xl: clamp(28px, 2.4vw, 36px);
   --radius-full: 9999px;
+
+  /* ── FEATHERED EDGES (soft borders + layered glow shadows) ── */
+  --edge-border: color-mix(in srgb, var(--surface-border) 62%, transparent);
+  --shadow-feather-sm:
+    0 0 0 1px color-mix(in srgb, var(--surface-border) 45%, transparent),
+    0 2px 8px rgba(0, 0, 0, 0.14),
+    0 6px 18px rgba(0, 0, 0, 0.1);
+  --shadow-feather:
+    0 0 0 1px color-mix(in srgb, var(--surface-border) 55%, transparent),
+    0 4px 14px rgba(0, 0, 0, 0.16),
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 24px 48px rgba(0, 0, 0, 0.06);
+  --shadow-feather-lg:
+    0 0 0 1px color-mix(in srgb, var(--surface-border) 50%, transparent),
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 20px 48px rgba(0, 0, 0, 0.14),
+    0 32px 64px rgba(0, 0, 0, 0.08);
+
+  /* ── SHADOW / GLOW ── */
+  --shadow-card: var(--shadow-feather);
+  --glow-blue: 0 0 16px rgba(48, 79, 255, 0.4);
+  --glow-gold: 0 0 16px rgba(212, 175, 55, 0.45);
+  --glow-red: 0 0 12px rgba(214, 0, 0, 0.45);
 
   /* ── TYPOGRAPHY (FWC 2026 official cuts) ── */
   --font-brand: "WorldCup26", "FWC2026", sans-serif;
@@ -115,56 +139,23 @@
   --text-4xl: 3rem;
   --text-5xl: 4rem;
 
-  /* ── SHADOW / GLOW ── */
-  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--surface-border);
-  --glow-blue: 0 0 16px rgba(48, 79, 255, 0.4);
-  --glow-gold: 0 0 16px rgba(212, 175, 55, 0.45);
-  --glow-red: 0 0 12px rgba(214, 0, 0, 0.45);
-
-  /* Trophy logo — tournament-color radiance (no heavy black shadows) */
+  /* Trophy logo — warm studio glow for photographic trophy asset */
   --trophy-glow-filter:
-    drop-shadow(0 0 3px color-mix(in srgb, var(--fwc-gold) 72%, transparent))
-    drop-shadow(0 0 8px color-mix(in srgb, var(--fwc-royal-blue) 58%, transparent))
-    drop-shadow(0 0 14px color-mix(in srgb, var(--fwc-sky-blue) 42%, transparent))
-    drop-shadow(0 0 22px color-mix(in srgb, var(--fwc-green) 28%, transparent))
-    drop-shadow(0 0 30px color-mix(in srgb, var(--fwc-bright-red) 18%, transparent))
-    drop-shadow(0 0 38px color-mix(in srgb, var(--fwc-lime) 12%, transparent));
+    drop-shadow(0 0 4px color-mix(in srgb, var(--fwc-gold) 55%, transparent))
+    drop-shadow(0 0 12px color-mix(in srgb, var(--fwc-gold) 28%, transparent))
+    drop-shadow(0 0 22px color-mix(in srgb, #000 22%, transparent));
   --trophy-glow-filter-hover:
-    drop-shadow(0 0 4px color-mix(in srgb, var(--fwc-gold) 82%, transparent))
-    drop-shadow(0 0 10px color-mix(in srgb, var(--fwc-royal-blue) 68%, transparent))
-    drop-shadow(0 0 18px color-mix(in srgb, var(--fwc-sky-blue) 52%, transparent))
-    drop-shadow(0 0 28px color-mix(in srgb, var(--fwc-green) 36%, transparent))
-    drop-shadow(0 0 38px color-mix(in srgb, var(--fwc-bright-red) 24%, transparent))
-    drop-shadow(0 0 48px color-mix(in srgb, var(--fwc-lime) 18%, transparent))
-    drop-shadow(0 0 56px color-mix(in srgb, var(--fwc-aqua) 14%, transparent));
+    drop-shadow(0 0 6px color-mix(in srgb, var(--fwc-gold) 65%, transparent))
+    drop-shadow(0 0 16px color-mix(in srgb, var(--fwc-gold) 36%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, #000 26%, transparent));
   --trophy-glow-filter-hero:
-    drop-shadow(0 0 6px color-mix(in srgb, var(--fwc-gold) 78%, transparent))
-    drop-shadow(0 0 14px color-mix(in srgb, var(--fwc-royal-blue) 62%, transparent))
-    drop-shadow(0 0 24px color-mix(in srgb, var(--fwc-sky-blue) 48%, transparent))
-    drop-shadow(0 0 36px color-mix(in srgb, var(--fwc-green) 34%, transparent))
-    drop-shadow(0 0 48px color-mix(in srgb, var(--fwc-bright-red) 22%, transparent))
-    drop-shadow(0 0 60px color-mix(in srgb, var(--fwc-lime) 16%, transparent))
-    drop-shadow(0 0 72px color-mix(in srgb, var(--fwc-aqua) 12%, transparent))
-    drop-shadow(0 0 84px color-mix(in srgb, var(--fwc-hot-pink) 8%, transparent));
+    drop-shadow(0 6px 20px color-mix(in srgb, #000 32%, transparent))
+    drop-shadow(0 0 16px color-mix(in srgb, var(--fwc-gold) 42%, transparent))
+    drop-shadow(0 0 32px color-mix(in srgb, var(--fwc-gold) 18%, transparent));
   --trophy-accent-bg:
-    conic-gradient(
-      from 210deg at 50% 50%,
-      transparent 0deg,
-      color-mix(in srgb, var(--fwc-royal-blue) 38%, transparent) 34deg,
-      transparent 68deg,
-      color-mix(in srgb, var(--fwc-bright-red) 32%, transparent) 112deg,
-      transparent 146deg,
-      color-mix(in srgb, var(--fwc-green) 30%, transparent) 190deg,
-      transparent 224deg,
-      color-mix(in srgb, var(--fwc-lime) 26%, transparent) 258deg,
-      transparent 292deg,
-      color-mix(in srgb, var(--fwc-sky-blue) 24%, transparent) 326deg,
-      transparent 360deg
-    ),
-    radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--fwc-royal-blue) 42%, transparent), transparent 62%),
-    radial-gradient(circle at 50% 62%, color-mix(in srgb, var(--fwc-gold) 28%, transparent), transparent 50%),
-    radial-gradient(circle at 28% 72%, color-mix(in srgb, var(--fwc-bright-red) 16%, transparent), transparent 42%),
-    radial-gradient(circle at 72% 72%, color-mix(in srgb, var(--fwc-green) 14%, transparent), transparent 40%);
+    radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--fwc-gold) 32%, transparent), transparent 58%),
+    radial-gradient(circle at 50% 62%, color-mix(in srgb, #fff 8%, transparent), transparent 48%),
+    radial-gradient(circle at 50% 70%, color-mix(in srgb, var(--fwc-royal-blue) 10%, transparent), transparent 42%);
 
   /* ── AMPLIFY PATTERN (16-color conic) ── */
   --fwc-amplify-gradient: conic-gradient(
@@ -240,7 +231,7 @@
   --r: var(--radius-lg);
   --r-lg: var(--radius-xl);
   --shadow: var(--shadow-card);
-  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.7), var(--shadow-card);
+  --shadow-lg: var(--shadow-feather-lg);
 
   --bracket-gap: 34px;
 

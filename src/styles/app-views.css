@@ -700,7 +700,7 @@
   align-items: center;
   min-height: 24px;
   padding: 0 9px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-ui);
   font-size: 10px;
   font-weight: 700;
@@ -743,7 +743,7 @@
 .schedule-conflict-note {
   margin: 10px 0 0;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: var(--warn);
   background: rgba(255, 210, 125, 0.08);
   border: 1px solid rgba(255, 210, 125, 0.2);
@@ -783,7 +783,7 @@
   min-height: 34px;
   padding: 0 10px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: var(--text);
   background: var(--inset);
   font-size: 12px;
@@ -879,7 +879,7 @@
   right: -2px;
   z-index: 2;
   padding: 1px 5px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 8px;
   font-weight: 700;
@@ -968,7 +968,7 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: var(--inset);
   color: var(--faint);
   font-family: var(--font-mono);
@@ -988,7 +988,7 @@
   margin-bottom: 18px;
   padding: 4px;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   background: var(--inset);
 }
 
@@ -1000,7 +1000,7 @@
   min-height: 36px;
   padding: 10px 14px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   color: var(--muted);
   background: transparent;
   text-align: left;
@@ -1113,7 +1113,7 @@
 .bracket-view .bracket-card {
   position: relative;
   z-index: 1;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow);
 }
 
@@ -1224,7 +1224,7 @@
 .bracket-ghost-team img {
   width: 12px;
   height: 12px;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
   filter: grayscale(100%) opacity(0.4);
 }
@@ -1489,7 +1489,7 @@
   margin-bottom: 20px;
   padding: 4px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
 }
 
@@ -1497,7 +1497,7 @@
   min-height: 36px;
   padding: 0 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--muted);
   font-family: var(--font-brand);
@@ -1667,7 +1667,7 @@ tr.qual-row--in-contention {
 .team-sheet-qual {
   margin-top: 12px;
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--line);
 }
 
@@ -1710,7 +1710,7 @@ tr.qual-row--in-contention {
   min-width: 28px;
   justify-content: center;
   padding: 2px 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -1833,7 +1833,7 @@ tr.qual-row--in-contention {
   flex-shrink: 0;
   box-sizing: border-box;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 2px;
   background: linear-gradient(
     145deg,
@@ -1858,16 +1858,16 @@ tr.qual-row--in-contention {
 }
 
 .team-flag-wrap--sm {
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
 }
 
 .team-flag-wrap--lg {
-  border-radius: 9px;
+  border-radius: var(--radius-md);
   padding: 2px;
 }
 
 .team-flag-wrap--xl {
-  border-radius: 11px;
+  border-radius: var(--radius-md);
   padding: 3px;
 }
 
@@ -1881,7 +1881,7 @@ tr.qual-row--in-contention {
   display: grid;
   place-items: center;
   box-sizing: border-box;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   min-width: 0;
   min-height: 0;
@@ -1925,14 +1925,14 @@ tr.qual-row--in-contention {
   width: 40px;
   height: 40px;
   padding: var(--team-crest-inset, 13%);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .team-flag-inner.xl {
   width: 58px;
   height: 58px;
   padding: var(--team-crest-inset, 13%);
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
 }
 
 .team-flag-img {
@@ -2025,7 +2025,7 @@ tr.qual-row--in-contention {
 .match-facts-panel {
   margin: 0 16px 12px;
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--surface-2, #141b2d);
   border: 1px solid var(--line);
 }
@@ -2171,7 +2171,7 @@ tr.qual-row--in-contention {
   padding: 10px 12px;
   border: none;
   border-left: 3px solid var(--team-primary, #6b7280);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--surface-2);
   cursor: pointer;
   text-align: left;
@@ -2292,7 +2292,7 @@ tr.qual-row--in-contention {
   min-width: 260px;
   max-width: 90vw;
   padding: 16px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-lg);
@@ -2329,7 +2329,7 @@ tr.qual-row--in-contention {
   min-height: 36px;
   padding: 0 12px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--text);
 }
@@ -2353,7 +2353,7 @@ tr.qual-row--in-contention {
   max-width: 100%;
   margin: 0;
   padding: 0;
-  border-radius: 0;
+  border-radius: var(--radius-xl) 0 0 var(--radius-xl);
   overflow: hidden;
   animation: team-sheet-in 0.25s ease-out both;
 }
@@ -2387,7 +2387,7 @@ tr.qual-row--in-contention {
 .team-wdl-bar {
   display: flex;
   height: 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   margin: 8px 0;
 }
@@ -2520,7 +2520,7 @@ tr.qual-row--in-contention {
   width: 96px;
   height: 54px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--surface-2);
 }
 
@@ -2536,7 +2536,7 @@ tr.qual-row--in-contention {
 .fp-insights-panel {
   margin: 0 0 20px;
   padding: 16px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--surface-1, var(--card));
 }
@@ -2614,7 +2614,7 @@ tr.qual-row--in-contention {
   gap: 6px;
   margin-top: 8px;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--accent-soft);
   font-size: 0.78rem;
 }
@@ -2673,7 +2673,7 @@ tr.qual-row--in-contention {
     left: 0;
     width: 100%;
     height: min(85vh, 100%);
-    border-radius: 16px 16px 0 0;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     animation: team-sheet-in-mobile 0.25s ease-out both;
   }
 

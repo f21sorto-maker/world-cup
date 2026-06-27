@@ -19,7 +19,7 @@
   /* Chrome surfaces (top bar, bottom nav) */
   --chrome-glass-bg: var(--surface-raised);
   --chrome-glass-highlight: rgba(255, 255, 255, 0.05);
-  --chrome-glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+  --chrome-glass-shadow: var(--shadow-feather-sm);
   --chrome-nav-bg: var(--surface-base);
   --chrome-hover-bg: rgba(48, 79, 255, 0.08);
 
@@ -160,7 +160,7 @@
   /* Chrome */
   --chrome-glass-bg: rgba(255, 255, 255, 0.92);
   --chrome-glass-highlight: rgba(255, 255, 255, 0.98);
-  --chrome-glass-shadow: 0 2px 16px rgba(10, 14, 46, 0.1);
+  --chrome-glass-shadow: var(--shadow-feather-sm);
   --chrome-nav-bg: var(--surface-base);
   --chrome-hover-bg: rgba(48, 79, 255, 0.06);
 
