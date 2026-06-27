@@ -1,0 +1,101 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heading {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0;
+}
+
+.statsGrid dt {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ss-muted);
+}
+
+.statsGrid dd {
+  margin: 2px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ss-text);
+}
+
+.formList,
+.hlList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 8px;
+  font-size: 12px;
+  align-items: baseline;
+}
+
+.formDate {
+  color: var(--ss-muted);
+}
+
+.formMatch {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formScore {
+  font-weight: 600;
+  color: var(--ss-brand);
+}
+
+.hlRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--surface-2, var(--surface));
+  font-size: 13px;
+}
+
+.hlDesc {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--ss-muted);
+}
+
+.hlLink {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ss-brand);
+  text-decoration: none;
+}
+
+.hlLink:hover {
+  text-decoration: underline;
+}

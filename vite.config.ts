@@ -99,6 +99,10 @@ const rapidApiProxies = {
     "https://world-cup1.p.rapidapi.com",
     "/api/world-cup-history"
   ),
+  "/api/sport-highlights": rapidApiProxy(
+    "https://sport-highlights-api.p.rapidapi.com",
+    "/api/sport-highlights"
+  ),
   "/api/espn-web": {
     target: "https://site.web.api.espn.com",
     changeOrigin: true,

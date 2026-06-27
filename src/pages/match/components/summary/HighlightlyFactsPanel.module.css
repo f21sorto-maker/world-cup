@@ -1,0 +1,108 @@
+.wrap {
+  padding: 0 16px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+
+.factsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.factLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ss-muted);
+}
+
+.factValue {
+  font-size: 13px;
+  color: var(--ss-text);
+  line-height: 1.4;
+}
+
+.prediction {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ss-brand) 8%, var(--surface));
+}
+
+.predictionText {
+  margin: 4px 0 6px;
+  font-size: 13px;
+  color: var(--ss-text);
+  line-height: 1.45;
+}
+
+.probRow {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ss-muted);
+}
+
+.formSection {
+  margin-top: 4px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--ss-text);
+}
+
+.formBlock + .formBlock {
+  margin-top: 12px;
+}
+
+.formBlock h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--ss-muted);
+}
+
+.formList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formItem {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 8px;
+  font-size: 12px;
+  align-items: baseline;
+}
+
+.formDate {
+  color: var(--ss-muted);
+}
+
+.formTeams {
+  color: var(--ss-text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formScore {
+  font-weight: 600;
+  color: var(--ss-brand);
+  white-space: nowrap;
+}

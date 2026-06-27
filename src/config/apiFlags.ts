@@ -20,6 +20,7 @@ export type ApiSourceId =
   | "oddsIntelligence"
   | "footballPrediction"
   | "worldCupHistory"
+  | "sportHighlights"
   | "openWeather";
 
 export type ApiAuditStatus = "pass" | "fail" | "untested";
@@ -153,6 +154,13 @@ export const API_SOURCES: Record<ApiSourceId, ApiSourceConfig> = {
     lastAudit: "untested",
     lastLatencyMs: 662,
     failureReason: "BASIC plan daily quota — cached 24h",
+  },
+  sportHighlights: {
+    enabled: true,
+    splashPath: false,
+    label: "Sport Highlights API (Highlightly)",
+    lastAudit: "untested",
+    lastLatencyMs: 0,
   },
   openWeather: {
     enabled: true,

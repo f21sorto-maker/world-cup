@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { MatchStatisticsBundle, MatchStatus } from "../../../../types";
+import type { HighlightlyTeamStats } from "../../../../types/sportHighlights";
+import { HighlightlyStatsPanel } from "../statistics/HighlightlyStatsPanel";
 import { MatchTabEmptyState } from "../../../../components/shared/MatchTabEmptyState";
 import { StatComparisonRow } from "../statistics/StatComparisonRow";
 import { StatPeriodFilter } from "../statistics/StatPeriodFilter";
@@ -11,6 +13,7 @@ type Props = {
   homeTeamName: string;
   awayTeamName: string;
   matchStatus?: MatchStatus;
+  highlightlyStats?: HighlightlyTeamStats[];
 };
 
 type StatDef = {
@@ -36,7 +39,7 @@ const STAT_ROWS: StatDef[] = [
   { key: "saves", label: "Goalkeeper Saves" }
 ];
 
-export function MatchStatisticsTab({ statistics, loading, homeTeamName, awayTeamName, matchStatus }: Props) {
+export function MatchStatisticsTab({ statistics, loading, homeTeamName, awayTeamName, matchStatus, highlightlyStats = [] }: Props) {
   const [_period, setPeriod] = useState<"all" | "first_half" | "second_half">("all");
 
   if (loading && !statistics) {
@@ -53,6 +56,17 @@ export function MatchStatisticsTab({ statistics, loading, homeTeamName, awayTeam
 
   if (!statistics) {
     const isUpcoming = matchStatus === "scheduled" || matchStatus === undefined;
+    if (highlightlyStats.length >= 2) {
+      return (
+        <div className={styles.tabPanel}>
+          <HighlightlyStatsPanel
+            statistics={highlightlyStats}
+            homeTeamName={homeTeamName}
+            awayTeamName={awayTeamName}
+          />
+        </div>
+      );
+    }
     return (
       <MatchTabEmptyState
         title={isUpcoming ? "Statistics available during the match." : "Statistics not available for this match."}
