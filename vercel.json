@@ -1,6 +1,78 @@
 {
   "rewrites": [
     {
+      "source": "/api/wc-live/:path*",
+      "destination": "/api/rapid/wc-live/:path*"
+    },
+    {
+      "source": "/api/wc2026/:path*",
+      "destination": "/api/rapid/wc2026/:path*"
+    },
+    {
+      "source": "/api/footballdata/:path*",
+      "destination": "/api/rapid/footballdata/:path*"
+    },
+    {
+      "source": "/api/sportapi/:path*",
+      "destination": "/api/rapid/sportapi/:path*"
+    },
+    {
+      "source": "/api/sofascore6/:path*",
+      "destination": "/api/rapid/sofascore6/:path*"
+    },
+    {
+      "source": "/api/sofascore-rapid/:path*",
+      "destination": "/api/rapid/sofascore-rapid/:path*"
+    },
+    {
+      "source": "/api/weather/:path*",
+      "destination": "/api/rapid/weather/:path*"
+    },
+    {
+      "source": "/api/odds/:path*",
+      "destination": "/api/rapid/odds/:path*"
+    },
+    {
+      "source": "/api/football-prediction/:path*",
+      "destination": "/api/rapid/football-prediction/:path*"
+    },
+    {
+      "source": "/api/world-cup-history/:path*",
+      "destination": "/api/rapid/world-cup-history/:path*"
+    },
+    {
+      "source": "/api/sport-highlights/:path*",
+      "destination": "/api/rapid/sport-highlights/:path*"
+    },
+    {
+      "source": "/api/sports-live-scores/:path*",
+      "destination": "/api/rapid/sports-live-scores/:path*"
+    },
+    {
+      "source": "/api/all-sport-live-stream/:path*",
+      "destination": "/api/rapid/all-sport-live-stream/:path*"
+    },
+    {
+      "source": "/api/free-daily-xtream-iptv/:path*",
+      "destination": "/api/rapid/free-daily-xtream-iptv/:path*"
+    },
+    {
+      "source": "/api/cloud-api-hub-iptv/:path*",
+      "destination": "/api/rapid/cloud-api-hub-iptv/:path*"
+    },
+    {
+      "source": "/api/tvview/:path*",
+      "destination": "/api/rapid/tvview/:path*"
+    },
+    {
+      "source": "/api/zafronix/:path*",
+      "destination": "/api/rapid/zafronix/:path*"
+    },
+    {
+      "source": "/api/espn-web/:path*",
+      "destination": "/api/proxy/espn-web/:path*"
+    },
+    {
       "source": "/espn/:path*",
       "destination": "https://site.api.espn.com/:path*"
     },
