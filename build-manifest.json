@@ -1,6 +1,46 @@
 {
-  "updatedAt": "2026-06-27T17:27:59.634Z",
+  "updatedAt": "2026-06-27T18:45:32.392Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 28,
+      "kind": "build",
+      "message": "31 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, src, vercel.json — 31 files changed, 509 insertions(+), 1001 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T18:45:32.392Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 27,
+      "kind": "build",
+      "message": "Consolidate RapidAPI proxies, boot ESPN bypass, cache migration, live results",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T18:45:24.025Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 26,
+      "kind": "build",
+      "message": "18 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, config, scripts, src — 18 files changed, 399 insertions(+), 49 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T18:42:29.803Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 25,
+      "kind": "build",
+      "message": "Wire Boggio Football Prediction v2 into WC sync and match index",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T18:38:01.703Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 24,
+      "kind": "build",
+      "message": "Always show team names and flags; hide backend ids from UI",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T18:32:31.789Z"
+    },
     {
       "version": "4.0.0",
       "build": 23,
@@ -268,6 +308,22 @@
   ],
   "commits": [
     {
+      "hash": "499e1a1601142938c63d836edb54fa8ced93585b",
+      "shortHash": "499e1a1",
+      "message": "Merge football prediction integration with team display fixes",
+      "version": "4.0.0",
+      "build": 26,
+      "timestamp": "2026-06-27T18:42:29.882Z"
+    },
+    {
+      "hash": "e8bd51c91d6c3782d449e75500ed1beb66f42f02",
+      "shortHash": "e8bd51c",
+      "message": "Bust client caches and force fresh deploy shell",
+      "version": "4.0.0",
+      "build": 23,
+      "timestamp": "2026-06-27T17:27:59.717Z"
+    },
+    {
       "hash": "39ef43287811ce7573d1e663f6af2f99d07b6042",
       "shortHash": "39ef432",
       "message": "Wire IPTV RapidAPI providers as stream fallback on match watch tab",
@@ -490,22 +546,6 @@
       "version": "3.0.0",
       "build": 20,
       "timestamp": "2026-06-27T07:06:02.421Z"
-    },
-    {
-      "hash": "c3b333f5f1f956609a889c5821b1e4e9ebcc8f0d",
-      "shortHash": "c3b333f",
-      "message": "Polish team identity, schedule/venue rows, and simulator bracket alignment.",
-      "version": "3.0.0",
-      "build": 20,
-      "timestamp": "2026-06-27T07:05:41.545Z"
-    },
-    {
-      "hash": "a46badc194ca52a508fde81747de52011464d303",
-      "shortHash": "a46badc",
-      "message": "Harden boot cache schema versioning and expand SLS lineup normalizer.",
-      "version": "3.0.0",
-      "build": 19,
-      "timestamp": "2026-06-27T07:02:27.425Z"
     }
   ],
   "deploys": [

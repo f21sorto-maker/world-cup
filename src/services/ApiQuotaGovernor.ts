@@ -108,6 +108,7 @@ export function acquireApiQuota(source: ApiSourceId, intent: ApiRequestIntent): 
     }
     if (
       intent !== "live" &&
+      intent !== "boot" &&
       typeof policy.reserveForLive === "number" &&
       boundedRemaining <= policy.reserveForLive
     ) {

@@ -162,6 +162,8 @@ async function runDeferredEnrichment(
       store.setGroupStandings(standings);
     }
 
+    store.startFootballPredictionSync();
+
     await runBootstrapSim();
     endBootPhase("deferred-enrichment", "complete");
 
@@ -252,7 +254,7 @@ export async function runBoot(): Promise<void> {
       const timeoutPromise = sleep(timeoutMs).then(() => {
         throw new Error(`ESPN timeout after ${timeoutMs / 1000}s`);
       });
-      espnData = await Promise.race([fetchScoreboard({ intent: "background" }), timeoutPromise]);
+      espnData = await Promise.race([fetchScoreboard({ intent: "boot" }), timeoutPromise]);
       clearTimeout(slowTimer);
       endBootPhase("espn-fetch", `${espnData.matches.length} matches`);
       logger.info("ESPN fetch succeeded", "DataOrchestrator.boot", {
