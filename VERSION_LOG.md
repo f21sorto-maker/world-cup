@@ -14,6 +14,10 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+## [3.0.0] build 10 — 2026-06-27 (build)
+- (no message provided)
+
 ## [3.0.0] build 9 — 2026-06-27 (build)
 - Player photos, module refresh, tiered polling, lineup portraits
 
