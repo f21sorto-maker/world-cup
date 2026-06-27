@@ -41,6 +41,14 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+## [4.0.0] build 17 — 2026-06-27 (build)
+- 18 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, scripts, src — 18 files changed, 666 insertions(+), 45 deletions(-)
+
+## [4.0.0] build 16 — 2026-06-27 (build)
+- Add quota governor and multi-source verification gates
+
 ## [4.0.0] build 15 — 2026-06-27 (build)
 - 11 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 11 files changed, 197 insertions(+), 160 deletions(-)
 

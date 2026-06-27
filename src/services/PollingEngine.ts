@@ -1,7 +1,8 @@
 import type { MergedMatch } from "../types";
-import { isLightPoll, pollIntervalMs, POLL_LIVE_MS } from "../lib/pollPolicy";
+import { isLightPoll } from "../lib/pollPolicy";
 import { getLockedSet } from "../store/slices/matchSlice";
 import { useStore } from "../store";
+import { recommendedPollIntervalMs } from "./ApiQuotaGovernor";
 import { DataOrchestrator } from "./orchestrator/DataOrchestrator";
 import { logger } from "./Logger";
 
@@ -58,7 +59,7 @@ class PollingEngine {
       window.__pollingStatus = {
         running: true,
         liveMatchCount: 0,
-        intervalMs: POLL_LIVE_MS,
+        intervalMs: recommendedPollIntervalMs(true),
         lastPollAt: null,
         consecutiveErrors: 0,
       };
@@ -81,7 +82,7 @@ class PollingEngine {
     if (this.timer) clearTimeout(this.timer);
 
     const isLive = hasAnyLive(useStore.getState().liveMatches);
-    const delay = pollIntervalMs(isLive);
+    const delay = recommendedPollIntervalMs(isLive);
 
     if (typeof window !== "undefined" && window.__pollingStatus) {
       window.__pollingStatus.intervalMs = delay;

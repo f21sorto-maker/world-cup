@@ -8,6 +8,8 @@
 ## [Unreleased]
 
 ### Builds
+- **4.0.0 build 17** (2026-06-27): 18 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, scripts, src — 18 files changed, 666 insertions(+), 45 deletions(-)
+- **4.0.0 build 16** (2026-06-27): Add quota governor and multi-source verification gates
 - **4.0.0 build 15** (2026-06-27): 11 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 11 files changed, 197 insertions(+), 160 deletions(-)
 - **4.0.0 build 14** (2026-06-27): Unify standings and simulation on canonical dataset
 - **4.0.0 build 13** (2026-06-27): 15 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, config, scripts — 15 files changed, 570 insertions(+), 143 deletions(-)
