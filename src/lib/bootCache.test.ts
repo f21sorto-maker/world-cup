@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
 import {
+  BOOT_CACHE_SCHEMA_VERSION,
   BOOT_CACHE_VERSION,
   BOOT_TEAMS_CACHE_KEY,
   hydrateBootFromCache,
@@ -28,8 +29,9 @@ describe("bootCache", () => {
     vi.unstubAllGlobals();
   });
 
-  it("exports BOOT_CACHE_VERSION 3", () => {
+  it("exports BOOT_CACHE_VERSION and BOOT_CACHE_SCHEMA_VERSION 3", () => {
     expect(BOOT_CACHE_VERSION).toBe(3);
+    expect(BOOT_CACHE_SCHEMA_VERSION).toBe(3);
   });
 
   it("uses versioned cache keys", () => {
@@ -62,7 +64,36 @@ describe("bootCache", () => {
     expect(localStorage.getItem(BOOT_TEAMS_CACHE_KEY)).toBeNull();
   });
 
-  it("hydrates v3 team cache", () => {
+  it("rejects cache missing _schemaVersion when version is stale", () => {
+    localStorage.setItem(
+      BOOT_TEAMS_CACHE_KEY,
+      JSON.stringify({ version: 2, savedAt: "2020-01-01", teams: { bra: { id: "bra" } } })
+    );
+
+    const hydration = hydrateBootFromCache();
+
+    expect(hydration.teams).toEqual({});
+    expect(localStorage.getItem(BOOT_TEAMS_CACHE_KEY)).toBeNull();
+  });
+
+  it("hydrates v3 team cache with _schemaVersion", () => {
+    localStorage.setItem(
+      BOOT_TEAMS_CACHE_KEY,
+      JSON.stringify({
+        version: BOOT_CACHE_VERSION,
+        _schemaVersion: BOOT_CACHE_SCHEMA_VERSION,
+        savedAt: new Date().toISOString(),
+        teams: { bra: { id: "bra", name: "Brazil" } },
+      })
+    );
+
+    const hydration = hydrateBootFromCache();
+
+    expect(hydration.teams.bra?.name).toBe("Brazil");
+    expect(hydration.hadCache).toBe(true);
+  });
+
+  it("hydrates v3 team cache with version only (legacy write shape)", () => {
     localStorage.setItem(
       BOOT_TEAMS_CACHE_KEY,
       JSON.stringify({

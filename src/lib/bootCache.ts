@@ -1,9 +1,15 @@
 import type { GroupStanding, MergedMatch, Team } from "../types";
+import {
+  BOOT_CACHE_SCHEMA_VERSION,
+  bootCacheSchemaFields,
+  matchesBootCacheSchema,
+} from "./bootCacheSchema";
 import { BOOT_CACHE_VERSION } from "./bootCacheVersion";
 import { readLiveMatchCache, writeLiveMatchCache } from "./liveMatchCache";
 import { readStandingsCache, writeStandingsCache } from "./standingsCache";
 
-export { BOOT_CACHE_VERSION } from "./bootCacheVersion";
+export { BOOT_CACHE_SCHEMA_VERSION, BOOT_CACHE_VERSION } from "./bootCacheVersion";
+export { matchesBootCacheSchema, bootCacheSchemaFields } from "./bootCacheSchema";
 export { LIVE_MATCH_CACHE_KEY } from "./liveMatchCache";
 export { STANDINGS_CACHE_KEY } from "./standingsCache";
 
@@ -17,6 +23,7 @@ const LEGACY_CACHE_KEYS = [
 
 type BootTeamsCacheStore = {
   version: typeof BOOT_CACHE_VERSION;
+  _schemaVersion: typeof BOOT_CACHE_SCHEMA_VERSION;
   savedAt: string;
   teams: Record<string, Team>;
 };
@@ -49,7 +56,7 @@ function readBootTeamsCache(): Record<string, Team> | null {
     const raw = localStorage.getItem(BOOT_TEAMS_CACHE_KEY);
     if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
-    if (!isRecord(parsed) || parsed.version !== BOOT_CACHE_VERSION) {
+    if (!isRecord(parsed) || !matchesBootCacheSchema(parsed)) {
       localStorage.removeItem(BOOT_TEAMS_CACHE_KEY);
       return null;
     }
@@ -64,7 +71,7 @@ function writeBootTeamsCache(teams: Record<string, Team>): void {
   if (typeof localStorage === "undefined") return;
   try {
     const store: BootTeamsCacheStore = {
-      version: BOOT_CACHE_VERSION,
+      ...bootCacheSchemaFields(),
       savedAt: new Date().toISOString(),
       teams,
     };

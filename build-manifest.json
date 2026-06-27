@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-06-27T06:56:47.980Z",
+  "updatedAt": "2026-06-27T07:02:14.166Z",
   "builds": [
+    {
+      "version": "3.0.0",
+      "build": 19,
+      "kind": "build",
+      "message": "8 file(s) in build-manifest.json, src — 8 files changed, 187 insertions(+), 19 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T07:02:14.166Z"
+    },
     {
       "version": "3.0.0",
       "build": 18,
@@ -60,6 +68,14 @@
   ],
   "commits": [
     {
+      "hash": "a1b8e76563a38f8115bf7424a48cf51e5afe1c6b",
+      "shortHash": "a1b8e76",
+      "message": "Fix qualification display for top-eight thirds and advancement scoring.",
+      "version": "3.0.0",
+      "build": 18,
+      "timestamp": "2026-06-27T06:56:48.921Z"
+    },
+    {
       "hash": "f4ee7428e633a6eacf6870e5d79576aba2d8b9cf",
       "shortHash": "f4ee742",
       "message": "Record production deploy metadata for v3.0.0 build 17.",
@@ -118,7 +134,15 @@
   ],
   "deploys": [
     {
-      "url": "",
+      "url": "https://world-cup-rho-ten.vercel.app",
+      "environment": "production",
+      "version": "3.0.0",
+      "build": 18,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-06-27T06:58:05.156Z"
+    },
+    {
+      "url": "https://world-cup-rho-ten.vercel.app",
       "environment": "production",
       "version": "3.0.0",
       "build": 17,
@@ -126,7 +150,7 @@
       "timestamp": "2026-06-27T06:55:31.937Z"
     },
     {
-      "url": "",
+      "url": "https://world-cup-rho-ten.vercel.app",
       "environment": "production",
       "version": "3.0.0",
       "build": 16,
@@ -134,7 +158,7 @@
       "timestamp": "2026-06-27T06:51:06.339Z"
     },
     {
-      "url": "",
+      "url": "https://world-cup-rho-ten.vercel.app",
       "environment": "production",
       "version": "3.0.0",
       "build": 15,

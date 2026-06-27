@@ -1,10 +1,12 @@
 import type { GroupStanding } from "../types";
-import { BOOT_CACHE_VERSION } from "./bootCacheVersion";
+import { bootCacheSchemaFields, matchesBootCacheSchema } from "./bootCacheSchema";
+import { BOOT_CACHE_SCHEMA_VERSION, BOOT_CACHE_VERSION } from "./bootCacheVersion";
 
 export const STANDINGS_CACHE_KEY = `wc-standings-v${BOOT_CACHE_VERSION}`;
 
 type StandingsCacheStore = {
   version: typeof BOOT_CACHE_VERSION;
+  _schemaVersion: typeof BOOT_CACHE_SCHEMA_VERSION;
   savedAt: string;
   standings: GroupStanding[];
 };
@@ -19,7 +21,7 @@ export function readStandingsCache(): GroupStanding[] | null {
     const raw = localStorage.getItem(STANDINGS_CACHE_KEY);
     if (!raw) return null;
     const parsed: unknown = JSON.parse(raw);
-    if (!isRecord(parsed) || parsed.version !== BOOT_CACHE_VERSION) {
+    if (!isRecord(parsed) || !matchesBootCacheSchema(parsed)) {
       localStorage.removeItem(STANDINGS_CACHE_KEY);
       return null;
     }
@@ -34,7 +36,7 @@ export function writeStandingsCache(standings: GroupStanding[]): void {
   if (typeof localStorage === "undefined") return;
   try {
     const store: StandingsCacheStore = {
-      version: BOOT_CACHE_VERSION,
+      ...bootCacheSchemaFields(),
       savedAt: new Date().toISOString(),
       standings,
     };
