@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T16:39:20.929Z",
+  "updatedAt": "2026-06-27T16:39:21.010Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -203,6 +203,14 @@
     }
   ],
   "commits": [
+    {
+      "hash": "fbfaaab412a575a589b4f1e13de01a7361653c85",
+      "shortHash": "fbfaaab",
+      "message": "Unify standings and simulation on canonical dataset",
+      "version": "4.0.0",
+      "build": 15,
+      "timestamp": "2026-06-27T16:39:21.010Z"
+    },
     {
       "hash": "a7e7a1107b29c70028d04e3d55644314193d4107",
       "shortHash": "a7e7a11",
@@ -434,14 +442,6 @@
       "version": "3.0.0",
       "build": 18,
       "timestamp": "2026-06-27T06:56:48.921Z"
-    },
-    {
-      "hash": "f4ee7428e633a6eacf6870e5d79576aba2d8b9cf",
-      "shortHash": "f4ee742",
-      "message": "Record production deploy metadata for v3.0.0 build 17.",
-      "version": "3.0.0",
-      "build": 17,
-      "timestamp": "2026-06-27T06:54:00.652Z"
     }
   ],
   "deploys": [
