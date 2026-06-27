@@ -31,6 +31,11 @@ describe("teamDisplayName", () => {
     expect(teamDisplayName(makeTeam({ name: "", shortName: "RSA" }), "x")).toBe("RSA");
     expect(teamDisplayName(undefined, "fallback")).toBe("fallback");
   });
+
+  it("resolves catalog name from team id hint", () => {
+    expect(teamDisplayName(undefined, "bra")).toBe("Brazil");
+    expect(teamDisplayName(undefined, "BRA")).toBe("Brazil");
+  });
 });
 
 describe("teamLiveCardName", () => {

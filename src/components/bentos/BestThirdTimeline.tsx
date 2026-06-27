@@ -306,6 +306,7 @@ export function BestThirdTimeline() {
         {Object.entries(teamColors).map(([teamId, color]) => (
           <span key={teamId} className={styles.legendItem}>
             <span className={styles.legendSwatch} style={{ background: color }} aria-hidden />
+            <TeamFlag team={teams[teamId]} teamId={teamId} size="sm" compact />
             {teamDisplayName(teams[teamId], teamId)}
           </span>
         ))}

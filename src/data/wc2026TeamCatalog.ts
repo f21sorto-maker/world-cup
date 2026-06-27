@@ -177,6 +177,19 @@ export function buildCatalogTeam(abbrev: string, group: GroupLetter = "A"): Team
   };
 }
 
+/** Full country name from any team id / abbrev / name hint. */
+export function resolveCatalogTeamName(hint: string): string | undefined {
+  const abbrev = resolveTeamAbbrevFromHint(hint);
+  return abbrev ? WC2026_TEAM_NAMES[abbrev] : undefined;
+}
+
+/** Catalog-backed team for display when store/API team is missing or incomplete. */
+export function resolveTeamForDisplay(teamId: string, team?: Team): Team | undefined {
+  if (team) return mergeTeamWithCatalog(team);
+  const abbrev = resolveTeamAbbrevFromHint(teamId);
+  return abbrev ? buildCatalogTeam(abbrev) : undefined;
+}
+
 /** All 48 nations keyed by canonical lowercase id (e.g. mex, usa). */
 export function buildWc2026TeamCatalog(): Record<string, Team> {
   const catalog: Record<string, Team> = {};

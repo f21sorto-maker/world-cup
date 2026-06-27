@@ -212,11 +212,11 @@ export function MatchDetailView() {
           <div className={styles.headerScore}>
             {/* Home team */}
             <div className={styles.headerTeam}>
-              {homeTeam ? (
-                <TeamFlag team={homeTeam} teamId={homeTeam.id} size="lg" />
-              ) : (
-                <span className={styles.headerTeamFlag}>🏳️</span>
-              )}
+              <TeamFlag
+                team={homeTeam}
+                teamId={match?.homeTeamId ?? "tbd"}
+                size="lg"
+              />
               {match?.homeTeamId ? (
                 <TeamClickTarget
                   teamId={match.homeTeamId}
@@ -262,11 +262,11 @@ export function MatchDetailView() {
 
             {/* Away team */}
             <div className={styles.headerTeam}>
-              {awayTeam ? (
-                <TeamFlag team={awayTeam} teamId={awayTeam.id} size="lg" />
-              ) : (
-                <span className={styles.headerTeamFlag}>🏳️</span>
-              )}
+              <TeamFlag
+                team={awayTeam}
+                teamId={match?.awayTeamId ?? "tbd"}
+                size="lg"
+              />
               {match?.awayTeamId ? (
                 <TeamClickTarget
                   teamId={match.awayTeamId}

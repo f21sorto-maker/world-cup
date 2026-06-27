@@ -3,6 +3,7 @@ import { formatKickoffTime } from "../../../../lib/formatKickoff";
 import { formatLiveClock } from "../../../../lib/formatMatchClock";
 import { teamDisplayName } from "../../../../lib/teamIdentity";
 import { useStore } from "../../../../store";
+import { TeamFlag } from "../../../../components/team/TeamFlag";
 import { VenueLabel } from "../../../../components/venue/VenueLabel";
 import styles from "../../TournamentView.module.css";
 
@@ -69,7 +70,10 @@ export function TournamentMatchCard({ match }: Props) {
           />
         ) : null}
         <div className={styles.matchCardScoreLine}>
-          <span className={`${styles.matchCardTeam} team-name-text`}>{homeTeamName}</span>
+          <span className={`${styles.matchCardTeam} team-name-text`}>
+            <TeamFlag team={home} teamId={match.homeTeamId} size="sm" compact />
+            {homeTeamName}
+          </span>
           {isLive || isDone ? (
             <span className={styles.matchCardScore}>
               <span>{match.homeScore ?? 0}</span>
@@ -80,6 +84,7 @@ export function TournamentMatchCard({ match }: Props) {
             <span className={styles.matchCardVs}>–</span>
           )}
           <span className={`${styles.matchCardTeam} ${styles["matchCardTeam--away"]} team-name-text`}>
+            <TeamFlag team={away} teamId={match.awayTeamId} size="sm" compact />
             {awayTeamName}
           </span>
         </div>

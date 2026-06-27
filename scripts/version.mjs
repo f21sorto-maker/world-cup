@@ -15,8 +15,35 @@
  * build-manifest.json, and the release dashboard canvas.
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { readJson, runBuildBump, runRecordCommit, runRecordDeploy, runSemverBump, syncReleaseCanvas, appendVersionLog } from "./lib/version-core.mjs";
 import { VERSION_FILE } from "./lib/version-artifacts.mjs";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+function resolveDeployUrl(explicitUrl) {
+  if (explicitUrl) return explicitUrl;
+
+  const vercelAlias = process.env.VERCEL_URL ?? process.env.VERCEL_ALIAS ?? "";
+  if (vercelAlias) {
+    return vercelAlias.startsWith("http") ? vercelAlias : `https://${vercelAlias}`;
+  }
+
+  try {
+    const cfgPath = path.join(ROOT, ".vercel/output/config.json");
+    const cfg = JSON.parse(fs.readFileSync(cfgPath, "utf8"));
+    const alias = cfg.alias?.[0] ?? cfg.alias;
+    if (typeof alias === "string" && alias.length > 0) {
+      return alias.startsWith("http") ? alias : `https://${alias}`;
+    }
+  } catch {
+    /* no local Vercel output */
+  }
+
+  return "";
+}
 
 function parseArgs(argv) {
   const command = argv[0] ?? "show";
@@ -90,8 +117,13 @@ function main() {
   }
 
   if (command === "deploy") {
-    const next = runRecordDeploy({ url, environment, message: message || "Production deploy" });
-    console.log(`Recorded deploy → v${next.version} build ${next.build}`);
+    const resolvedUrl = resolveDeployUrl(url);
+    const next = runRecordDeploy({
+      url: resolvedUrl,
+      environment,
+      message: message || "Production deploy",
+    });
+    console.log(`Recorded deploy → v${next.version} build ${next.build}${resolvedUrl ? ` @ ${resolvedUrl}` : ""}`);
     return;
   }
 

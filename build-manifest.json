@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-06-27T07:02:14.166Z",
+  "updatedAt": "2026-06-27T07:05:40.992Z",
   "builds": [
+    {
+      "version": "3.0.0",
+      "build": 20,
+      "kind": "build",
+      "message": "21 file(s) in build-manifest.json, scripts, src — 21 files changed, 348 insertions(+), 56 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T07:05:40.992Z"
+    },
     {
       "version": "3.0.0",
       "build": 19,
@@ -68,6 +76,14 @@
   ],
   "commits": [
     {
+      "hash": "a46badc194ca52a508fde81747de52011464d303",
+      "shortHash": "a46badc",
+      "message": "Harden boot cache schema versioning and expand SLS lineup normalizer.",
+      "version": "3.0.0",
+      "build": 19,
+      "timestamp": "2026-06-27T07:02:27.425Z"
+    },
+    {
       "hash": "a1b8e76563a38f8115bf7424a48cf51e5afe1c6b",
       "shortHash": "a1b8e76",
       "message": "Fix qualification display for top-eight thirds and advancement scoring.",
@@ -133,6 +149,14 @@
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "3.0.0",
+      "build": 19,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-06-27T07:05:03.480Z"
+    },
     {
       "url": "https://world-cup-rho-ten.vercel.app",
       "environment": "production",

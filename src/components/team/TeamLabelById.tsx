@@ -32,7 +32,7 @@ export function TeamLabelById({
   const team = useStore((s) => s.teams[teamId]);
   const { openTeam } = useOpenTeam();
 
-  const label = displayName ?? teamDisplayName(team, teamId.toUpperCase());
+  const label = displayName ?? teamDisplayName(team, teamId);
   const baseClass = `team-label team-label-themed ${align === "right" ? "right" : ""} ${clickable ? "team-label--clickable" : ""} ${className}`.trim();
 
   const handleActivate = (e: MouseEvent | KeyboardEvent) => {

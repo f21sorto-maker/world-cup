@@ -3,6 +3,7 @@ import { formatLiveClock } from "../../lib/formatMatchClock";
 import { APP_COPY } from "../../lib/appCopy";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import type { MergedMatch, Team } from "../../types";
+import { TeamFlag } from "../team/TeamFlag";
 import styles from "./VenueMatchRow.module.css";
 
 type Props = {
@@ -36,7 +37,15 @@ export function VenueMatchRow({ match, home, away, onSelect }: Props) {
     <>
       <div className={styles.venueMatchRowHead}>
         <span className={styles.venueMatchTitle}>
-          {homeName} vs {awayName}
+          <span className={styles.venueMatchTeam}>
+            <TeamFlag team={home} teamId={match.homeTeamId} size="sm" compact />
+            <span className="team-name-text">{homeName}</span>
+          </span>
+          <span className={styles.venueMatchVs}>vs</span>
+          <span className={styles.venueMatchTeam}>
+            <TeamFlag team={away} teamId={match.awayTeamId} size="sm" compact />
+            <span className="team-name-text">{awayName}</span>
+          </span>
         </span>
         <span className={`${styles.statusBadge} ${badge.className}`}>{badge.label}</span>
       </div>

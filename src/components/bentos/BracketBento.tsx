@@ -2,7 +2,6 @@ import { useDeferredValue, useMemo } from "react";
 import { knockoutSchedule } from "../../data/knockoutSchedule";
 import { buildQualificationContext, computeQualificationStatus, type QualificationMatchContext } from "../../lib/qualification";
 import { projectTournament } from "../../lib/tournament";
-import { resolveTeamLogo } from "../../lib/resolveTeamLogo";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { APP_COPY } from "../../lib/appCopy";
 import { formatKickoffLabel, resolveKickoffByMatchId } from "../../services/ScheduleLinker";
@@ -44,14 +43,9 @@ function GhostTeamList({
     <div className="bracket-ghost-list" aria-hidden="true">
       {ghosts.map(({ teamId, frequency }) => {
         const t = teamsById[teamId];
-        const logo = t ? resolveTeamLogo(t) : undefined;
         return (
           <div key={teamId} className="bracket-ghost-team">
-            {logo ? (
-              <img src={logo} alt="" className="bracket-ghost-crest" />
-            ) : (
-              <span className="bracket-dot" style={{ width: 12, height: 12 }} />
-            )}
+            <TeamFlag team={t} teamId={teamId} size="sm" compact />
             <span className="team-name-text">{teamDisplayName(t, teamId)}</span>
             {showFrequency ? <span className="bracket-ghost-freq">{Math.round(frequency * 100)} conf.</span> : null}
           </div>
@@ -144,6 +138,7 @@ function isSlotConfirmed(
 
 function BracketTeamReadonly({
   team,
+  teamId,
   seedLabel,
   winner,
   slotConfirmed,
@@ -154,6 +149,7 @@ function BracketTeamReadonly({
   onTeamSelect
 }: {
   team?: Team;
+  teamId?: string;
   seedLabel?: string;
   winner?: boolean;
   slotConfirmed: boolean;
@@ -163,7 +159,8 @@ function BracketTeamReadonly({
   status?: TeamThemeStatus;
   onTeamSelect?: (teamId: string) => void;
 }) {
-  const theme = useTeamTheme(team?.id);
+  const resolvedTeamId = team?.id ?? teamId;
+  const theme = useTeamTheme(resolvedTeamId);
 
   const effectiveCertainty: BracketSlotCertainty =
     mode === "confirmed" && !slotConfirmed ? "tbd" : slotConfirmed ? "confirmed" : "projected";
@@ -180,12 +177,14 @@ function BracketTeamReadonly({
             data-team-id={team.id}
             style={{ opacity: 0.55 }}
           >
-            {team ? (
-              <TeamFlag team={team} teamId={team.id} size="sm" />
+            {resolvedTeamId ? (
+              <TeamFlag team={team} teamId={resolvedTeamId} size="sm" />
             ) : (
               <span className="bracket-dot" />
             )}
-            <span className="team-name-text">{teamDisplayName(team, seedLabel ?? "TBD")}</span>
+            <span className="team-name-text">
+              {teamDisplayName(team, seedLabel ?? resolvedTeamId ?? "TBD")}
+            </span>
           </div>
           <CertaintyBadge certainty="projected" size="xs" />
           {visibleGhosts.length > 0 ? (
@@ -216,19 +215,21 @@ function BracketTeamReadonly({
     <div className="bracket-team-slot">
       <button
         type="button"
-        className={`bracket-team bracket-team-themed ${winner ? "winner" : ""} ${team?.id ? "bracket-team--clickable" : ""}`}
-        style={team ? theme : undefined}
-        data-team-id={team?.id}
+        className={`bracket-team bracket-team-themed ${winner ? "winner" : ""} ${resolvedTeamId ? "bracket-team--clickable" : ""}`}
+        style={resolvedTeamId ? theme : undefined}
+        data-team-id={resolvedTeamId}
         data-status={resolvedStatus === "default" ? undefined : resolvedStatus}
-        disabled={!team?.id}
-        onClick={() => team?.id && onTeamSelect?.(team.id)}
+        disabled={!resolvedTeamId}
+        onClick={() => resolvedTeamId && onTeamSelect?.(resolvedTeamId)}
       >
-        {team ? (
-          <TeamFlag team={team} teamId={team.id} />
+        {resolvedTeamId ? (
+          <TeamFlag team={team} teamId={resolvedTeamId} />
         ) : (
           <span className="bracket-dot" />
         )}
-        <span className="team-name-text">{teamDisplayName(team, seedLabel ?? "TBD")}</span>
+        <span className="team-name-text">
+          {teamDisplayName(team, seedLabel ?? resolvedTeamId ?? "TBD")}
+        </span>
         {winner ? <b>✓</b> : null}
       </button>
       {effectiveCertainty === "confirmed" ? (
@@ -279,6 +280,7 @@ function BracketCardReadonly({
       </div>
       <BracketTeamReadonly
         team={home}
+        teamId={match.homeTeamId}
         seedLabel={match.homeSeedLabel}
         winner={match.winnerTeamId === home?.id}
         slotConfirmed={homeConfirmed}
@@ -289,6 +291,7 @@ function BracketCardReadonly({
       />
       <BracketTeamReadonly
         team={away}
+        teamId={match.awayTeamId}
         seedLabel={match.awaySeedLabel}
         winner={match.winnerTeamId === away?.id}
         slotConfirmed={awayConfirmed}

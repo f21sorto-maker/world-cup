@@ -25,9 +25,26 @@
 }
 
 .venueMatchTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text, #f3f4f6);
+}
+
+.venueMatchTeam {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.venueMatchVs {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-secondary, #9ca3af);
 }
 
 .venueMatchMeta {

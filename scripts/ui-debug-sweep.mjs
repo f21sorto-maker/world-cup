@@ -10,6 +10,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { syncUiDebugCanvas } from "./sync-ui-debug-canvas.mjs";
 
+const MAX_RETRIES = 2;
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = process.argv[2]?.startsWith("http") ? process.argv[2] : "http://127.0.0.1:5173";
 
@@ -37,8 +39,17 @@ function log(line = "") {
   console.log(text);
 }
 
+async function waitForLoadingOverlay(page) {
+  await page
+    .waitForFunction(() => !document.querySelector('[data-loading="true"]'), {
+      timeout: 8000,
+    })
+    .catch(() => {});
+}
+
 async function waitForApp(page) {
   await page.goto(`${BASE}/?uidebug=1`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await waitForLoadingOverlay(page);
   await page.waitForFunction(
     () => {
       const main = document.querySelector(".wc-main");
@@ -47,6 +58,7 @@ async function waitForApp(page) {
     },
     { timeout: 90_000 }
   );
+  await waitForLoadingOverlay(page);
   await page.waitForTimeout(1500);
 }
 
@@ -54,6 +66,10 @@ async function scanRoute(page, route) {
   await page.evaluate((hash) => {
     window.location.hash = hash;
   }, route.hash);
+  await page
+    .waitForFunction((hash) => window.location.hash === hash, route.hash, { timeout: 3000 })
+    .catch(() => {});
+  await waitForLoadingOverlay(page);
   await page.waitForTimeout(2000);
 
   if (route.hash === "#live") {
@@ -78,6 +94,22 @@ async function scanRoute(page, route) {
   });
 }
 
+async function scanRouteWithRetry(page, route) {
+  let lastError;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+    try {
+      return await scanRoute(page, route);
+    } catch (err) {
+      lastError = err;
+      if (attempt < MAX_RETRIES) {
+        log(`[SWEEP RETRY] ${route.name} attempt ${attempt + 1}`);
+        await page.waitForTimeout(1000);
+      }
+    }
+  }
+  throw lastError;
+}
+
 async function main() {
   log(`UI debug sweep — base ${BASE}`);
   log(`Started ${new Date().toISOString()}\n`);
@@ -96,7 +128,18 @@ async function main() {
       await waitForApp(page);
 
       for (const route of ROUTES) {
-        const issues = await scanRoute(page, route);
+        let issues;
+        try {
+          issues = await scanRouteWithRetry(page, route);
+        } catch (err) {
+          issues = [
+            {
+              kind: "error",
+              label: "scan-failed",
+              detail: err instanceof Error ? err.message : String(err),
+            },
+          ];
+        }
         report.push({ viewport: viewport.label, route: route.name, issues });
         const count = issues.length;
         log(`[${viewport.label}] ${route.name}: ${count} issue${count === 1 ? "" : "s"}`);

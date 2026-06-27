@@ -122,6 +122,16 @@
   hyphens: none;
 }
 
+.teamCellInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.teamCell--home .teamCellInner {
+  flex-direction: row-reverse;
+}
+
 .teamCell--home {
   text-align: right;
 }

@@ -4,6 +4,7 @@ import { APP_COPY } from "../../lib/appCopy";
 import type { CutoffScenario } from "../../lib/thirdPlaceCutoffScenario";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import type { Team } from "../../types";
+import { TeamFlag } from "../team/TeamFlag";
 import venueStyles from "../venue/VenuePopover.module.css";
 import styles from "./ThirdPlaceCutoffPopover.module.css";
 
@@ -71,6 +72,7 @@ function CutoffPopoverPanel({ scenario, teams, titleId, onClose }: PanelProps) {
               <ul>
                 {scenario.watchTeams.map((w) => (
                   <li key={w.teamId}>
+                    <TeamFlag team={teams[w.teamId]} teamId={w.teamId} size="sm" compact />{" "}
                     {teamDisplayName(teams[w.teamId], w.teamId)} — #{w.rank}, {w.points} pts
                   </li>
                 ))}

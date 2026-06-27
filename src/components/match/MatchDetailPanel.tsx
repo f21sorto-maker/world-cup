@@ -3,6 +3,7 @@ import type { MergedMatch } from "../../types";
 import { useMatchEnrichment } from "../../hooks/useMatchEnrichment";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { useStore } from "../../store";
+import { TeamFlag } from "../team/TeamFlag";
 
 type Props = {
   match: MergedMatch;
@@ -30,7 +31,15 @@ export function MatchDetailPanel({ match, wcMatchId, onClose }: Props) {
       >
         <header className="match-detail-header">
           <h2 className="match-detail-title">
-            {homeTeam} {match.homeScore ?? "–"} : {match.awayScore ?? "–"} {awayTeam}
+            <span className="match-detail-team" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <TeamFlag team={teams[match.homeTeamId]} teamId={match.homeTeamId} size="sm" compact />
+              {homeTeam}
+            </span>{" "}
+            {match.homeScore ?? "–"} : {match.awayScore ?? "–"}{" "}
+            <span className="match-detail-team" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <TeamFlag team={teams[match.awayTeamId]} teamId={match.awayTeamId} size="sm" compact />
+              {awayTeam}
+            </span>
           </h2>
           <button type="button" onClick={onClose} aria-label="Close" className="match-detail-close">
             ×

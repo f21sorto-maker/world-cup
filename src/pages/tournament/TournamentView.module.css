@@ -275,6 +275,9 @@
 }
 
 .matchCardTeam {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   flex: 1;
   font-size: 13px;
   font-weight: 500;
@@ -288,6 +291,7 @@
 }
 
 .matchCardTeam--away {
+  flex-direction: row-reverse;
   text-align: right;
 }
 

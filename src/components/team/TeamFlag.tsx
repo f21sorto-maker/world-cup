@@ -1,5 +1,13 @@
 import type { Team } from "../../types";
-import { resolveTeamLogo, resolveTeamLogoFromHint } from "../../lib/resolveTeamLogo";
+import {
+  resolveTeamAbbrevFromHint,
+  resolveTeamForDisplay,
+} from "../../data/wc2026TeamCatalog";
+import {
+  resolveTeamLogo,
+  resolveTeamLogoByAbbrev,
+  resolveTeamLogoFromHint,
+} from "../../lib/resolveTeamLogo";
 import { useStore } from "../../store";
 import { getTeamWorldCupTitles } from "../../lib/worldCupTitles";
 import { TeamThemeRoot } from "./TeamThemeRoot";
@@ -30,14 +38,18 @@ const innerSizeClass: Record<NonNullable<Props["size"]>, string> = {
 
 export function TeamFlag({ team, teamId, size = "sm", compact, dim, className }: Props) {
   const storeTeam = useStore((s) => s.teams[teamId]);
-  const effectiveTeam = team ?? storeTeam;
+  const effectiveTeam = resolveTeamForDisplay(teamId, team ?? storeTeam);
   const id = effectiveTeam?.id ?? teamId;
-  const label = effectiveTeam?.shortName ?? teamId;
+  const abbrev =
+    resolveTeamAbbrevFromHint(teamId) ??
+    resolveTeamAbbrevFromHint(effectiveTeam?.abbreviation) ??
+    resolveTeamAbbrevFromHint(effectiveTeam?.name);
+  const label = effectiveTeam?.abbreviation ?? effectiveTeam?.shortName ?? abbrev ?? teamId;
   const logo =
     resolveTeamLogo(effectiveTeam) ??
     resolveTeamLogoFromHint(teamId) ??
-    resolveTeamLogoFromHint(label);
-  const titles = getTeamWorldCupTitles(team);
+    (abbrev ? resolveTeamLogoByAbbrev(abbrev) : undefined);
+  const titles = getTeamWorldCupTitles(effectiveTeam);
   const wrapClass = [
     "team-flag-wrap",
     wrapSizeClass[size],

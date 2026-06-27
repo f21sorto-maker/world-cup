@@ -37,11 +37,11 @@ import { formatPercent } from "../../lib/normalize";
 import { projectTournament, simulateTournamentOutcomes, toTeamsById } from "../../lib/tournament";
 import { formatKickoffLabel, resolveKickoffByMatchId } from "../../services/ScheduleLinker";
 import { useStore } from "../../store";
-import { resolveTeamLogo } from "../../lib/resolveTeamLogo";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { APP_BRAND } from "../../config/appMeta";
 import { BrandLogo } from "../shared/BrandLogo";
 import { APP_COPY } from "../../lib/appCopy";
+import { TeamFlag } from "../team/TeamFlag";
 import { TeamLabel } from "../team/TeamLabel";
 import { VenueLabel } from "../venue/VenueLabel";
 import { BracketTeamButton } from "../team/BracketTeamButton";
@@ -725,8 +725,8 @@ function TournamentView({
             return (
               <div className={`third-row ${index < 8 ? "qualified" : ""}`} key={record.teamId}>
                 <span>{index + 1}</span>
-                <img src={resolveTeamLogo(team) ?? ""} alt="" />
-                <strong className="team-name-text">{teamDisplayName(team)}</strong>
+                <TeamFlag team={team} teamId={record.teamId} size="sm" compact />
+                <strong className="team-name-text">{teamDisplayName(team, record.teamId)}</strong>
                 <em>Grp {record.group}</em>
                 <span className="third-gd">{record.goalDifference > 0 ? `+${record.goalDifference}` : record.goalDifference}</span>
                 <b>{record.points} pts</b>
@@ -772,7 +772,11 @@ function GroupPanel({
           <div className="mini-qualifiers">
             {projectedQualifiers.map((record) => {
               const team = teamsById[record.teamId];
-              return <img src={resolveTeamLogo(team) ?? ""} alt="" key={record.teamId} title={team.name} />;
+              return (
+                <span key={record.teamId} title={teamDisplayName(team, record.teamId)}>
+                  <TeamFlag team={team} teamId={record.teamId} size="sm" compact />
+                </span>
+              );
             })}
           </div>
         </div>
@@ -797,8 +801,8 @@ function GroupPanel({
               <tr className={qualified ? "qualified" : ""} key={record.teamId}>
                 <td>
                   <span className="rank">{index + 1}</span>
-                  <img src={resolveTeamLogo(team) ?? ""} alt="" />
-                  <strong className="team-name-text">{teamDisplayName(team)}</strong>
+                  <TeamFlag team={team} teamId={record.teamId} size="sm" compact />
+                  <strong className="team-name-text">{teamDisplayName(team, record.teamId)}</strong>
                 </td>
                 <td>{record.points}</td>
                 <td>{record.goalDifference > 0 ? `+${record.goalDifference}` : record.goalDifference}</td>
@@ -1106,8 +1110,8 @@ function ProbabilityView({
                   }}
                 >
                   <span className="title-rank">{index + 1}</span>
-                  <img src={resolveTeamLogo(team) ?? ""} alt="" />
-                  <strong className="team-name-text">{teamDisplayName(team)}</strong>
+                  <TeamFlag team={team} teamId={row.teamId} size="sm" compact />
+                  <strong className="team-name-text">{teamDisplayName(team, row.teamId)}</strong>
                   <div className="title-track">
                     <i style={{ width: `${Math.max(3, (row.probability / maxOdds) * 100)}%` }} />
                   </div>
@@ -1141,7 +1145,9 @@ function ProbabilityView({
               <h2>Likely path</h2>
             </div>
             <div className="team-picker">
-              {selected ? <img src={resolveTeamLogo(selected) ?? ""} alt="" /> : null}
+              {selected ? (
+                <TeamFlag team={selected} teamId={selected.id} size="sm" compact />
+              ) : null}
               <select value={selectedTeamId} onChange={(event) => onSelectTeam(event.target.value)}>
                 {sortedTeams.map((team) => (
                   <option value={team.id} key={team.id}>
@@ -1188,8 +1194,14 @@ function ProbabilityView({
                   const team = item.opponentId ? teamsById[item.opponentId] : undefined;
                   return (
                     <div className={`opponent-row ${team ? "" : "other"}`} key={item.opponentId ?? `${stage}-other`}>
-                      {team ? <img src={resolveTeamLogo(team) ?? ""} alt="" /> : <span className="opponent-dot" />}
-                      <span className="team-name-text">{teamDisplayName(team, "Others")}</span>
+                      {item.opponentId ? (
+                        <TeamFlag team={team} teamId={item.opponentId} size="sm" compact />
+                      ) : (
+                        <span className="opponent-dot" />
+                      )}
+                      <span className="team-name-text">
+                        {team ? teamDisplayName(team, item.opponentId!) : "Others"}
+                      </span>
                       <div>
                         <i style={{ width: `${Math.min(100, item.probability * 100)}%` }} />
                       </div>

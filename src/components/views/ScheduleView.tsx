@@ -16,6 +16,7 @@ import {
 import styles from "./ScheduleView.module.css";
 import { FootballPredictionInsightsPanel } from "../predictions/FootballPredictionInsightsPanel";
 import { VenueLabel } from "../venue/VenueLabel";
+import { TeamFlag } from "../team/TeamFlag";
 import { teamDisplayName } from "../../lib/teamIdentity";
 import { APP_BRAND } from "../../config/appMeta";
 import { APP_COPY } from "../../lib/appCopy";
@@ -289,7 +290,10 @@ function ScheduleMatchTable({ matches, teams, onOpenMatch }: ScheduleMatchTableP
               >
                 <td className={styles.timeCell}>{formatKickoffTime(m.date)}</td>
                 <td className={`${styles.teamCell} ${styles["teamCell--home"]}`}>
-                  <span className="team-name-text">{teamDisplayName(home, m.homeTeamId)}</span>
+                  <span className={styles.teamCellInner}>
+                    <TeamFlag team={home} teamId={m.homeTeamId} size="sm" compact />
+                    <span className="team-name-text">{teamDisplayName(home, m.homeTeamId)}</span>
+                  </span>
                 </td>
                 <td className={styles.scoreCell}>
                   {m.status === "completed" || m.status === "live" ? (
@@ -303,7 +307,10 @@ function ScheduleMatchTable({ matches, teams, onOpenMatch }: ScheduleMatchTableP
                   )}
                 </td>
                 <td className={styles.teamCell}>
-                  <span className="team-name-text">{teamDisplayName(away, m.awayTeamId)}</span>
+                  <span className={styles.teamCellInner}>
+                    <TeamFlag team={away} teamId={m.awayTeamId} size="sm" compact />
+                    <span className="team-name-text">{teamDisplayName(away, m.awayTeamId)}</span>
+                  </span>
                 </td>
                 <td className={styles.venueCell} onClick={(e) => e.stopPropagation()}>
                   <VenueLabel

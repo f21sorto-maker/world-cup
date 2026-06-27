@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { liveCardNameForAbbrev } from "../data/teamLiveCardNames";
 import { TEAM_IDENTITY_OVERRIDES } from "../data/teamIdentityOverrides";
-import { resolveTeamLogoByAbbrev } from "../data/wc2026TeamCatalog";
+import { resolveCatalogTeamName, resolveTeamLogoByAbbrev } from "../data/wc2026TeamCatalog";
 import type { CrestProfile } from "../data/teamCrestDisplay";
 import type { Team } from "../types";
 import { crestDisplayToCssVars, resolveCrestDisplay } from "./resolveCrestDisplay";
@@ -126,6 +126,8 @@ export function teamDisplayName(
   if (name) return name;
   const short = team?.shortName?.trim();
   if (short) return short;
+  const fromCatalog = resolveCatalogTeamName(fallback);
+  if (fromCatalog) return fromCatalog;
   return fallback;
 }
 
