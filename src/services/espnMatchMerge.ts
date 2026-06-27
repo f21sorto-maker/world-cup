@@ -36,13 +36,18 @@ function sameFixture(
   return teamNameMatches(aHome, bHome.name) && teamNameMatches(aAway, bAway.name);
 }
 
+function lookupTeam(teams: Record<string, Team>, teamId: string): Team | undefined {
+  if (teams[teamId]) return teams[teamId];
+  return Object.values(teams).find((team) => team.id === teamId);
+}
+
 /** Rewrite match team ids to catalog ids (bra, fra, …) so standings stay unified. */
 export function canonicalizeMatchTeamIds(
   match: MergedMatch,
   teams: Record<string, Team>
 ): MergedMatch {
-  const homeTeam = teams[match.homeTeamId];
-  const awayTeam = teams[match.awayTeamId];
+  const homeTeam = lookupTeam(teams, match.homeTeamId);
+  const awayTeam = lookupTeam(teams, match.awayTeamId);
   return {
     ...match,
     homeTeamId: resolveCanonicalTeamId(match.homeTeamId, homeTeam),

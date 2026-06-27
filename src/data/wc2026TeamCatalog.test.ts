@@ -7,6 +7,7 @@ import {
   resolveCanonicalTeamId,
   resolveTeamAbbrevFromHint,
   resolveTeamLogoFromHint,
+  withEspnTeamAliases,
 } from "./wc2026TeamCatalog";
 
 describe("wc2026TeamCatalog", () => {
@@ -48,6 +49,32 @@ describe("wc2026TeamCatalog", () => {
     expect(merged.bra?.id).toBe("bra");
     expect(merged.fra?.name).toBe("France");
     expect(merged["229"]).toBeUndefined();
+  });
+
+  it("withEspnTeamAliases keeps catalog keys and adds ESPN id lookups", () => {
+    const catalog = mergeTeamsWithCatalog({
+      "229": {
+        id: "229",
+        name: "Brazil",
+        shortName: "Brazil",
+        abbreviation: "BRA",
+        group: "C",
+        rating: 1500,
+      },
+    });
+    const aliased = withEspnTeamAliases(catalog, {
+      "229": {
+        id: "229",
+        name: "Brazil",
+        shortName: "Brazil",
+        abbreviation: "BRA",
+        group: "C",
+        rating: 1500,
+      },
+    });
+    expect(Object.keys(catalog)).toHaveLength(48);
+    expect(aliased.bra?.id).toBe("bra");
+    expect(aliased["229"]?.id).toBe("bra");
   });
 
   it("resolveCanonicalTeamId maps ESPN numeric ids via team metadata", () => {

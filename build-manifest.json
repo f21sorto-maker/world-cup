@@ -1,6 +1,22 @@
 {
-  "updatedAt": "2026-06-27T21:12:45.530Z",
+  "updatedAt": "2026-06-27T21:23:18.806Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 44,
+      "kind": "build",
+      "message": "19 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, scripts — 19 files changed, 71658 insertions(+), 206 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T21:23:18.806Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 43,
+      "kind": "build",
+      "message": "Fix standings/third-place from ESPN; refresh audit snapshot and boot cache v6",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T21:23:10.410Z"
+    },
     {
       "version": "4.0.0",
       "build": 42,
@@ -304,22 +320,6 @@
       "message": "Fix UI debug sweep scan bridge timing; archive sweep runs under .cursor/ui-debug-runs",
       "date": "2026-06-27",
       "timestamp": "2026-06-27T07:53:53.465Z"
-    },
-    {
-      "version": "4.0.0",
-      "build": 4,
-      "kind": "build",
-      "message": "16 file(s) in scripts, src — 16 files changed, 374 insertions(+), 205 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T07:52:39.493Z"
-    },
-    {
-      "version": "4.0.0",
-      "build": 2,
-      "kind": "build",
-      "message": "4 file(s) in src — 4 files changed, 16 insertions(+), 7 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T07:35:33.868Z"
     }
   ],
   "commits": [

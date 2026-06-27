@@ -267,3 +267,24 @@ export function mergeTeamsWithCatalog(teams: Record<string, Team>): Record<strin
 
   return merged;
 }
+
+/** Add ESPN numeric id aliases so live match team ids resolve during merge + standings. */
+export function withEspnTeamAliases(
+  catalogTeams: Record<string, Team>,
+  espnTeams: Record<string, Team>
+): Record<string, Team> {
+  const out: Record<string, Team> = { ...catalogTeams };
+
+  for (const team of Object.values(espnTeams)) {
+    const patched = mergeTeamWithCatalog(team);
+    const abbrev = patched.abbreviation?.toUpperCase();
+    if (!abbrev) continue;
+    const catalogId = abbrev.toLowerCase();
+    const canonical = out[catalogId];
+    if (canonical && team.id !== catalogId) {
+      out[team.id] = canonical;
+    }
+  }
+
+  return out;
+}

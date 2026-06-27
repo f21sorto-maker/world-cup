@@ -8,6 +8,8 @@
 ## [Unreleased]
 
 ### Builds
+- **4.0.0 build 44** (2026-06-27): 19 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, scripts — 19 files changed, 71658 insertions(+), 206 deletions(-)
+- **4.0.0 build 43** (2026-06-27): Fix standings/third-place from ESPN; refresh audit snapshot and boot cache v6
 - **4.0.0 build 42** (2026-06-27): Sync match schedule from ESPN; bump boot cache v5 for fresh standings
 - **4.0.0 build 41** (2026-06-27): Remove duplicate sofascore6 rewrite; document Getty/YouTube env vars
 - **4.0.0 build 40** (2026-06-27): Integrate all feature branches via consolidated rapid proxy

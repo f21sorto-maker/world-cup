@@ -46,6 +46,7 @@ import { applyTeamLogoOverrides } from "../../lib/resolveTeamLogo";
 import {
   mergeTeamsWithCatalog,
   resolveCatalogTeamIdByName,
+  withEspnTeamAliases,
 } from "../../data/wc2026TeamCatalog";
 import { logger } from "../Logger";
 
@@ -86,6 +87,7 @@ function buildStaticMatches(teams: Record<string, Team>): Record<string, MergedM
       locked: false,
       source: "model",
       group: entry.group as MergedMatch["group"],
+      espnEventId: entry.espnEventId,
     };
   }
   return matches;
@@ -272,8 +274,9 @@ export async function runBoot(): Promise<void> {
     startBackgroundEnrichment();
 
     const espnTeamsMap = Object.fromEntries(espnData.teams.map((t) => [t.id, t]));
-    const baseTeams = mergeTeamsWithCatalog(
-      Object.keys(store.teams).length ? store.teams : espnTeamsMap
+    const baseTeams = withEspnTeamAliases(
+      mergeTeamsWithCatalog(Object.keys(store.teams).length ? store.teams : espnTeamsMap),
+      espnTeamsMap
     );
 
     startBootPhase("teams-merge");
@@ -286,7 +289,7 @@ export async function runBoot(): Promise<void> {
     store.setSplashProgress(hadCache ? 55 : 35, "Loading live scores...");
 
     startBootPhase("matches-build");
-    const liveMatches: Record<string, MergedMatch> = {};
+    const liveMatches: Record<string, MergedMatch> = buildStaticMatches(teams);
 
     if (espnData.matches.length > 0) {
       for (const m of espnData.matches) {
@@ -294,13 +297,12 @@ export async function runBoot(): Promise<void> {
         mergeEspnMatchIntoStore(liveMatches, incoming, teams);
 
         const detailEvents = espnData.eventsByMatchId[m.id];
-        const storeMatch = liveMatches[m.id] ?? Object.values(liveMatches).find((x) => x.espnEventId === m.id);
+        const storeMatch =
+          liveMatches[m.id] ?? Object.values(liveMatches).find((x) => x.espnEventId === m.id);
         if (detailEvents?.length && storeMatch) {
           publishMatchEvents(storeMatch, detailEvents);
         }
       }
-    } else {
-      Object.assign(liveMatches, buildStaticMatches(teams));
     }
 
     store.setLiveMatches(liveMatches);

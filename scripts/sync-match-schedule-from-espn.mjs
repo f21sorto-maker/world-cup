@@ -197,10 +197,13 @@ async function main() {
 
   writeFileSync(SCHEDULE_PATH, `${JSON.stringify(schedule, null, 2)}\n`);
 
+  const totalLinked = schedule.matches.filter((m) => m.espnEventId).length;
+
   console.log(
     JSON.stringify(
       {
         linked,
+        totalLinked,
         updatedKickoff,
         updatedGroup,
         unmatched: unmatched.length,
@@ -211,7 +214,7 @@ async function main() {
     )
   );
 
-  if (linked < 90) {
+  if (totalLinked < 104) {
     process.exitCode = 1;
   }
 }

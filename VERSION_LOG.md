@@ -68,6 +68,14 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+## [4.0.0] build 44 — 2026-06-27 (build)
+- 19 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, scripts — 19 files changed, 71658 insertions(+), 206 deletions(-)
+
+## [4.0.0] build 43 — 2026-06-27 (build)
+- Fix standings/third-place from ESPN; refresh audit snapshot and boot cache v6
+
 ## [4.0.0] build 42 — 2026-06-27 (build)
 - Sync match schedule from ESPN; bump boot cache v5 for fresh standings
 

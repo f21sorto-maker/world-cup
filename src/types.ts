@@ -477,6 +477,7 @@ export type MatchScheduleEntry = {
       concurrentMatchNote?: string | null;
     };
   };
+  espnEventId?: string;
 };
 
 export type KnockoutScore = {
