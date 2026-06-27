@@ -243,19 +243,21 @@
     conic-gradient(
       from 200deg at 50% 50%,
       transparent 0deg,
-      rgba(48, 79, 255, 0.24) 42deg,
-      transparent 78deg,
-      rgba(214, 0, 0, 0.18) 124deg,
-      transparent 160deg,
-      rgba(0, 166, 81, 0.16) 206deg,
-      transparent 242deg,
-      rgba(255, 205, 0, 0.14) 288deg,
-      transparent 324deg,
+      color-mix(in srgb, var(--fwc-royal-blue) 32%, transparent) 40deg,
+      transparent 74deg,
+      color-mix(in srgb, var(--fwc-bright-red) 26%, transparent) 118deg,
+      transparent 152deg,
+      color-mix(in srgb, var(--fwc-green) 24%, transparent) 196deg,
+      transparent 230deg,
+      color-mix(in srgb, var(--fwc-lime) 22%, transparent) 264deg,
+      transparent 298deg,
+      color-mix(in srgb, var(--fwc-sky-blue) 20%, transparent) 332deg,
       transparent 360deg
     ),
-    radial-gradient(circle at 50% 55%, rgba(48, 79, 255, 0.22), transparent 68%);
-  filter: blur(22px);
-  opacity: 0.85;
+    radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--fwc-royal-blue) 30%, transparent), transparent 68%),
+    radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--fwc-gold) 18%, transparent), transparent 52%);
+  filter: blur(26px) saturate(1.2);
+  opacity: 0.92;
 }
 
 .splash-trophy-logo {
@@ -265,17 +267,13 @@
 }
 
 .splash-trophy-logo .brand-logo {
-  filter:
-    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))
-    drop-shadow(0 16px 36px rgba(0, 0, 0, 0.35))
-    drop-shadow(0 0 28px rgba(48, 79, 255, 0.32))
-    drop-shadow(0 0 48px rgba(212, 175, 55, 0.22));
+  filter: var(--trophy-glow-filter-hero);
 }
 
 .splash-trophy-logo .brand-logo-accents {
-  inset: -28%;
-  filter: blur(24px);
-  opacity: 0.95;
+  inset: -32%;
+  filter: blur(28px) saturate(1.25);
+  opacity: 1;
 }
 
 @keyframes splashTrophyIn {

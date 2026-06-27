@@ -52,6 +52,11 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 
 function coerceMinute(value: unknown): string | number | undefined {
   if (typeof value === "string" || typeof value === "number") return value;
+  if (typeof value === "object" && value !== null) {
+    const record = value as Record<string, unknown>;
+    if (typeof record.minute === "number") return record.minute;
+    if (typeof record.display === "string") return record.display;
+  }
   return undefined;
 }
 

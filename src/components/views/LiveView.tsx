@@ -6,6 +6,7 @@ import { MatchScheduleCard } from "../match/MatchScheduleCard";
 import { RecentResultsBento } from "../bentos/RecentResultsBento";
 import { QualifiedBento, EliminatedBento, InContentionBento } from "../bentos/QualifiedBento";
 import { groupMatchesByDay } from "../../lib/groupMatchesByDay";
+import { getNextKickoffMs, isNextKickoffFixture } from "../../lib/kickoffCountdown";
 import { APP_COPY } from "../../lib/appCopy";
 import { useStore } from "../../store";
 
@@ -31,13 +32,7 @@ export function LiveView() {
   const allDayGroups = useMemo(() => groupMatchesByDay(scheduleMatches), [scheduleMatches]);
   const dayGroups = scheduleExpanded ? allDayGroups : allDayGroups.slice(0, 3);
 
-  const nextFixtureId = useMemo(() => {
-    if (scheduleMatches.length === 0) return null;
-    const sorted = [...scheduleMatches].sort(
-      (a, b) => Date.parse(a.date) - Date.parse(b.date)
-    );
-    return sorted[0]?.id ?? sorted[0]?.matchId ?? null;
-  }, [scheduleMatches]);
+  const nextKickoffMs = useMemo(() => getNextKickoffMs(scheduleMatches), [scheduleMatches]);
 
   const todayMatchCount = allDayGroups.find((g) => g.isToday)?.matches.length ?? 0;
 
@@ -131,9 +126,7 @@ export function LiveView() {
                   match={m}
                   home={teams[m.homeTeamId]}
                   away={teams[m.awayTeamId]}
-                  showKickoffCountdown={
-                    nextFixtureId != null && (m.id === nextFixtureId || m.matchId === nextFixtureId)
-                  }
+                  showKickoffCountdown={isNextKickoffFixture(m, nextKickoffMs)}
                 />
               ))}
             </div>

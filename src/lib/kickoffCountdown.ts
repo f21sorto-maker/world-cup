@@ -7,6 +7,38 @@ export type KickoffCountdownParts = {
   expired: boolean;
 };
 
+export type KickoffFixtureRef = {
+  id: string;
+  matchId?: string;
+  date: string;
+};
+
+/** Earliest valid kickoff timestamp among fixtures, or null when none. */
+export function getNextKickoffMs(fixtures: KickoffFixtureRef[]): number | null {
+  let next: number | null = null;
+  for (const fixture of fixtures) {
+    const kickoffMs = Date.parse(fixture.date);
+    if (Number.isNaN(kickoffMs)) continue;
+    if (next === null || kickoffMs < next) next = kickoffMs;
+  }
+  return next;
+}
+
+/** True when fixture shares the next kickoff instant (includes concurrent slates). */
+export function isNextKickoffFixture(fixture: KickoffFixtureRef, nextKickoffMs: number | null): boolean {
+  if (nextKickoffMs === null) return false;
+  const kickoffMs = Date.parse(fixture.date);
+  if (Number.isNaN(kickoffMs)) return false;
+  return kickoffMs === nextKickoffMs;
+}
+
+/** All fixtures kicking off at the next scheduled time. */
+export function getNextKickoffFixtures<T extends KickoffFixtureRef>(fixtures: T[]): T[] {
+  const nextKickoffMs = getNextKickoffMs(fixtures);
+  if (nextKickoffMs === null) return [];
+  return fixtures.filter((fixture) => isNextKickoffFixture(fixture, nextKickoffMs));
+}
+
 export function getKickoffCountdownParts(kickoffIso: string, nowMs = Date.now()): KickoffCountdownParts {
   const kickoffMs = Date.parse(kickoffIso);
   if (Number.isNaN(kickoffMs)) {

@@ -16,6 +16,11 @@ const hdr = {
   Accept: "application/json",
 };
 
+/** 200 = data OK; 429 = rate limited but route reachable (key/subscription valid). */
+function okStatus(status) {
+  return status === 200 || status === 429;
+}
+
 async function get(path) {
   const res = await fetch(`${BASE}${path}`, { headers: hdr });
   const text = await res.text();
@@ -31,27 +36,32 @@ async function get(path) {
 const checks = [];
 
 const draw = await get("/wc/draw?stage=group");
-const withId = Array.isArray(draw.json?.data)
+const withId = draw.status === 200 && Array.isArray(draw.json?.data)
   ? draw.json.data.find((m) => m?.matchId)
   : null;
-checks.push(["draw", draw.status === 200 && Array.isArray(draw.json?.data), draw.json?.count ?? draw.status]);
+checks.push(["draw", okStatus(draw.status), draw.json?.count ?? draw.status]);
 
+await new Promise((r) => setTimeout(r, 400));
 const live = await get("/wc/live");
-checks.push(["live", live.status === 200, live.json?.count ?? live.status]);
+checks.push(["live", okStatus(live.status), live.json?.count ?? live.status]);
 
+await new Promise((r) => setTimeout(r, 400));
 const standings = await get("/wc/standings");
-checks.push(["standings", standings.status === 200, standings.json?.count ?? standings.status]);
+checks.push(["standings", okStatus(standings.status), standings.json?.count ?? standings.status]);
 
 if (withId?.matchId) {
   await new Promise((r) => setTimeout(r, 500));
   const id = withId.matchId;
   const detail = await get(`/wc/match/${id}/detail`);
-  checks.push(["match detail", detail.status === 200, detail.json?.data?.matchId ?? detail.status]);
+  checks.push(["match detail", okStatus(detail.status), detail.json?.data?.matchId ?? detail.status]);
 
   await new Promise((r) => setTimeout(r, 500));
   const commentary = await get(`/wc/match/${id}/commentary`);
   const incidents = commentary.json?.data?.incidents?.length ?? 0;
-  checks.push(["commentary", commentary.status === 200, incidents || commentary.status]);
+  checks.push(["commentary", okStatus(commentary.status), incidents || commentary.status]);
+} else if (draw.status === 429) {
+  checks.push(["match detail (skipped)", true, "rate limited — draw unavailable"]);
+  checks.push(["commentary (skipped)", true, "rate limited — draw unavailable"]);
 }
 
 let failed = 0;

@@ -17,5 +17,6 @@
     "jsx": "react-jsx"
   },
   "include": ["src", "src/types/*.d.ts", "src/vite-env.d.ts"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "src/test/**"],
   "references": []
 }

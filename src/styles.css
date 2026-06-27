@@ -118,6 +118,51 @@
   --glow-gold: 0 0 16px rgba(212, 175, 55, 0.45);
   --glow-red: 0 0 12px rgba(214, 0, 0, 0.45);
 
+  /* Trophy logo — tournament-color radiance (no heavy black shadows) */
+  --trophy-glow-filter:
+    drop-shadow(0 0 3px color-mix(in srgb, var(--fwc-gold) 72%, transparent))
+    drop-shadow(0 0 8px color-mix(in srgb, var(--fwc-royal-blue) 58%, transparent))
+    drop-shadow(0 0 14px color-mix(in srgb, var(--fwc-sky-blue) 42%, transparent))
+    drop-shadow(0 0 22px color-mix(in srgb, var(--fwc-green) 28%, transparent))
+    drop-shadow(0 0 30px color-mix(in srgb, var(--fwc-bright-red) 18%, transparent))
+    drop-shadow(0 0 38px color-mix(in srgb, var(--fwc-lime) 12%, transparent));
+  --trophy-glow-filter-hover:
+    drop-shadow(0 0 4px color-mix(in srgb, var(--fwc-gold) 82%, transparent))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--fwc-royal-blue) 68%, transparent))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--fwc-sky-blue) 52%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--fwc-green) 36%, transparent))
+    drop-shadow(0 0 38px color-mix(in srgb, var(--fwc-bright-red) 24%, transparent))
+    drop-shadow(0 0 48px color-mix(in srgb, var(--fwc-lime) 18%, transparent))
+    drop-shadow(0 0 56px color-mix(in srgb, var(--fwc-aqua) 14%, transparent));
+  --trophy-glow-filter-hero:
+    drop-shadow(0 0 6px color-mix(in srgb, var(--fwc-gold) 78%, transparent))
+    drop-shadow(0 0 14px color-mix(in srgb, var(--fwc-royal-blue) 62%, transparent))
+    drop-shadow(0 0 24px color-mix(in srgb, var(--fwc-sky-blue) 48%, transparent))
+    drop-shadow(0 0 36px color-mix(in srgb, var(--fwc-green) 34%, transparent))
+    drop-shadow(0 0 48px color-mix(in srgb, var(--fwc-bright-red) 22%, transparent))
+    drop-shadow(0 0 60px color-mix(in srgb, var(--fwc-lime) 16%, transparent))
+    drop-shadow(0 0 72px color-mix(in srgb, var(--fwc-aqua) 12%, transparent))
+    drop-shadow(0 0 84px color-mix(in srgb, var(--fwc-hot-pink) 8%, transparent));
+  --trophy-accent-bg:
+    conic-gradient(
+      from 210deg at 50% 50%,
+      transparent 0deg,
+      color-mix(in srgb, var(--fwc-royal-blue) 38%, transparent) 34deg,
+      transparent 68deg,
+      color-mix(in srgb, var(--fwc-bright-red) 32%, transparent) 112deg,
+      transparent 146deg,
+      color-mix(in srgb, var(--fwc-green) 30%, transparent) 190deg,
+      transparent 224deg,
+      color-mix(in srgb, var(--fwc-lime) 26%, transparent) 258deg,
+      transparent 292deg,
+      color-mix(in srgb, var(--fwc-sky-blue) 24%, transparent) 326deg,
+      transparent 360deg
+    ),
+    radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--fwc-royal-blue) 42%, transparent), transparent 62%),
+    radial-gradient(circle at 50% 62%, color-mix(in srgb, var(--fwc-gold) 28%, transparent), transparent 50%),
+    radial-gradient(circle at 28% 72%, color-mix(in srgb, var(--fwc-bright-red) 16%, transparent), transparent 42%),
+    radial-gradient(circle at 72% 72%, color-mix(in srgb, var(--fwc-green) 14%, transparent), transparent 40%);
+
   /* ── AMPLIFY PATTERN (16-color conic) ── */
   --fwc-amplify-gradient: conic-gradient(
     from 0deg,
@@ -621,36 +666,22 @@ input:focus-visible {
   z-index: 0;
   pointer-events: none;
   border-radius: 50%;
-  background:
-    conic-gradient(
-      from 210deg at 50% 50%,
-      transparent 0deg,
-      rgba(48, 79, 255, 0.28) 38deg,
-      transparent 72deg,
-      rgba(214, 0, 0, 0.22) 118deg,
-      transparent 152deg,
-      rgba(0, 166, 81, 0.2) 198deg,
-      transparent 232deg,
-      rgba(255, 205, 0, 0.18) 278deg,
-      transparent 312deg,
-      transparent 360deg
-    ),
-    radial-gradient(circle at 50% 58%, rgba(48, 79, 255, 0.34), transparent 62%),
-    radial-gradient(circle at 50% 62%, rgba(212, 175, 55, 0.12), transparent 48%);
-  filter: blur(10px);
-  opacity: 0.82;
-  transform: scale(1.05);
+  background: var(--trophy-accent-bg);
+  filter: blur(12px) saturate(1.15);
+  opacity: 0.88;
+  transform: scale(1.06);
+  transition: opacity 0.22s ease, filter 0.22s ease, transform 0.22s ease;
 }
 
 .brand-logo-shell--xl .brand-logo-accents {
   inset: -24%;
-  filter: blur(18px);
-  opacity: 0.9;
+  filter: blur(20px) saturate(1.2);
+  opacity: 0.94;
 }
 
 .brand-logo-shell--lg .brand-logo-accents {
   inset: -20%;
-  filter: blur(14px);
+  filter: blur(16px) saturate(1.18);
 }
 
 .brand-logo {
@@ -661,10 +692,8 @@ input:focus-visible {
   height: 100%;
   object-fit: contain;
   object-position: center;
-  filter:
-    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45))
-    drop-shadow(0 8px 18px rgba(0, 0, 0, 0.28))
-    drop-shadow(0 0 14px rgba(48, 79, 255, 0.18));
+  filter: var(--trophy-glow-filter);
+  transition: transform 0.22s ease, filter 0.28s ease;
 }
 
 .brand-logo--xl {
@@ -707,14 +736,6 @@ input:focus-visible {
   height: 32px;
 }
 
-.brand-logo {
-  transition: transform 0.22s ease, filter 0.22s ease;
-}
-
-.brand-logo-accents {
-  transition: opacity 0.22s ease, filter 0.22s ease, transform 0.22s ease;
-}
-
 .brand:hover .brand-mark:not(.brand-mark--logo) {
   border-color: rgba(48, 79, 255, 0.5);
   box-shadow:
@@ -726,16 +747,13 @@ input:focus-visible {
 
 .brand:hover .brand-mark--logo .brand-logo-accents {
   opacity: 1;
-  filter: blur(12px);
-  transform: scale(1.08);
+  filter: blur(14px) saturate(1.25);
+  transform: scale(1.1);
 }
 
 .brand:hover .brand-mark--logo .brand-logo {
   transform: translateY(-1px) scale(1.04);
-  filter:
-    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
-    drop-shadow(0 10px 22px rgba(0, 0, 0, 0.32))
-    drop-shadow(0 0 20px rgba(48, 79, 255, 0.28));
+  filter: var(--trophy-glow-filter-hover);
 }
 
 .brand-text {
