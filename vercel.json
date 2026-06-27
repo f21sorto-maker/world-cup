@@ -69,6 +69,10 @@
       "destination": "/api/rapid?service=flashlive"
     },
     {
+      "source": "/api/today-football-prediction/:path*",
+      "destination": "/api/rapid?service=today-football-prediction"
+    },
+    {
       "source": "/api/zafronix/:path*",
       "destination": "/api/rapid?service=zafronix"
     },

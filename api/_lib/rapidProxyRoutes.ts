@@ -104,6 +104,17 @@ export const RAPID_PROXY_ROUTES: Record<string, RapidProxyRoute> = {
     host: "flashlive-sports.p.rapidapi.com",
     requiredPathPrefix: "/v1/",
   },
+  "today-football-prediction": {
+    host: "today-football-prediction.p.rapidapi.com",
+    allowedPrefixes: [
+      "/leagues",
+      "/leagues/",
+      "/stats",
+      "/stats/",
+      "/predictions",
+      "/predictions/",
+    ],
+  },
   zafronix: {
     host: "zafronix-fifa-world-cup-api.p.rapidapi.com",
     allowedPrefixes: [
