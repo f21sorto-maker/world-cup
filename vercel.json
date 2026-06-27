@@ -2,75 +2,75 @@
   "rewrites": [
     {
       "source": "/api/wc-live/:path*",
-      "destination": "/api/rapid/wc-live/:path*"
+      "destination": "/api/rapid?service=wc-live&upstream=:path*"
     },
     {
       "source": "/api/wc2026/:path*",
-      "destination": "/api/rapid/wc2026/:path*"
+      "destination": "/api/rapid?service=wc2026&upstream=:path*"
     },
     {
       "source": "/api/footballdata/:path*",
-      "destination": "/api/rapid/footballdata/:path*"
+      "destination": "/api/rapid?service=footballdata&upstream=:path*"
     },
     {
       "source": "/api/sportapi/:path*",
-      "destination": "/api/rapid/sportapi/:path*"
+      "destination": "/api/rapid?service=sportapi&upstream=:path*"
     },
     {
       "source": "/api/sofascore6/:path*",
-      "destination": "/api/rapid/sofascore6/:path*"
+      "destination": "/api/rapid?service=sofascore6&upstream=:path*"
     },
     {
       "source": "/api/sofascore-rapid/:path*",
-      "destination": "/api/rapid/sofascore-rapid/:path*"
+      "destination": "/api/rapid?service=sofascore-rapid&upstream=:path*"
     },
     {
       "source": "/api/weather/:path*",
-      "destination": "/api/rapid/weather/:path*"
+      "destination": "/api/rapid?service=weather&upstream=:path*"
     },
     {
       "source": "/api/odds/:path*",
-      "destination": "/api/rapid/odds/:path*"
+      "destination": "/api/rapid?service=odds&upstream=:path*"
     },
     {
       "source": "/api/football-prediction/:path*",
-      "destination": "/api/rapid/football-prediction/:path*"
+      "destination": "/api/rapid?service=football-prediction&upstream=:path*"
     },
     {
       "source": "/api/world-cup-history/:path*",
-      "destination": "/api/rapid/world-cup-history/:path*"
+      "destination": "/api/rapid?service=world-cup-history&upstream=:path*"
     },
     {
       "source": "/api/sport-highlights/:path*",
-      "destination": "/api/rapid/sport-highlights/:path*"
+      "destination": "/api/rapid?service=sport-highlights&upstream=:path*"
     },
     {
       "source": "/api/sports-live-scores/:path*",
-      "destination": "/api/rapid/sports-live-scores/:path*"
+      "destination": "/api/rapid?service=sports-live-scores&upstream=:path*"
     },
     {
       "source": "/api/all-sport-live-stream/:path*",
-      "destination": "/api/rapid/all-sport-live-stream/:path*"
+      "destination": "/api/rapid?service=all-sport-live-stream&upstream=:path*"
     },
     {
       "source": "/api/free-daily-xtream-iptv/:path*",
-      "destination": "/api/rapid/free-daily-xtream-iptv/:path*"
+      "destination": "/api/rapid?service=free-daily-xtream-iptv&upstream=:path*"
     },
     {
       "source": "/api/cloud-api-hub-iptv/:path*",
-      "destination": "/api/rapid/cloud-api-hub-iptv/:path*"
+      "destination": "/api/rapid?service=cloud-api-hub-iptv&upstream=:path*"
     },
     {
       "source": "/api/tvview/:path*",
-      "destination": "/api/rapid/tvview/:path*"
+      "destination": "/api/rapid?service=tvview&upstream=:path*"
     },
     {
       "source": "/api/zafronix/:path*",
-      "destination": "/api/rapid/zafronix/:path*"
+      "destination": "/api/rapid?service=zafronix&upstream=:path*"
     },
     {
       "source": "/api/espn-web/:path*",
-      "destination": "/api/proxy/espn-web/:path*"
+      "destination": "/api/proxy?upstream=:path*"
     },
     {
       "source": "/espn/:path*",

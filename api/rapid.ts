@@ -15,7 +15,20 @@ function jsonError(status: number, body: Record<string, unknown>): Response {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
-function resolveRapidPath(pathname: string): { serviceId: string; upstreamPath: string } | null {
+function resolveRapidPath(url: URL): { serviceId: string; upstreamPath: string } | null {
+  const service = url.searchParams.get("service");
+  const upstream = url.searchParams.get("upstream");
+  if (service) {
+    const upstreamPath =
+      upstream == null || upstream === ""
+        ? "/"
+        : upstream.startsWith("/")
+          ? upstream
+          : `/${upstream}`;
+    return { serviceId: service, upstreamPath };
+  }
+
+  const pathname = url.pathname;
   if (pathname.startsWith("/api/rapid/")) {
     const remainder = pathname.slice("/api/rapid".length);
     const segments = remainder.split("/").filter(Boolean);
@@ -39,7 +52,7 @@ function resolveRapidPath(pathname: string): { serviceId: string; upstreamPath: 
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const resolved = resolveRapidPath(url.pathname);
+  const resolved = resolveRapidPath(url);
   if (!resolved) {
     return jsonError(404, { error: "Unknown RapidAPI service", path: url.pathname });
   }
@@ -69,14 +82,18 @@ export default async function handler(request: Request): Promise<Response> {
     return jsonError(500, { error: "RAPIDAPI_KEY not configured" });
   }
 
-  const upstream = `https://${route.host}${upstreamPath}${url.search}`;
+  const forwardSearch = new URLSearchParams(url.searchParams);
+  forwardSearch.delete("service");
+  forwardSearch.delete("upstream");
+  const qs = forwardSearch.toString();
+  const upstreamUrl = `https://${route.host}${upstreamPath}${qs ? `?${qs}` : ""}`;
   const body =
     method === "POST" || method === "PATCH" || method === "PUT" || method === "DELETE"
       ? await request.text()
       : undefined;
 
   try {
-    const res = await fetch(upstream, {
+    const res = await fetch(upstreamUrl, {
       method,
       headers: buildUpstreamHeaders(route, rapidKey, method),
       body: body && body.length > 0 ? body : undefined,

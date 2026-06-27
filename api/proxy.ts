@@ -18,12 +18,20 @@ function isEspnWebAllowed(path: string): boolean {
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  let path = url.pathname;
+  const upstream = url.searchParams.get("upstream");
+  let path =
+    upstream != null && upstream !== ""
+      ? upstream.startsWith("/")
+        ? upstream
+        : `/${upstream}`
+      : url.pathname;
 
-  if (path.startsWith("/api/proxy/espn-web")) {
-    path = path.slice("/api/proxy/espn-web".length);
-  } else if (path.startsWith("/api/espn-web")) {
-    path = path.slice("/api/espn-web".length);
+  if (!upstream) {
+    if (path.startsWith("/api/proxy/espn-web")) {
+      path = path.slice("/api/proxy/espn-web".length);
+    } else if (path.startsWith("/api/espn-web")) {
+      path = path.slice("/api/espn-web".length);
+    }
   }
 
   if (!path.startsWith("/")) path = `/${path}`;

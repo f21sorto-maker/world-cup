@@ -1,6 +1,22 @@
 {
-  "updatedAt": "2026-06-27T19:23:13.112Z",
+  "updatedAt": "2026-06-27T19:25:59.221Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 34,
+      "kind": "build",
+      "message": "7 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, vercel.json, version.json — 7 files changed, 76 insertions(+), 46 deletions(-)",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T19:25:59.221Z"
+    },
+    {
+      "version": "4.0.0",
+      "build": 33,
+      "kind": "build",
+      "message": "Route RapidAPI rewrites through query params on api/rapid",
+      "date": "2026-06-27",
+      "timestamp": "2026-06-27T19:25:59.167Z"
+    },
     {
       "version": "4.0.0",
       "build": 32,
@@ -304,25 +320,17 @@
       "message": "13 file(s) in .cursor, src — 13 files changed, 415 insertions(+), 11 deletions(-)",
       "date": "2026-06-27",
       "timestamp": "2026-06-27T06:48:33.340Z"
-    },
-    {
-      "version": "3.0.0",
-      "build": 15,
-      "kind": "build",
-      "message": "3 file(s) in build-manifest.json, src — 3 files changed, 24 insertions(+), 4 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T06:40:45.547Z"
-    },
-    {
-      "version": "3.0.0",
-      "build": 14,
-      "kind": "build",
-      "message": "6 file(s) in build-manifest.json, src — 6 files changed, 66 insertions(+), 19 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T06:39:24.592Z"
     }
   ],
   "commits": [
+    {
+      "hash": "19ec866e94cc70689a34a9dd7a47ef9298309158",
+      "shortHash": "19ec866",
+      "message": "Flatten API proxies to top-level rapid.ts and proxy.ts for Vercel",
+      "version": "4.0.0",
+      "build": 32,
+      "timestamp": "2026-06-27T19:23:13.209Z"
+    },
     {
       "hash": "eac83bc9ca7f70163c0c653d69b3c1b6994c13cb",
       "shortHash": "eac83bc",
@@ -554,14 +562,6 @@
       "version": "3.0.0",
       "build": 20,
       "timestamp": "2026-06-27T07:06:21.780Z"
-    },
-    {
-      "hash": "def1814ca76f576ecee30396e51b0d038fc25f39",
-      "shortHash": "def1814",
-      "message": "Sync build-manifest commit record for c3b333f.",
-      "version": "3.0.0",
-      "build": 20,
-      "timestamp": "2026-06-27T07:06:12.955Z"
     }
   ],
   "deploys": [
