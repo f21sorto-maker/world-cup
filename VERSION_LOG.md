@@ -5,6 +5,12 @@ Detailed chronological record of every version and build increment.
 Use `npm run version:build -- --message "what changed"` after each meaningful change set.  
 Use `npm run version:patch|minor|major` for semver releases.
 
+
+## [3.0.0] build 1 — 2026-06-27 (major)
+- V3 — unified multi-API match detail (stats, lineups, commentary, H2H)
+- Live kickoff countdown, trophy branding refresh, and full deploy hardening
+- WC2026, WC Live, Zafronix, SofaScore, ESPN, and World Cup history integrations
+
 ## [2.0.0] build 2 — 2026-06-26 (build)
 
 - Complete branding sweep (Simulator, Tournament, Schedule, Match views), rewrite README, sync package-lock and api-portal naming

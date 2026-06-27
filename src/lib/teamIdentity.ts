@@ -134,11 +134,15 @@ export function matchThemeToStyle(
 ): CSSProperties {
   const homePrimary = home?.primary ?? DEFAULT_PRIMARY;
   const awayPrimary = away?.primary ?? DEFAULT_SECONDARY;
+  const homeSecondary = home?.secondary ?? homePrimary;
+  const awaySecondary = away?.secondary ?? awayPrimary;
   const wash = variant === "live" ? "33" : "14";
 
   return {
+    "--match-home-primary": homePrimary,
+    "--match-home-secondary": homeSecondary,
+    "--match-away-primary": awayPrimary,
+    "--match-away-secondary": awaySecondary,
     background: `linear-gradient(135deg, ${homePrimary}${wash} 0%, var(--surface) 45%, var(--surface) 55%, ${awayPrimary}${wash} 100%)`,
-    borderTop: variant === "live" ? "2px solid transparent" : "1px solid transparent",
-    borderImage: `linear-gradient(90deg, ${homePrimary}, ${awayPrimary}) 1`
   } as CSSProperties;
 }

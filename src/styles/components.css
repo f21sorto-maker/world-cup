@@ -27,8 +27,8 @@
   border-radius: var(--radius-md);
   color: var(--fwc-white);
   background: var(--action-primary);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-brand);
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   cursor: pointer;
@@ -123,8 +123,9 @@
 
 .team-sheet-header h2 {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-xl);
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -167,8 +168,8 @@
   border-radius: 0;
   background: transparent;
   color: var(--text-muted);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-brand);
+  font-weight: 400;
   font-size: var(--text-sm);
   text-transform: uppercase;
   letter-spacing: 0.06em;

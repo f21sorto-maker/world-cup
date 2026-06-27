@@ -7,6 +7,7 @@ import { RecentResultsBento } from "../bentos/RecentResultsBento";
 import { QualifiedBento, EliminatedBento, InContentionBento } from "../bentos/QualifiedBento";
 import { groupMatchesByDay } from "../../lib/groupMatchesByDay";
 import { getNextKickoffMs, isNextKickoffFixture } from "../../lib/kickoffCountdown";
+import { LiveBracketEmbed } from "../bracket/LiveBracketEmbed";
 import { APP_COPY } from "../../lib/appCopy";
 import { useStore } from "../../store";
 
@@ -167,6 +168,8 @@ export function LiveView() {
           </BentoErrorBoundary>
         </div>
       </section>
+
+      <LiveBracketEmbed />
     </div>
   );
 }

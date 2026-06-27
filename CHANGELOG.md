@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.0] — 2026-06-27
+
+### Changed
+- V3 — unified multi-API match detail (stats, lineups, commentary, H2H)
+- Live kickoff countdown, trophy branding refresh, and full deploy hardening
+- WC2026, WC Live, Zafronix, SofaScore, ESPN, and World Cup history integrations
+
 All notable releases of **Road to the World Cup Final 2026**.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).  

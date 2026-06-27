@@ -107,11 +107,11 @@
 }
 
 .headerScoreNum {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-3xl);
-  font-weight: 900;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
   min-width: 28px;
   text-align: center;
   color: var(--ss-text);

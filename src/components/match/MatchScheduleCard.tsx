@@ -64,12 +64,19 @@ export function MatchScheduleCard({
 
   const cardClass = [
     "schedule-card",
-    "schedule-card-themed",
     isLive ? "is-live" : "",
     showKickoffCountdown ? "schedule-card--next-ko" : "",
     compact ? "schedule-card--compact" : "",
     onSelect ? "schedule-card--btn" : "",
     isGoalActive ? goalStyles.cardGoalActive : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const glowWrapClass = [
+    "fixture-glow-wrap",
+    "schedule-card-themed",
+    isLive ? "is-live" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -170,15 +177,17 @@ export function MatchScheduleCard({
 
   if (onSelect) {
     return (
-      <button type="button" className={cardClass} style={cardStyle} onClick={onSelect}>
-        {body}
-      </button>
+      <div className={glowWrapClass} style={cardStyle}>
+        <button type="button" className={cardClass} onClick={onSelect}>
+          {body}
+        </button>
+      </div>
     );
   }
 
   return (
-    <article className={cardClass} style={cardStyle}>
-      {body}
-    </article>
+    <div className={glowWrapClass} style={cardStyle}>
+      <article className={cardClass}>{body}</article>
+    </div>
   );
 }

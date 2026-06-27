@@ -1,5 +1,11 @@
 /* Team identity — CSS custom properties injected via TeamThemeRoot / useTeamTheme */
 
+@property --fixture-glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .team-theme-root {
   --team-primary: #6b7280;
   --team-secondary: #9ca3af;
@@ -9,10 +15,94 @@
 }
 
 .team-accent-bar {
-  height: 3px;
+  height: 4px;
   margin: -1px -1px 0;
   background: linear-gradient(90deg, var(--team-gradient-start), var(--team-gradient-end));
   border-radius: var(--r-lg, 14px) var(--r-lg, 14px) 0 0;
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--team-gradient-start) 45%, transparent),
+    0 0 20px color-mix(in srgb, var(--team-gradient-end) 35%, transparent);
+}
+
+/* Animated dual-team glow around fixture cards (schedule + live hero) */
+.fixture-glow-wrap {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-lg, 14px);
+}
+
+.fixture-glow-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  z-index: 0;
+  border-radius: calc(var(--radius-lg, 14px) + 18px);
+  background: conic-gradient(
+    from var(--fixture-glow-angle),
+    color-mix(in srgb, var(--match-home-primary, #6b7280) 78%, transparent) 0deg,
+    transparent 55deg,
+    color-mix(in srgb, var(--match-away-primary, #9ca3af) 78%, transparent) 115deg,
+    transparent 170deg,
+    color-mix(in srgb, var(--match-home-secondary, var(--match-home-primary, #6b7280)) 52%, transparent) 235deg,
+    transparent 290deg,
+    color-mix(in srgb, var(--match-away-secondary, var(--match-away-primary, #9ca3af)) 52%, transparent) 350deg
+  );
+  filter: blur(24px);
+  opacity: 0.82;
+  animation: fixture-glow-orbit 11s linear infinite;
+  pointer-events: none;
+}
+
+.fixture-glow-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  z-index: 0;
+  border-radius: calc(var(--radius-lg, 14px) + 4px);
+  background: conic-gradient(
+    from var(--fixture-glow-angle),
+    var(--match-home-primary, #6b7280),
+    color-mix(in srgb, var(--match-home-secondary, var(--match-home-primary)) 70%, transparent),
+    var(--match-away-primary, #9ca3af),
+    color-mix(in srgb, var(--match-away-secondary, var(--match-away-primary)) 70%, transparent),
+    var(--match-home-primary, #6b7280)
+  );
+  filter: blur(10px);
+  opacity: 0.62;
+  animation: fixture-glow-orbit 11s linear infinite;
+  pointer-events: none;
+}
+
+.fixture-glow-wrap > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fixture-glow-wrap.is-live::before {
+  inset: -22px;
+  filter: blur(28px);
+  opacity: 0.92;
+  animation-duration: 8s;
+}
+
+.fixture-glow-wrap.is-live::after {
+  inset: -5px;
+  filter: blur(12px);
+  opacity: 0.72;
+  animation-duration: 8s;
+}
+
+@keyframes fixture-glow-orbit {
+  to {
+    --fixture-glow-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixture-glow-wrap::before,
+  .fixture-glow-wrap::after {
+    animation: none;
+  }
 }
 
 .team-card {
@@ -164,7 +254,11 @@
 }
 
 .schedule-card-themed.is-live {
-  border-color: color-mix(in srgb, var(--team-primary) 25%, var(--line));
+  border-color: color-mix(in srgb, var(--match-home-primary) 25%, var(--line));
+}
+
+.schedule-list .fixture-glow-wrap {
+  margin: 10px 2px;
 }
 
 .standing-row-themed td:first-child {

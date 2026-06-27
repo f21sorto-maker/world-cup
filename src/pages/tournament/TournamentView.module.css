@@ -20,9 +20,9 @@
 }
 
 .headerTitle {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-xl);
-  font-weight: 900;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--ss-text);

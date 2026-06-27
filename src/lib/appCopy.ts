@@ -135,6 +135,11 @@ export const APP_COPY = {
     recentResultsTitle: "Recent scores",
     seeAllResults: "See all results",
     finalWhistle: "Final",
+    bracketAriaLabel: "Knockout bracket",
+    bracketKicker: "Knockout path",
+    bracketTitle: "Road to the final",
+    bracketLead:
+      "Preview the full bracket here. Switch between best-guess projections and locked-in teams.",
   },
 
   schedule: {

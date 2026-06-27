@@ -301,7 +301,7 @@ function BracketCardReadonly({
   );
 }
 
-export function BracketBento() {
+export function BracketBento({ embedded = false }: { embedded?: boolean }) {
   const mode = useStore((s) => s.bracketViewMode);
   const openTeamSheet = useStore((s) => s.openTeamSheet);
   const teamsMap = useStore((s) => s.teams);
@@ -357,13 +357,18 @@ export function BracketBento() {
   const bb = APP_COPY.bracketBento;
 
   return (
-    <section className="bracket-section" aria-label="Knockout bracket">
-      <div className="section-title">
-        <div>
-          <div className="section-kicker">{bb.kicker}</div>
-          <h2>{mode === "confirmed" ? bb.confirmedTitle : bb.projectedTitle}</h2>
+    <section
+      className={["bracket-section", embedded ? "bracket-section--embedded" : ""].filter(Boolean).join(" ")}
+      aria-label="Knockout bracket"
+    >
+      {!embedded ? (
+        <div className="section-title">
+          <div>
+            <div className="section-kicker">{bb.kicker}</div>
+            <h2>{mode === "confirmed" ? bb.confirmedTitle : bb.projectedTitle}</h2>
+          </div>
         </div>
-      </div>
+      ) : null}
       <p className="bracket-hint">
         {mode === "confirmed" ? bb.confirmedHint : bb.projectedHint}
       </p>

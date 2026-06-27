@@ -97,10 +97,13 @@
   --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* ── TYPOGRAPHY ── */
-  --font-display: "WorldCup26", "FWC2026", "Anton", "Impact", "Arial Black", sans-serif;
-  --font-body: "Noto Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  /* ── TYPOGRAPHY (FWC 2026 official cuts) ── */
+  --font-brand: "WorldCup26", "FWC2026", sans-serif;
+  --font-display: var(--font-brand);
+  --font-heading: var(--font-brand);
+  --font-ui: "FWC2026", "WorldCup26", "Noto Sans", system-ui, sans-serif;
+  --font-body: "Noto Sans", "FWC2026", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 
   --text-xs: 0.6875rem;
   --text-sm: 0.8125rem;
@@ -233,8 +236,6 @@
   --coral: var(--fwc-orange-red);
   --warn: var(--fwc-yellow);
 
-  --font-ui: var(--font-body);
-
   --r-sm: var(--radius-sm);
   --r: var(--radius-lg);
   --r-lg: var(--radius-xl);
@@ -309,12 +310,16 @@ button {
 
 h1,
 h2,
-h3 {
-  font-family: var(--font-display);
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-synthesis: none;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-primary);
-  font-weight: 900;
 }
 
 h1,
@@ -322,6 +327,35 @@ h2,
 h3,
 p {
   margin: 0;
+}
+
+/* FWC branding + section headers (single stack for all marketing/display type) */
+:is(
+  .hero-panel h1,
+  .section-title-text,
+  .section-title h2,
+  .eyebrow,
+  .section-kicker,
+  .brand-text strong,
+  .brand-text small,
+  .splash-title,
+  .splash-subtitle,
+  .splash-error-title,
+  .bottom-tab,
+  .bracket-toggle-label,
+  .bracket-section .section-title h2,
+  .team-sheet-header-main h2,
+  .group-detail-head h3,
+  .bento-retry-btn,
+  .groups-view-toggle-btn,
+  .splash-retry-btn,
+  .segmented button,
+  .install-app-banner__title,
+  .headerTitle
+) {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-synthesis: none;
 }
 
 a {
@@ -503,9 +537,11 @@ input:focus-visible {
 .app-error strong {
   margin-top: 4px;
   color: var(--text);
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: 22px;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .loading-mark,
@@ -763,19 +799,20 @@ input:focus-visible {
 }
 
 .brand-text strong {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--text);
 }
 
 .brand-text small {
   color: var(--faint);
-  font-family: var(--font-mono);
+  font-family: var(--font-brand);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -884,8 +921,8 @@ input:focus-visible {
   border-radius: var(--radius-md);
   color: var(--fwc-white);
   background: var(--action-primary);
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-brand);
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   transition: background 0.2s ease, box-shadow 0.2s ease;
@@ -952,9 +989,9 @@ input:focus-visible {
   align-items: center;
   gap: 8px;
   color: var(--accent);
-  font-family: var(--font-mono);
+  font-family: var(--font-brand);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -975,11 +1012,11 @@ h1 {
   margin-top: 18px;
   max-width: 18ch;
   color: var(--text);
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: clamp(34px, 4.2vw, 58px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.025em;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
 }
 
 h1 .accent {
@@ -1118,11 +1155,11 @@ h1 .accent {
 h2 {
   margin-top: 8px;
   color: var(--text-primary);
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-2xl);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: 0.05em;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -1396,9 +1433,11 @@ h2 {
 .group-detail-head h3 {
   margin-top: 6px;
   color: var(--text);
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: 19px;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .group-detail-actions {
@@ -1708,9 +1747,9 @@ h2 {
 
 .bracket-head h3 {
   color: var(--faint);
-  font-family: var(--font-mono);
+  font-family: var(--font-brand);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }

@@ -97,15 +97,15 @@ describe("matchThemeToStyle", () => {
     expect(String(style.background)).toContain("#9CA3AF");
   });
 
-  it("applies stronger wash for live variant", () => {
+  it("applies stronger wash for live variant and exposes match color vars", () => {
     const home = resolveTeamIdentity(makeTeam())!;
     const away = resolveTeamIdentity(makeTeam({ id: "usa", abbreviation: "USA" }))!;
     const live = matchThemeToStyle(home, away, "live");
     const subtle = matchThemeToStyle(home, away, "default");
     expect(String(live.background)).toContain("33");
     expect(String(subtle.background)).toContain("14");
-    expect(String(live.borderTop)).toContain("2px");
-    expect(String(subtle.borderTop)).toContain("1px");
+    expect(live["--match-home-primary"]).toBe(home.primary);
+    expect(live["--match-away-primary"]).toBe(away.primary);
   });
 });
 
