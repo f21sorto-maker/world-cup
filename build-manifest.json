@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-27T14:40:01.445Z",
+  "updatedAt": "2026-06-27T14:40:01.531Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -155,6 +155,14 @@
     }
   ],
   "commits": [
+    {
+      "hash": "c6a26f9702f9c8086c85a44841117668d7426aa3",
+      "shortHash": "c6a26f9",
+      "message": "Full-app copy sweep via appCopy.ts and fix best-third race labels",
+      "version": "4.0.0",
+      "build": 9,
+      "timestamp": "2026-06-27T14:40:01.531Z"
+    },
     {
       "hash": "5393ac0fa19d43fc2bda0e679efe62244ed69eb0",
       "shortHash": "5393ac0",
@@ -386,14 +394,6 @@
       "version": "3.0.0",
       "build": 17,
       "timestamp": "2026-06-27T06:51:45.796Z"
-    },
-    {
-      "hash": "28b8f16aeb877865813bfd619a9373fc3d9de3bf",
-      "shortHash": "28b8f16",
-      "message": "build(12): fix R32 divergence, qual status, team drawer gaps, player photos, SLS wiring, plan sync",
-      "version": "3.0.0",
-      "build": 17,
-      "timestamp": "2026-06-27T06:51:26.426Z"
     }
   ],
   "deploys": [
