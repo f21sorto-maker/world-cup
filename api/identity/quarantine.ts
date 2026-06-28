@@ -33,8 +33,8 @@ export default async function handler(
   }
 
   if (req.method === "PUT") {
-    const { requireAdminToken } = await import("../../server/src/lib/adminAuth.js");
-    if (!requireAdminToken(req, res)) return;
+    const { requireAdminOrClerk } = await import("../../server/src/lib/adminAuth.js");
+    if (!(await requireAdminOrClerk(req, res))) return;
 
     const { aliasId } = req.query as { aliasId: string };
     const body = req.body as {

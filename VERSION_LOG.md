@@ -81,6 +81,58 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## [4.0.0] build 68 — 2026-06-28 (build)
+- 75 file(s) in .env.example, .gitignore, .npmrc, CHANGELOG.md, VERSION_LOG.md, api — 75 files changed, 8189 insertions(+), 7827 deletions(-)
+
+## [4.0.0] build 67 — 2026-06-28 (build)
+- Fix knockout placeholders stored as teamId; resolve from standings on schedule overlay
+
+## [4.0.0] build 66 — 2026-06-28 (build)
+- Resolve knockout schedule from standings; finalize group tables in store
+
+## [4.0.0] build 65 — 2026-06-28 (build)
+- Reliable server:dev env loading via run-server-dev.mjs; richer workers_skipped diagnostics
+
+## [4.0.0] build 64 — 2026-06-28 (build)
+- Fix blank web app: stop bundling node:crypto inputHash into browser; fix analyst import paths
+
+## [4.0.0] build 63 — 2026-06-28 (build)
+- stack:wait + stack:bootstrap for Postgres readiness after compose up
+
+## [4.0.0] build 62 — 2026-06-28 (build)
+- Server loads .env.local; admin API proxy to 3001; clarify dev server blocking
+
+## [4.0.0] build 61 — 2026-06-28 (build)
+- Graceful EADDRINUSE on server:dev; add server:stop script
+
+## [4.0.0] build 60 — 2026-06-28 (build)
+- Remove debug instrumentation from smoke-stack script
+
+## [4.0.0] build 59 — 2026-06-28 (build)
+- Fix pnpm exec version clash; smoke-stack skips when Docker daemon down
+
+## [4.0.0] build 58 — 2026-06-28 (build)
+- Prisma config fallback URL for generate without DATABASE_URL
+
+## [4.0.0] build 57 — 2026-06-28 (build)
+- Prisma 7 config, qual engine in package, Clerk auth, pnpm workspace, smoke:stack
+
+## [4.0.0] build 56 — 2026-06-28 (build)
+- HTTP-only server:dev with lazy Redis/Prisma, Hono QueryAPI, tsx runner
+
 ## [4.0.0] build 55 — 2026-06-28 (build)
 - 17 file(s) in CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json, docs, package.json — 17 files changed, 595 insertions(+), 31 deletions(-)
 

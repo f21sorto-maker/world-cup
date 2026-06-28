@@ -1,12 +1,12 @@
-import type { GroupLetter, GroupStanding } from "../types";
-import { resolveTeamFromStore } from "../data/wc2026TeamCatalog";
-import { buildQualificationContext, computeQualificationStatus } from "../lib/qualification";
-import { teamDisplayName } from "../lib/teamIdentity";
-import { useStore } from "../store";
+import type { GroupLetter, GroupStanding } from "../../types";
+import { resolveTeamFromStore } from "../../data/wc2026TeamCatalog";
+import { buildQualificationContext, computeQualificationStatus } from "../../lib/qualification";
+import { teamDisplayName } from "../../lib/teamIdentity";
+import { useStore } from "../../store";
 import {
   AdvancementProbabilityPanel,
   type PredictionTeamRow,
-} from "../analyst/AdvancementProbabilityPanel";
+} from "./AdvancementProbabilityPanel";
 
 type Props = {
   groupId: GroupLetter;

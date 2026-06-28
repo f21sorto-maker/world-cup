@@ -9,7 +9,7 @@ import { IdentityService } from "../packages/identity/src/index";
 import {
   buildQualificationContext,
   computeQualificationStatus,
-} from "../src/lib/qualification";
+} from "@wc2026/qualification";
 
 console.log("smoke:pipeline — identity");
 

@@ -7,7 +7,7 @@ import type { GroupLetter, QualificationCertainty as ClientCertainty } from "../
 import {
   buildQualificationContext,
   computeQualificationStatus,
-} from "../../../src/lib/qualification.js";
+} from "@wc2026/qualification";
 import type {
   GroupQualification,
   LifeState,

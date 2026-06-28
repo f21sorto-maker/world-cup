@@ -1,7 +1,10 @@
 import { resolveTeamFromStore } from "../data/wc2026TeamCatalog";
+import { isBracketPlaceholderTeamId } from "./brackets/isBracketPlaceholderTeamId";
+import type { KnockoutParticipant } from "./brackets/resolveKnockoutParticipants";
+import { resolveKnockoutParticipants } from "./brackets/resolveKnockoutParticipants";
 import { getAllScheduleEntries } from "../services/BroadcastLookup";
 import { pairKey } from "./normalize";
-import type { MergedMatch, Team, GroupLetter } from "../types";
+import type { GroupStanding, MergedMatch, Team, GroupLetter } from "../types";
 
 /**
  * Build a name → teamId lookup from the teams map.
@@ -17,6 +20,27 @@ function buildNameIndex(teams: Record<string, Team>): Record<string, string> {
   return index;
 }
 
+/** Fill empty knockout sides from standings-derived participants (live overlay may omit team ids). */
+export function applyKnockoutTeamIds(
+  match: MergedMatch,
+  matchId: string,
+  knockout: KnockoutParticipant | undefined
+): MergedMatch {
+  if (!knockout) return match;
+  const homeTeamId = isBracketPlaceholderTeamId(match.homeTeamId)
+    ? knockout.home.teamId || ""
+    : match.homeTeamId || knockout.home.teamId || "";
+  const awayTeamId = isBracketPlaceholderTeamId(match.awayTeamId)
+    ? knockout.away.teamId || ""
+    : match.awayTeamId || knockout.away.teamId || "";
+  return {
+    ...match,
+    matchId: match.matchId ?? matchId,
+    homeTeamId,
+    awayTeamId,
+  };
+}
+
 /**
  * Materialize all 104 schedule entries as MergedMatch shells, then overlay any
  * liveMatches entry matched by matchId, espnEventId, or pairKey.
@@ -25,10 +49,13 @@ function buildNameIndex(teams: Record<string, Team>): Record<string, string> {
  */
 export function materializeFullSchedule(
   teams: Record<string, Team>,
-  liveMatches: Record<string, MergedMatch>
+  liveMatches: Record<string, MergedMatch>,
+  groupStandings: GroupStanding[] = []
 ): MergedMatch[] {
   const entries = getAllScheduleEntries();
   const nameIndex = buildNameIndex(teams);
+  const knockoutParticipants =
+    groupStandings.length > 0 ? resolveKnockoutParticipants(groupStandings, teams, liveMatches) : {};
 
   // Index live matches by matchId and by pairKey for overlay
   const liveByMatchId: Record<string, MergedMatch> = {};
@@ -46,8 +73,9 @@ export function materializeFullSchedule(
 
   for (const entry of entries) {
     const matchId = `M${entry.matchNumber}`;
-    const homeTeamId = nameIndex[entry.homeTeam.toLowerCase()] ?? "";
-    const awayTeamId = nameIndex[entry.awayTeam.toLowerCase()] ?? "";
+    const knockout = knockoutParticipants[matchId];
+    let homeTeamId = nameIndex[entry.homeTeam.toLowerCase()] ?? knockout?.home.teamId ?? "";
+    let awayTeamId = nameIndex[entry.awayTeam.toLowerCase()] ?? knockout?.away.teamId ?? "";
 
     // Check if a live overlay exists
     const pair = pairKey(entry.homeTeam, entry.awayTeam);
@@ -56,7 +84,7 @@ export function materializeFullSchedule(
       liveByPair[pair];
 
     if (live) {
-      result.push({ ...live, matchId: live.matchId ?? matchId });
+      result.push(applyKnockoutTeamIds({ ...live, matchId: live.matchId ?? matchId }, matchId, knockout));
       continue;
     }
 
@@ -64,23 +92,29 @@ export function materializeFullSchedule(
     const groupLetter = entry.group as GroupLetter | undefined;
     const isKnockout = !groupLetter && entry.stage !== "Group Stage";
 
-    result.push({
-      id: matchId,
-      matchId,
-      date: entry.kickoff.utc,
-      homeTeamId,
-      awayTeamId,
-      status: "scheduled",
-      homeConduct: 0,
-      awayConduct: 0,
-      locked: false,
-      source: "espn",
-      group: groupLetter,
-      venue: `${entry.venue.name}, ${entry.venue.city}`,
-      stage: isKnockout
-        ? (entry.stage as import("../types").Stage | undefined)
-        : undefined
-    });
+    result.push(
+      applyKnockoutTeamIds(
+        {
+          id: matchId,
+          matchId,
+          date: entry.kickoff.utc,
+          homeTeamId,
+          awayTeamId,
+          status: "scheduled",
+          homeConduct: 0,
+          awayConduct: 0,
+          locked: false,
+          source: "espn",
+          group: groupLetter,
+          venue: `${entry.venue.name}, ${entry.venue.city}`,
+          stage: isKnockout
+            ? (entry.stage as import("../types").Stage | undefined)
+            : undefined,
+        },
+        matchId,
+        knockout
+      )
+    );
   }
 
   return result.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));

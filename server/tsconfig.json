@@ -17,7 +17,8 @@
     "noUncheckedIndexedAccess": true,
     "paths": {
       "@wc2026/canonical": ["../packages/canonical/src/index.ts"],
-      "@wc2026/identity": ["../packages/identity/src/index.ts"]
+      "@wc2026/identity": ["../packages/identity/src/index.ts"],
+      "@wc2026/qualification": ["../packages/qualification/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

@@ -5,7 +5,8 @@ import {
   teamDisplayNameForMatch,
   teamDisplayNameFromId,
 } from "./matchTeamDisplay";
-import type { MergedMatch } from "../types";
+import { materializeFullSchedule } from "./materializeFullSchedule";
+import type { GroupStanding, MergedMatch } from "../types";
 
 const catalog = buildWc2026TeamCatalog();
 
@@ -52,5 +53,130 @@ describe("matchTeamDisplay", () => {
     };
     expect(flagTeamIdForMatch(match, "home", catalog)).toBe("mex");
     expect(teamDisplayNameForMatch(match, "home", catalog)).toBe("Mexico");
+  });
+
+  it("shows resolved team name when standings populate knockout slot", () => {
+    const standings: GroupStanding[] = [
+      {
+        group: "A",
+        rows: [
+          {
+            teamId: "usa",
+            group: "A",
+            played: 3,
+            wins: 3,
+            draws: 0,
+            losses: 0,
+            goalsFor: 9,
+            goalsAgainst: 0,
+            goalDifference: 9,
+            points: 9,
+            conduct: 0,
+          },
+          {
+            teamId: "mex",
+            group: "A",
+            played: 3,
+            wins: 2,
+            draws: 0,
+            losses: 1,
+            goalsFor: 6,
+            goalsAgainst: 3,
+            goalDifference: 3,
+            points: 6,
+            conduct: 0,
+          },
+          {
+            teamId: "can",
+            group: "A",
+            played: 3,
+            wins: 1,
+            draws: 0,
+            losses: 2,
+            goalsFor: 3,
+            goalsAgainst: 6,
+            goalDifference: -3,
+            points: 3,
+            conduct: 0,
+          },
+          {
+            teamId: "per",
+            group: "A",
+            played: 3,
+            wins: 0,
+            draws: 0,
+            losses: 3,
+            goalsFor: 0,
+            goalsAgainst: 9,
+            goalDifference: -9,
+            points: 0,
+            conduct: 0,
+          },
+        ],
+      },
+      {
+        group: "B",
+        rows: [
+          {
+            teamId: "bra",
+            group: "B",
+            played: 3,
+            wins: 3,
+            draws: 0,
+            losses: 0,
+            goalsFor: 9,
+            goalsAgainst: 0,
+            goalDifference: 9,
+            points: 9,
+            conduct: 0,
+          },
+          {
+            teamId: "ecu",
+            group: "B",
+            played: 3,
+            wins: 2,
+            draws: 0,
+            losses: 1,
+            goalsFor: 6,
+            goalsAgainst: 3,
+            goalDifference: 3,
+            points: 6,
+            conduct: 0,
+          },
+          {
+            teamId: "chi",
+            group: "B",
+            played: 3,
+            wins: 1,
+            draws: 0,
+            losses: 2,
+            goalsFor: 3,
+            goalsAgainst: 6,
+            goalDifference: -3,
+            points: 3,
+            conduct: 0,
+          },
+          {
+            teamId: "bol",
+            group: "B",
+            played: 3,
+            wins: 0,
+            draws: 0,
+            losses: 3,
+            goalsFor: 0,
+            goalsAgainst: 9,
+            goalDifference: -9,
+            points: 0,
+            conduct: 0,
+          },
+        ],
+      },
+    ];
+
+    const schedule = materializeFullSchedule(catalog, {}, standings);
+    const m73 = schedule.find((m) => m.matchId === "M73");
+    expect(m73?.homeTeamId).toBe("mex");
+    expect(teamDisplayNameForMatch(m73!, "home", catalog)).toBe("Mexico");
+    expect(teamDisplayNameForMatch(m73!, "away", catalog)).toBe("Ecuador");
   });
 });

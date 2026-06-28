@@ -13,7 +13,7 @@
  * - TeamEliminated
  */
 
-import { redis } from "../infra/redis.js";
+import { redis, hasRedisConfig } from "../infra/redis.js";
 import { STREAM_KEYS } from "../events/types.js";
 
 export type PushEventType =
@@ -50,6 +50,7 @@ class PushBroadcaster {
   }
 
   private startPolling(): void {
+    if (!hasRedisConfig()) return;
     this.polling = true;
     void this.pollLoop();
   }
@@ -158,6 +159,7 @@ export async function publishToPushStream(
   type: PushEventType,
   payload: unknown
 ): Promise<void> {
+  if (!hasRedisConfig()) return;
   await redis.xadd(
     STREAM_KEYS.push,
     "*",

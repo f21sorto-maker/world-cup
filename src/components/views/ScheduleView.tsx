@@ -1,6 +1,6 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import { useStore } from "../../store";
-import { materializeFullSchedule } from "../../lib/materializeFullSchedule";
+import { useMaterializedSchedule } from "../../hooks/useMaterializedSchedule";
 import { groupMatchesByDay } from "../../lib/groupMatchesByDay";
 import type { DayGroup } from "../../lib/groupMatchesByDay";
 import { formatLiveClock } from "../../lib/formatMatchClock";
@@ -36,10 +36,7 @@ export function ScheduleView() {
   const [sortBy, setSortBy] = useState<ScheduleSort>("time");
   const [statusFilter, setStatusFilter] = useState<ScheduleStatusFilter>("all");
 
-  const allMatches = useMemo(
-    () => materializeFullSchedule(teams, liveMatches),
-    [teams, liveMatches]
-  );
+  const allMatches = useMaterializedSchedule();
 
   const filteredMatches = useMemo(
     () => filterScheduleMatches(allMatches, statusFilter),

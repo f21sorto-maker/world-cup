@@ -68,11 +68,11 @@ function buildStaticMatches(teams: Record<string, Team>): Record<string, MergedM
     const homeId =
       resolveCatalogTeamIdByName(entry.homeTeam) ??
       byName.get(entry.homeTeam.toLowerCase()) ??
-      entry.homeTeam;
+      "";
     const awayId =
       resolveCatalogTeamIdByName(entry.awayTeam) ??
       byName.get(entry.awayTeam.toLowerCase()) ??
-      entry.awayTeam;
+      "";
     const id = `M${entry.matchNumber}`;
     matches[id] = {
       id,

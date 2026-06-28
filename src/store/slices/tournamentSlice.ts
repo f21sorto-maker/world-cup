@@ -2,7 +2,7 @@ import { GROUP_STAGE_MATCH_COUNT } from "../../types";
 import { mergeTeamsWithCatalog } from "../../data/wc2026TeamCatalog";
 import { deriveStandingsIfScored, standingsEqual } from "../../lib/qualification";
 import { applyTeamLogoOverrides } from "../../lib/resolveTeamLogo";
-import { mergeStandingsPartials, normalizeStandingsTeamIds } from "../../services/adapters/normalizeStandings";
+import { mergeStandingsPartials, finalizeGroupStandings } from "../../services/adapters/normalizeStandings";
 import type { DataLoadResult, GroupStanding, MergedMatch, PolymarketMatchMarket, ScoreOverride, Team } from "../../types";
 
 export type TournamentSliceState = {
@@ -43,7 +43,7 @@ export const createTournamentSlice = (
   hydrateFromBootstrap: (data) =>
     set((state) => {
       const derived = deriveStandingsIfScored(data.matches, data.teams);
-      const groupStandings = mergeStandingsPartials(state.groupStandings, derived ?? []);
+      const merged = mergeStandingsPartials(state.groupStandings, derived ?? []);
       const incomingTeams = Object.fromEntries(data.teams.map((t) => [t.id, t]));
       const teams = mergeTeamsWithCatalog(
         applyTeamLogoOverrides({
@@ -51,9 +51,11 @@ export const createTournamentSlice = (
           ...incomingTeams,
         })
       );
+      const groupStandings =
+        merged.length > 0 ? finalizeGroupStandings(merged, teams) : state.groupStandings;
       return {
         teams,
-        groupStandings: groupStandings.length > 0 ? groupStandings : state.groupStandings,
+        groupStandings,
         knockoutMarkets: data.knockoutMarkets,
         sources: data.sources,
         warnings: data.warnings,
@@ -70,7 +72,7 @@ export const createTournamentSlice = (
   setBracketPicks: (picks) => set(() => ({ bracketPicks: picks })),
   setGroupStandings: (standings) =>
     set((state) => {
-      const normalized = normalizeStandingsTeamIds(standings, state.teams);
+      const normalized = finalizeGroupStandings(standings, state.teams);
       return standingsEqual(normalized, state.groupStandings)
         ? {}
         : { groupStandings: normalized };

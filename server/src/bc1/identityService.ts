@@ -129,7 +129,15 @@ export class IdentityService {
   }
 
   async getQuarantineDepth(): Promise<number> {
-    return prisma.identityQuarantine.count({ where: { resolvedAt: null } });
+    if (!process.env.DATABASE_URL) return 0;
+    try {
+      const { getPrisma } = await import("../infra/prisma.js");
+      const prisma = await getPrisma();
+      if (!prisma) return 0;
+      return prisma.identityQuarantine.count({ where: { resolvedAt: null } });
+    } catch {
+      return 0;
+    }
   }
 
   buildResolvedEvent(

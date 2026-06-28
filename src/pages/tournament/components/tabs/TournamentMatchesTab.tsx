@@ -1,21 +1,16 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useStore } from "../../../../store";
-import { materializeFullSchedule } from "../../../../lib/materializeFullSchedule";
+import { useMaterializedSchedule } from "../../../../hooks/useMaterializedSchedule";
 import { groupMatchesByDay } from "../../../../lib/groupMatchesByDay";
 import { TournamentMatchCard } from "../matches/TournamentMatchCard";
 import type { DayGroup } from "../../../../lib/groupMatchesByDay";
 import styles from "../../TournamentView.module.css";
 
 export function TournamentMatchesTab() {
-  const teams = useStore((s) => s.teams);
-  const liveMatches = useStore((s) => s.liveMatches);
   const selectedDateKey = useStore((s) => s.selectedDateKey);
   const setSelectedDateKey = useStore((s) => s.setSelectedDateKey);
 
-  const allMatches = useMemo(
-    () => materializeFullSchedule(teams, liveMatches),
-    [teams, liveMatches]
-  );
+  const allMatches = useMaterializedSchedule();
 
   const dayGroups: DayGroup[] = useMemo(
     () => groupMatchesByDay(allMatches, { includeCompleted: true, labelMode: "calendar" }),

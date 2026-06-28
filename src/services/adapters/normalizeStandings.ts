@@ -188,6 +188,21 @@ function rowStatScore(row: TeamRecord): number {
   return row.played * 1000 + row.points * 10 + Math.abs(row.goalDifference);
 }
 
+function isValidTeamRecord(row: TeamRecord): boolean {
+  return (
+    typeof row.teamId === "string" &&
+    row.teamId.length > 0 &&
+    Number.isFinite(row.played) &&
+    Number.isFinite(row.wins) &&
+    Number.isFinite(row.draws) &&
+    Number.isFinite(row.losses) &&
+    Number.isFinite(row.goalsFor) &&
+    Number.isFinite(row.goalsAgainst) &&
+    Number.isFinite(row.goalDifference) &&
+    Number.isFinite(row.points)
+  );
+}
+
 /** Higher = richer standings payload (used to reject API downgrades). */
 export function standingsStatScore(standings: GroupStanding[]): number {
   return standings.reduce((sum, group) => sum + group.rows.reduce((s, row) => s + rowStatScore(row), 0), 0);
@@ -216,6 +231,7 @@ export function normalizeStandingsTeamIds(
     const teamMap = new Map<string, TeamRecord>();
 
     for (const row of standing.rows) {
+      if (!isValidTeamRecord(row)) continue;
       const canonicalId = resolveCanonicalTeamId(
         row.teamId,
         teams[row.teamId] ?? resolveTeamFromStore(teams, row.teamId)

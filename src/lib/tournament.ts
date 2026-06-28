@@ -50,29 +50,7 @@ function buildTeamsByGroup(teamsById: TeamsById): Partial<Record<GroupLetter, Te
   }, {});
 }
 
-const nextRoundDefinitions: Record<Exclude<Stage, "R32">, Array<[string, string, string]>> = {
-  R16: [
-    ["M89", "W74", "W77"],
-    ["M90", "W73", "W75"],
-    ["M91", "W76", "W78"],
-    ["M92", "W79", "W80"],
-    ["M93", "W83", "W84"],
-    ["M94", "W81", "W82"],
-    ["M95", "W86", "W88"],
-    ["M96", "W85", "W87"]
-  ],
-  QF: [
-    ["M97", "W89", "W90"],
-    ["M98", "W93", "W94"],
-    ["M99", "W91", "W92"],
-    ["M100", "W95", "W96"]
-  ],
-  SF: [
-    ["M101", "W97", "W98"],
-    ["M102", "W99", "W100"]
-  ],
-  Final: [["M104", "W101", "W102"]]
-};
+const nextRoundDefinitions = KNOCKOUT_ROUND_FIXTURES;
 
 function goalDifference(record: Pick<TeamRecord, "goalsFor" | "goalsAgainst">): number {
   return record.goalsFor - record.goalsAgainst;
@@ -99,6 +77,7 @@ function formMarginMultiplier(homeScore: number, awayScore: number): number {
 }
 
 import { getR32Slots } from "./brackets/getR32Slots";
+import { KNOCKOUT_ROUND_FIXTURES } from "./brackets/knockoutRoundFixtures";
 import { rankThirdPlaceRecords } from "./thirdPlaceRanking";
 import {
   isKnockoutEliminated,

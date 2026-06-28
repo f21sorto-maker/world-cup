@@ -6,7 +6,7 @@
 import type { GroupLetter } from "../../../src/types.js";
 import { OFFICIAL_GROUP_ASSIGNMENTS } from "../../../src/data/officialGroupAssignments.js";
 import { computeGroupQualificationFromSharedEngine } from "../bc2/qualificationBridge.js";
-import { QUALIFICATION_ENGINE_VERSION } from "../../../packages/qualification/src/engineVersion.js";
+import { QUALIFICATION_ENGINE_VERSION } from "@wc2026/qualification";
 import type { QualificationGroupResponse } from "./qualification.js";
 
 export function getCatalogQualificationFallback(

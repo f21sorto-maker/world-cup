@@ -3,10 +3,10 @@
  * Snapshots when present; compute-on-read via shared rules engine when not.
  */
 
-import { prisma } from "../infra/prisma.js";
+import { getPrisma, hasDatabaseConfig } from "../infra/prisma.js";
 import { cacheGet, cacheSet, cacheKey, CACHE_TTL } from "../infra/redis.js";
 import { computeGroupQualificationFromSharedEngine } from "../bc2/qualificationBridge.js";
-import { QUALIFICATION_ENGINE_VERSION } from "../bc2/qualificationWorker.js";
+import { QUALIFICATION_ENGINE_VERSION } from "@wc2026/qualification";
 
 export interface QualificationGroupResponse {
   groupId: string;
@@ -24,6 +24,11 @@ export interface QualificationGroupResponse {
 }
 
 async function loadGroupStandingsForCompute(groupId: string) {
+  const prisma = await getPrisma();
+  if (!prisma) {
+    return { standings: [], matches: [] };
+  }
+
   const teams = await prisma.canonicalTeam.findMany({ where: { groupId } });
   const matches = await prisma.canonicalMatch.findMany({
     where: { groupId },
@@ -148,6 +153,15 @@ export async function getGroupQualification(
   const cached = await cacheGet<QualificationGroupResponse>(cKey);
   if (cached) return cached;
 
+  if (!hasDatabaseConfig()) {
+    return null;
+  }
+
+  const prisma = await getPrisma();
+  if (!prisma) {
+    return null;
+  }
+
   const asOfDate = asOf ? new Date(asOf) : undefined;
 
   const teams = await prisma.canonicalTeam.findMany({
@@ -211,6 +225,9 @@ export async function getTeamQualificationHistory(teamId: string): Promise<
     createdAt: string;
   }>
 > {
+  const prisma = await getPrisma();
+  if (!prisma) return [];
+
   const snapshots = await prisma.qualificationSnapshot.findMany({
     where: { teamId, isScenario: false },
     orderBy: { createdAt: "desc" },

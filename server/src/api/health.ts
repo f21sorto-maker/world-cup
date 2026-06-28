@@ -2,8 +2,8 @@
  * Health API handler — per-provider ingestion health, cache freshness, queue depths.
  */
 
-import { prisma } from "../infra/prisma.js";
-import { redis, CACHE_TTL, cacheSet, cacheGet, cacheKey } from "../infra/redis.js";
+import { getPrisma, hasDatabaseConfig } from "../infra/prisma.js";
+import { redis, CACHE_TTL, cacheSet, cacheGet, cacheKey, hasRedisConfig } from "../infra/redis.js";
 import { IdentityService } from "../bc1/identityService.js";
 
 const identityService = new IdentityService();
@@ -29,10 +29,41 @@ export async function getHealth(): Promise<HealthResponse> {
   const cached = await cacheGet<HealthResponse>(cKey);
   if (cached) return cached;
 
+  if (!hasDatabaseConfig()) {
+    const response: HealthResponse = {
+      status: "degraded",
+      timestamp: new Date().toISOString(),
+      providers: [],
+      quarantineDepth: 0,
+      redisConnected: hasRedisConfig()
+        ? await redis.ping().then(() => true).catch(() => false)
+        : false,
+      dbConnected: false,
+    };
+    await cacheSet(cKey, response, CACHE_TTL.health);
+    return response;
+  }
+
+  const prisma = await getPrisma();
+  if (!prisma) {
+    return {
+      status: "degraded",
+      timestamp: new Date().toISOString(),
+      providers: [],
+      quarantineDepth: 0,
+      redisConnected: hasRedisConfig()
+        ? await redis.ping().then(() => true).catch(() => false)
+        : false,
+      dbConnected: false,
+    };
+  }
+
   const [providers, quarantineDepth, redisOk, dbOk] = await Promise.allSettled([
     prisma.providerHealth.findMany({ orderBy: { updatedAt: "desc" } }),
     identityService.getQuarantineDepth(),
-    redis.ping().then(() => true).catch(() => false),
+    hasRedisConfig()
+      ? redis.ping().then(() => true).catch(() => false)
+      : Promise.resolve(false),
     prisma.$queryRaw`SELECT 1`.then(() => true).catch(() => false),
   ]);
 

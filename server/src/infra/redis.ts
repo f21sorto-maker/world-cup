@@ -1,3 +1,8 @@
+/**
+ * Lazy Redis client — does not connect until first use.
+ * Workers require REDIS_URL; HTTP-only server:dev runs without it.
+ */
+
 import { Redis } from "ioredis";
 
 declare global {
@@ -7,8 +12,16 @@ declare global {
   var __redisSub: Redis | undefined;
 }
 
+export function redisUrl(): string | undefined {
+  return process.env.UPSTASH_REDIS_URL ?? process.env.REDIS_URL;
+}
+
+export function hasRedisConfig(): boolean {
+  return Boolean(redisUrl());
+}
+
 function createRedis(lazyConnect = false): Redis {
-  const url = process.env.UPSTASH_REDIS_URL ?? process.env.REDIS_URL;
+  const url = redisUrl();
   if (!url) {
     throw new Error(
       "UPSTASH_REDIS_URL or REDIS_URL environment variable is required"
@@ -22,31 +35,50 @@ function createRedis(lazyConnect = false): Redis {
   });
 }
 
-/** Main Redis client — used for cache reads/writes and pub/sub. */
-export const redis: Redis = globalThis.__redis ?? createRedis();
-
-/** Dedicated subscriber client — ioredis cannot share a connection for sub + commands. */
-export const redisSub: Redis =
-  globalThis.__redisSub ?? createRedis(true);
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__redis = redis;
-  globalThis.__redisSub = redisSub;
+function getOrCreateRedis(lazyConnect = false): Redis {
+  if (!hasRedisConfig()) {
+    throw new Error("Redis is not configured");
+  }
+  if (lazyConnect) {
+    if (!globalThis.__redisSub) {
+      globalThis.__redisSub = createRedis(true);
+    }
+    return globalThis.__redisSub;
+  }
+  if (!globalThis.__redis) {
+    globalThis.__redis = createRedis(false);
+  }
+  return globalThis.__redis;
 }
 
-// ─────────────────────────────────────────────
-// Cache helpers
-// ─────────────────────────────────────────────
+/** Main Redis client — lazy; throws if REDIS_URL unset. */
+export const redis: Redis = new Proxy({} as Redis, {
+  get(_target, prop, receiver) {
+    const client = getOrCreateRedis(false);
+    const value = Reflect.get(client, prop, receiver);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
+});
+
+/** Dedicated subscriber client — lazy. */
+export const redisSub: Redis = new Proxy({} as Redis, {
+  get(_target, prop, receiver) {
+    const client = getOrCreateRedis(true);
+    const value = Reflect.get(client, prop, receiver);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
+});
 
 export const CACHE_TTL = {
-  liveMatch: 10,       // seconds
+  liveMatch: 10,
   standings: 30,
-  predictions: 300,    // 5 min
+  predictions: 300,
   qualification: 60,
   health: 15,
 } as const;
 
 export async function cacheGet<T>(key: string): Promise<T | null> {
+  if (!hasRedisConfig()) return null;
   const raw = await redis.get(key);
   if (!raw) return null;
   try {
@@ -61,6 +93,7 @@ export async function cacheSet(
   value: unknown,
   ttlSeconds: number
 ): Promise<void> {
+  if (!hasRedisConfig()) return;
   await redis.set(key, JSON.stringify(value), "EX", ttlSeconds);
 }
 
@@ -68,14 +101,11 @@ export function cacheKey(...parts: string[]): string {
   return `wc2026:cache:${parts.join(":")}`;
 }
 
-// ─────────────────────────────────────────────
-// Redis Streams helpers (EventBus)
-// ─────────────────────────────────────────────
-
 export async function streamPublish(
   streamKey: string,
   event: Record<string, string>
-): Promise<string> {
+): Promise<string | null> {
+  if (!hasRedisConfig()) return null;
   return redis.xadd(streamKey, "*", ...Object.entries(event).flat()) as Promise<string>;
 }
 
@@ -84,13 +114,8 @@ export async function streamRead(
   lastId: string,
   count = 10
 ): Promise<Array<{ id: string; fields: Record<string, string> }>> {
-  const results = await redis.xread(
-    "COUNT",
-    count,
-    "STREAMS",
-    streamKey,
-    lastId
-  );
+  if (!hasRedisConfig()) return [];
+  const results = await redis.xread("COUNT", count, "STREAMS", streamKey, lastId);
   if (!results) return [];
   const [, entries] = results[0];
   return entries.map(([id, fieldValues]) => {

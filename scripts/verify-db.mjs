@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
  * Preflight: Postgres reachable via DATABASE_URL (optional for CI).
- * Exit 0 when unset (local unit-test only); exit 1 on connection failure.
  */
+
+import pg from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const url = process.env.DATABASE_URL;
 
@@ -13,19 +15,16 @@ if (!url) {
 
 let PrismaClient;
 try {
-  const pkg = await import("@prisma/client");
-  PrismaClient = pkg.PrismaClient ?? pkg.default?.PrismaClient;
+  const mod = await import("../generated/prisma/client.js");
+  PrismaClient = mod.PrismaClient;
 } catch {
-  console.error("verify:db FAILED — run npm run db:generate");
+  console.error("verify:db FAILED — run pnpm db:generate");
   process.exit(1);
 }
 
-if (!PrismaClient) {
-  console.error("verify:db FAILED — run npm run db:generate");
-  process.exit(1);
-}
-
-const prisma = new PrismaClient();
+const pool = new pg.Pool({ connectionString: url });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 try {
   await prisma.$queryRaw`SELECT 1`;
@@ -37,4 +36,5 @@ try {
   process.exit(1);
 } finally {
   await prisma.$disconnect();
+  await pool.end();
 }

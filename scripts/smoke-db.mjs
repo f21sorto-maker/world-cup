@@ -5,6 +5,8 @@
  */
 
 import { strict as assert } from "node:assert";
+import pg from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const url = process.env.DATABASE_URL;
 
@@ -15,19 +17,16 @@ if (!url) {
 
 let PrismaClient;
 try {
-  const pkg = await import("@prisma/client");
-  PrismaClient = pkg.PrismaClient ?? pkg.default?.PrismaClient;
+  const mod = await import("../generated/prisma/client.js");
+  PrismaClient = mod.PrismaClient;
 } catch {
-  console.log("smoke:db — @prisma/client not generated, run npm run db:generate");
+  console.log("smoke:db — generated Prisma client missing, run pnpm db:generate");
   process.exit(0);
 }
 
-if (!PrismaClient) {
-  console.log("smoke:db — PrismaClient unavailable, run npm run db:generate");
-  process.exit(0);
-}
-
-const prisma = new PrismaClient();
+const pool = new pg.Pool({ connectionString: url });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 try {
   await prisma.$queryRaw`SELECT 1`;
@@ -42,7 +41,7 @@ try {
     assert.equal(bra.quarantined, false);
     console.log("  ✓ ESPN alias for bra present");
   } else {
-    console.log("  ⚠ no ESPN bra alias — run npm run db:seed");
+    console.log("  ⚠ no ESPN bra alias — run pnpm db:seed");
   }
 
   const snapshotCount = await prisma.qualificationSnapshot.count();
@@ -53,4 +52,5 @@ try {
   process.exit(1);
 } finally {
   await prisma.$disconnect();
+  await pool.end();
 }

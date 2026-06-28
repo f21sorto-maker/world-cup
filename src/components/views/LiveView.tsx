@@ -9,6 +9,7 @@ import { getNextKickoffMs, isNextKickoffFixture } from "../../lib/kickoffCountdo
 import { APP_COPY } from "../../lib/appCopy";
 import { MODULE_IDS } from "../../lib/moduleIds";
 import { resolveTeamFromStore } from "../../data/wc2026TeamCatalog";
+import { useMaterializedSchedule } from "../../hooks/useMaterializedSchedule";
 import { useStore } from "../../store";
 import { ModuleSectionActions } from "../shared/ModuleSectionActions";
 
@@ -54,9 +55,11 @@ export function LiveView() {
     [liveMatchesMap]
   );
 
+  const materializedSchedule = useMaterializedSchedule();
+
   const scheduleMatches = useMemo(() => {
     const todayKey = new Date().toISOString().slice(0, 10);
-    return Object.values(liveMatchesMap).filter((m) => {
+    return materializedSchedule.filter((m) => {
       if (m.status === "scheduled" && !m.locked) return true;
       if (m.status === "completed") {
         const matchDay = m.date?.slice(0, 10);
@@ -64,7 +67,7 @@ export function LiveView() {
       }
       return false;
     });
-  }, [liveMatchesMap]);
+  }, [materializedSchedule]);
 
   const [scheduleExpanded, setScheduleExpanded] = useState(false);
 

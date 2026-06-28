@@ -14,7 +14,7 @@ import { useLiveClock } from "../../hooks/useLiveClock";
 import { navigateHome } from "../../lib/navigateToTab";
 import { buildTournamentHash, buildVenueHash } from "../../hooks/useHashSync";
 import { resolveMatchIds } from "../../services/matchDetail/resolveMatchIds";
-import { materializeFullSchedule } from "../../lib/materializeFullSchedule";
+import { useMaterializedSchedule } from "../../hooks/useMaterializedSchedule";
 import { MatchSummaryTab } from "./components/tabs/MatchSummaryTab";
 import { MatchStatisticsTab } from "./components/tabs/MatchStatisticsTab";
 import { MatchLineupsTab } from "./components/tabs/MatchLineupsTab";
@@ -63,6 +63,7 @@ export function MatchDetailView() {
   const liveMatches = useStore((s) => s.liveMatches);
   const teams = useStore((s) => s.teams);
   const matchEvents = useStore((s) => s.matchEvents);
+  const materializedSchedule = useMaterializedSchedule();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { shrunk } = useScrollHeader(scrollRef);
@@ -76,9 +77,8 @@ export function MatchDetailView() {
     );
     if (liveById) return liveById;
     // Fall back to materialized schedule
-    const allMatches = materializeFullSchedule(teams, liveMatches);
-    return allMatches.find((m) => m.matchId === activeMatchId || m.id === activeMatchId) ?? null;
-  }, [activeMatchId, liveMatches, teams]);
+    return materializedSchedule.find((m) => m.matchId === activeMatchId || m.id === activeMatchId) ?? null;
+  }, [activeMatchId, liveMatches, materializedSchedule]);
 
   const { espnEventId, wcMatchId } = useMemo(
     () => resolveMatchIds(activeMatchId ?? "", liveMatches),

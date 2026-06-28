@@ -1,16 +1,7 @@
-import { Queue, Worker, QueueEvents } from "bullmq";
-import type { JobsOptions, WorkerOptions } from "bullmq";
+import type { Queue, Worker, WorkerOptions, JobsOptions } from "bullmq";
+import { Queue as BullQueue, Worker as BullWorker, QueueEvents } from "bullmq";
 import { QUEUE_NAMES } from "../events/types.js";
-
-const connection = {
-  url: process.env.UPSTASH_REDIS_URL ?? process.env.REDIS_URL,
-};
-
-if (!connection.url) {
-  throw new Error(
-    "UPSTASH_REDIS_URL or REDIS_URL environment variable is required for BullMQ"
-  );
-}
+import { hasRedisConfig } from "./redis.js";
 
 const DEFAULT_JOB_OPTIONS: JobsOptions = {
   attempts: 5,
@@ -19,73 +10,138 @@ const DEFAULT_JOB_OPTIONS: JobsOptions = {
   removeOnFail: { count: 50 },
 };
 
-// ─────────────────────────────────────────────
-// Queue definitions
-// ─────────────────────────────────────────────
+function connection() {
+  const url = process.env.UPSTASH_REDIS_URL ?? process.env.REDIS_URL;
+  if (!url) {
+    throw new Error(
+      "UPSTASH_REDIS_URL or REDIS_URL environment variable is required for BullMQ"
+    );
+  }
+  return { url };
+}
 
-export const intakeQueues: Record<string, Queue> = {
-  [QUEUE_NAMES.intakeEspn]: new Queue(QUEUE_NAMES.intakeEspn, {
-    connection,
-    defaultJobOptions: DEFAULT_JOB_OPTIONS,
-  }),
-  [QUEUE_NAMES.intakeWcLive]: new Queue(QUEUE_NAMES.intakeWcLive, {
-    connection,
-    defaultJobOptions: DEFAULT_JOB_OPTIONS,
-  }),
-  [QUEUE_NAMES.intakeSofascore]: new Queue(QUEUE_NAMES.intakeSofascore, {
-    connection,
-    defaultJobOptions: DEFAULT_JOB_OPTIONS,
-  }),
-  [QUEUE_NAMES.intakeZafronix]: new Queue(QUEUE_NAMES.intakeZafronix, {
-    connection,
-    defaultJobOptions: DEFAULT_JOB_OPTIONS,
-  }),
-  [QUEUE_NAMES.intakeClubElo]: new Queue(QUEUE_NAMES.intakeClubElo, {
-    connection,
-    defaultJobOptions: DEFAULT_JOB_OPTIONS,
-  }),
-};
+let intakeQueuesCache: Record<string, Queue> | null = null;
+let qualificationQueueCache: Queue | null = null;
+let predictionQueueCache: Queue | null = null;
+let reconciliationQueueCache: Queue | null = null;
 
-export const qualificationQueue = new Queue(QUEUE_NAMES.qualification, {
-  connection,
-  defaultJobOptions: DEFAULT_JOB_OPTIONS,
+function ensureRedis(): void {
+  if (!hasRedisConfig()) {
+    throw new Error("Redis is required for BullMQ workers");
+  }
+}
+
+export function getIntakeQueues(): Record<string, Queue> {
+  ensureRedis();
+  if (!intakeQueuesCache) {
+    intakeQueuesCache = {
+      [QUEUE_NAMES.intakeEspn]: new BullQueue(QUEUE_NAMES.intakeEspn, {
+        connection: connection(),
+        defaultJobOptions: DEFAULT_JOB_OPTIONS,
+      }),
+      [QUEUE_NAMES.intakeWcLive]: new BullQueue(QUEUE_NAMES.intakeWcLive, {
+        connection: connection(),
+        defaultJobOptions: DEFAULT_JOB_OPTIONS,
+      }),
+      [QUEUE_NAMES.intakeSofascore]: new BullQueue(QUEUE_NAMES.intakeSofascore, {
+        connection: connection(),
+        defaultJobOptions: DEFAULT_JOB_OPTIONS,
+      }),
+      [QUEUE_NAMES.intakeZafronix]: new BullQueue(QUEUE_NAMES.intakeZafronix, {
+        connection: connection(),
+        defaultJobOptions: DEFAULT_JOB_OPTIONS,
+      }),
+      [QUEUE_NAMES.intakeClubElo]: new BullQueue(QUEUE_NAMES.intakeClubElo, {
+        connection: connection(),
+        defaultJobOptions: DEFAULT_JOB_OPTIONS,
+      }),
+    };
+  }
+  return intakeQueuesCache;
+}
+
+export function getQualificationQueue(): Queue {
+  ensureRedis();
+  if (!qualificationQueueCache) {
+    qualificationQueueCache = new BullQueue(QUEUE_NAMES.qualification, {
+      connection: connection(),
+      defaultJobOptions: DEFAULT_JOB_OPTIONS,
+    });
+  }
+  return qualificationQueueCache;
+}
+
+export function getPredictionQueue(): Queue {
+  ensureRedis();
+  if (!predictionQueueCache) {
+    predictionQueueCache = new BullQueue(QUEUE_NAMES.prediction, {
+      connection: connection(),
+      defaultJobOptions: DEFAULT_JOB_OPTIONS,
+    });
+  }
+  return predictionQueueCache;
+}
+
+export function getReconciliationQueue(): Queue {
+  ensureRedis();
+  if (!reconciliationQueueCache) {
+    reconciliationQueueCache = new BullQueue(QUEUE_NAMES.reconciliation, {
+      connection: connection(),
+      defaultJobOptions: DEFAULT_JOB_OPTIONS,
+    });
+  }
+  return reconciliationQueueCache;
+}
+
+/** @deprecated Use getQualificationQueue() — lazy init */
+export const qualificationQueue = new Proxy({} as Queue, {
+  get(_t, prop) {
+    const q = getQualificationQueue();
+    const value = Reflect.get(q, prop, q);
+    return typeof value === "function" ? value.bind(q) : value;
+  },
 });
 
-export const predictionQueue = new Queue(QUEUE_NAMES.prediction, {
-  connection,
-  defaultJobOptions: DEFAULT_JOB_OPTIONS,
+export const predictionQueue = new Proxy({} as Queue, {
+  get(_t, prop) {
+    const q = getPredictionQueue();
+    const value = Reflect.get(q, prop, q);
+    return typeof value === "function" ? value.bind(q) : value;
+  },
 });
 
-export const reconciliationQueue = new Queue(QUEUE_NAMES.reconciliation, {
-  connection,
-  defaultJobOptions: DEFAULT_JOB_OPTIONS,
+export const reconciliationQueue = new Proxy({} as Queue, {
+  get(_t, prop) {
+    const q = getReconciliationQueue();
+    const value = Reflect.get(q, prop, q);
+    return typeof value === "function" ? value.bind(q) : value;
+  },
 });
 
-// ─────────────────────────────────────────────
-// Worker factory
-// ─────────────────────────────────────────────
+export const intakeQueues = new Proxy({} as Record<string, Queue>, {
+  get(_t, prop) {
+    return getIntakeQueues()[prop as string];
+  },
+});
 
 export function createWorker<T>(
   queueName: string,
   processor: (job: { id: string | undefined; name: string; data: T }) => Promise<void>,
   options: Partial<WorkerOptions> = {}
 ): Worker {
-  return new Worker<T>(
+  ensureRedis();
+  return new BullWorker<T>(
     queueName,
     async (job) => {
       await processor({ id: job.id, name: job.name, data: job.data });
     },
     {
-      connection,
+      connection: connection(),
       concurrency: 3,
       ...options,
     }
   );
 }
-
-// ─────────────────────────────────────────────
-// Dead-letter queue helpers
-// ─────────────────────────────────────────────
 
 export async function moveToDLQ(
   queueName: string,
@@ -98,9 +154,10 @@ export async function moveToDLQ(
     dlqKey,
     JSON.stringify({ jobId, reason, failedAt: new Date().toISOString() })
   );
-  await redis.ltrim(dlqKey, 0, 499); // keep last 500 DLQ entries
+  await redis.ltrim(dlqKey, 0, 499);
 }
 
 export function createQueueEvents(queueName: string): QueueEvents {
-  return new QueueEvents(queueName, { connection });
+  ensureRedis();
+  return new QueueEvents(queueName, { connection: connection() });
 }

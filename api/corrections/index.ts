@@ -9,14 +9,14 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ): Promise<void> {
-  const { requireAdminToken } = await import("../../server/src/lib/adminAuth.js");
+  const { requireAdminOrClerk } = await import("../../server/src/lib/adminAuth.js");
   const { CorrectionPipeline } = await import(
     "../../server/src/bc1/correctionPipeline.js"
   );
   const pipeline = new CorrectionPipeline();
 
   if (req.method === "POST") {
-    if (!requireAdminToken(req, res)) return;
+    if (!(await requireAdminOrClerk(req, res))) return;
     const body = req.body as {
       entityType: string;
       entityId: string;

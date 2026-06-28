@@ -5,8 +5,11 @@
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./inputHash": "./src/inputHash.ts"
+  },
   "dependencies": {
-    "@wc2026/canonical": "file:../canonical"
+    "@wc2026/canonical": "workspace:*"
   }
 }
