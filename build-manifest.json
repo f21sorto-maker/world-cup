@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-28T04:50:52.166Z",
+  "updatedAt": "2026-06-28T04:52:49.304Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "fb43d1a6aada2e744feb6b50a58147210c9d898f",
+      "shortHash": "fb43d1a",
+      "message": "Fix Vercel deploy by staging unfinished serverless API routes.",
+      "version": "4.0.0",
+      "build": 48,
+      "timestamp": "2026-06-28T04:50:52.524Z"
+    },
+    {
       "hash": "8ef15c96b5052823e6b1b0167694ef948d1f9c92",
       "shortHash": "8ef15c9",
       "message": "Merge origin/main and ship live card, weather, and events work.",
@@ -554,17 +562,17 @@
       "version": "3.0.0",
       "build": 22,
       "timestamp": "2026-06-27T07:20:02.207Z"
-    },
-    {
-      "hash": "6d9295d92db7159cf31910c825e0baac5091fd27",
-      "shortHash": "6d9295d",
-      "message": "Fix flaky SportHighlights test and sync final debug manifest.",
-      "version": "3.0.0",
-      "build": 21,
-      "timestamp": "2026-06-27T07:11:23.653Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "4.0.0",
+      "build": 48,
+      "message": "Production deploy v4.0.0 build 48 on main",
+      "timestamp": "2026-06-28T04:52:49.303Z"
+    },
     {
       "url": "",
       "environment": "production",
