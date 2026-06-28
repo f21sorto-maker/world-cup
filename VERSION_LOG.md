@@ -74,6 +74,14 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+## [4.0.0] build 50 — 2026-06-28 (build)
+- 13 file(s) in .env.example, CHANGELOG.md, VERSION_LOG.md, apps, build-manifest.json, src — 13 files changed, 209 insertions(+), 51 deletions(-)
+
+## [4.0.0] build 49 — 2026-06-28 (build)
+- Fix remaining tests, Meteosource normalize module, admin token client, qual standings test ids
+
 ## [4.0.0] build 48 — 2026-06-28 (build)
 - 25 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, server — 25 files changed, 1197 insertions(+), 47 deletions(-)
 

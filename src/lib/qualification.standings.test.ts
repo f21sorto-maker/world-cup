@@ -4,21 +4,21 @@ import type { Match, Team } from "../types";
 
 const teams: Team[] = [
   {
-    id: "a",
-    name: "Team A",
-    shortName: "A",
-    abbreviation: "A",
+    id: "mex",
+    name: "Mexico",
+    shortName: "MEX",
+    abbreviation: "MEX",
     group: "A",
-    rating: 1500
+    rating: 1500,
   },
   {
-    id: "b",
-    name: "Team B",
-    shortName: "B",
-    abbreviation: "B",
+    id: "rsa",
+    name: "South Africa",
+    shortName: "RSA",
+    abbreviation: "RSA",
     group: "A",
-    rating: 1500
-  }
+    rating: 1500,
+  },
 ];
 
 describe("deriveStandingsIfScored", () => {
@@ -28,8 +28,8 @@ describe("deriveStandingsIfScored", () => {
         id: "1",
         group: "A",
         date: "2026-06-11T19:00:00Z",
-        homeTeamId: "a",
-        awayTeamId: "b",
+        homeTeamId: "mex",
+        awayTeamId: "rsa",
         status: "scheduled",
         homeConduct: 0,
         awayConduct: 0,
@@ -47,8 +47,8 @@ describe("deriveStandingsIfScored", () => {
         id: "1",
         group: "A",
         date: "2026-06-11T19:00:00Z",
-        homeTeamId: "a",
-        awayTeamId: "b",
+        homeTeamId: "mex",
+        awayTeamId: "rsa",
         status: "completed",
         homeScore: 2,
         awayScore: 1,
@@ -62,7 +62,7 @@ describe("deriveStandingsIfScored", () => {
     const standings = deriveStandingsIfScored(scored, teams);
     expect(standings).not.toBeNull();
     const groupA = standings?.find((standing) => standing.group === "A");
-    expect(groupA?.rows.filter((row) => row.teamId === "a" || row.teamId === "b")).toHaveLength(2);
+    expect(groupA?.rows.filter((row) => row.teamId === "mex" || row.teamId === "rsa")).toHaveLength(2);
   });
 
   it("ignores in-progress 0-0 live matches", () => {
@@ -71,8 +71,8 @@ describe("deriveStandingsIfScored", () => {
         id: "live-00",
         group: "A",
         date: "2026-06-11T19:00:00Z",
-        homeTeamId: "a",
-        awayTeamId: "b",
+        homeTeamId: "mex",
+        awayTeamId: "rsa",
         status: "live",
         homeScore: 0,
         awayScore: 0,
@@ -92,8 +92,8 @@ describe("deriveStandingsIfScored", () => {
         id: "done-00",
         group: "A",
         date: "2026-06-11T19:00:00Z",
-        homeTeamId: "a",
-        awayTeamId: "b",
+        homeTeamId: "mex",
+        awayTeamId: "rsa",
         status: "completed",
         homeScore: 0,
         awayScore: 0,
@@ -106,6 +106,6 @@ describe("deriveStandingsIfScored", () => {
 
     const standings = deriveStandingsIfScored(matches, teams);
     const groupA = standings?.find((standing) => standing.group === "A");
-    expect(groupA?.rows.filter((row) => row.teamId === "a" || row.teamId === "b").every((r) => r.played === 1 && r.points === 1)).toBe(true);
+    expect(groupA?.rows.filter((row) => row.teamId === "mex" || row.teamId === "rsa").every((r) => r.played === 1 && r.points === 1)).toBe(true);
   });
 });

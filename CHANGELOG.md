@@ -8,6 +8,8 @@
 ## [Unreleased]
 
 ### Builds
+- **4.0.0 build 50** (2026-06-28): 13 file(s) in .env.example, CHANGELOG.md, VERSION_LOG.md, apps, build-manifest.json, src — 13 files changed, 209 insertions(+), 51 deletions(-)
+- **4.0.0 build 49** (2026-06-28): Fix remaining tests, Meteosource normalize module, admin token client, qual standings test ids
 - **4.0.0 build 48** (2026-06-28): 25 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, server — 25 files changed, 1197 insertions(+), 47 deletions(-)
 - **4.0.0 build 47** (2026-06-28): Move staging serverless routes out of Vercel deploy path
 - **4.0.0 build 46** (2026-06-28): Execute phases 1-6: local stack, identity unify, qual bridge, UI wiring, admin token gate, smoke pipeline; resolve merge conflicts

@@ -17,6 +17,12 @@ import {
 import type { WeatherData } from "./weatherTypes";
 
 export type { WeatherData } from "./weatherTypes";
+export {
+  getWeatherIconUrl,
+  normalizeMeteosourcePoint,
+  type MeteosourcePointResponse,
+  type MeteosourceWeatherData,
+} from "./meteosourceWeatherNormalize";
 
 export function isWeatherDisabled(): boolean {
   const yahooEnabled = isApiEnabled("yahooWeather") && !isYahooWeatherDisabled();

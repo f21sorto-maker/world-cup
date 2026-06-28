@@ -59,16 +59,12 @@ describe("wc2026TeamCatalog", () => {
   });
 
   it("withEspnTeamAliases keeps catalog keys and adds ESPN id lookups", () => {
-    const catalog = mergeTeamsWithCatalog({
-      "229": {
-        id: "229",
-        name: "Brazil",
-        shortName: "Brazil",
-        abbreviation: "BRA",
-        group: "C",
-        rating: 1500,
-      },
-    });
+    const catalog = buildWc2026TeamCatalog();
+    catalog.bra = {
+      ...catalog.bra,
+      name: "Brazil",
+      group: "C",
+    };
     const aliased = withEspnTeamAliases(catalog, {
       "229": {
         id: "229",

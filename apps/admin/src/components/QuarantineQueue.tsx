@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { adminFetch } from "../lib/adminApi";
 
 type QuarantineItem = {
   id: string;
@@ -26,7 +27,7 @@ export function QuarantineQueue({ canResolve }: Props) {
 
   async function resolve(id: string, resolution: "APPROVED" | "REJECTED") {
     if (!canResolve) return;
-    await fetch(`/api/identity/quarantine?aliasId=${encodeURIComponent(id)}`, {
+    await adminFetch(`/api/identity/quarantine?aliasId=${encodeURIComponent(id)}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ resolution, resolvedBy: "admin-local", canonicalId: null }),
