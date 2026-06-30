@@ -151,6 +151,10 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+## [5.0.0] build 18 — 2026-06-30 (build)
+- Bracket team names 2-line clamp all viewports; fix embed head alignment
+
 ## [5.0.0] build 17 — 2026-06-30 (build)
 - 22 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 22 files changed, 942 insertions(+), 273 deletions(-)
 

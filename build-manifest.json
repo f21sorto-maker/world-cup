@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-06-30T07:23:06.034Z",
+  "updatedAt": "2026-06-30T07:25:12.940Z",
   "builds": [
+    {
+      "version": "5.0.0",
+      "build": 18,
+      "kind": "build",
+      "message": "Bracket team names 2-line clamp all viewports; fix embed head alignment",
+      "date": "2026-06-30",
+      "timestamp": "2026-06-30T07:25:03.324Z"
+    },
     {
       "version": "5.0.0",
       "build": 17,
@@ -312,17 +320,17 @@
       "message": "Fix corrupt font assets and nested venue button DOM warning",
       "date": "2026-06-30",
       "timestamp": "2026-06-30T04:38:25.759Z"
-    },
-    {
-      "version": "4.0.0",
-      "build": 86,
-      "kind": "build",
-      "message": "Add horizontal padding and margin to LiveView upcoming fixtures section",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T04:28:10.661Z"
     }
   ],
   "commits": [
+    {
+      "hash": "c22244fc4e8cbcde244c8262c61f49f52d119ddf",
+      "shortHash": "c22244f",
+      "message": "Fix locked-in bracket truthfulness and show dates on match cards.",
+      "version": "5.0.0",
+      "build": 17,
+      "timestamp": "2026-06-30T07:23:06.495Z"
+    },
     {
       "hash": "8a7f3b8d9ffd598b73260efbec2102a6c04dae98",
       "shortHash": "8a7f3b8",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 52,
       "timestamp": "2026-06-28T05:05:57.563Z"
-    },
-    {
-      "hash": "b48c9d4072b597fdee2cd193fa46a1d84fe36522",
-      "shortHash": "b48c9d4",
-      "message": "Finish operational readiness: green tests, admin token client, Meteosource normalize.",
-      "version": "4.0.0",
-      "build": 50,
-      "timestamp": "2026-06-28T05:00:22.841Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "5.0.0",
+      "build": 18,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-06-30T07:25:12.939Z"
+    },
     {
       "url": "",
       "environment": "production",
@@ -716,14 +724,6 @@
       "build": 20,
       "message": "Production deploy via deploy:vercel",
       "timestamp": "2026-06-27T07:08:54.737Z"
-    },
-    {
-      "url": "",
-      "environment": "production",
-      "version": "3.0.0",
-      "build": 20,
-      "message": "Production deploy via deploy:vercel",
-      "timestamp": "2026-06-27T07:07:43.846Z"
     }
   ]
 }

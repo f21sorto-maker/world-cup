@@ -8,6 +8,7 @@
 ## [Unreleased]
 
 ### Builds
+- **5.0.0 build 18** (2026-06-30): Bracket team names 2-line clamp all viewports; fix embed head alignment
 - **5.0.0 build 17** (2026-06-30): 22 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 22 files changed, 942 insertions(+), 273 deletions(-)
 - **5.0.0 build 16** (2026-06-30): Show match dates on schedule cards, venue rows, and timeline
 - **5.0.0 build 15** (2026-06-30): Fix bracket fixture table, confirmed-only live overlay, R16 feeders
