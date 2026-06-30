@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T06:32:43.879Z",
+  "updatedAt": "2026-06-30T06:34:56.138Z",
   "builds": [
     {
       "version": "5.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "7232bee2c0b25a7887c4511067469814839ed8bf",
+      "shortHash": "7232bee",
+      "message": "Fix bracket visual order and paired elbow connectors to stop crossing lines.",
+      "version": "5.0.0",
+      "build": 4,
+      "timestamp": "2026-06-30T06:32:44.310Z"
+    },
+    {
       "hash": "d8def7b74f5fa7b4f850010ee6fd4257d1eba4c4",
       "shortHash": "d8def7b",
       "message": "Record v5.0.0 build 2 production deploy on Vercel.",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 45,
       "timestamp": "2026-06-28T04:48:44.263Z"
-    },
-    {
-      "hash": "9b44af8e99e462332d74d6897f257dd1338b1b2c",
-      "shortHash": "9b44af8",
-      "message": "Fix ESPN standings merge and refresh tournament audit data",
-      "version": "4.0.0",
-      "build": 44,
-      "timestamp": "2026-06-27T21:23:18.900Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "5.0.0",
+      "build": 4,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-06-30T06:34:56.136Z"
+    },
     {
       "url": "",
       "environment": "production",
@@ -716,14 +724,6 @@
       "build": 19,
       "message": "Production deploy via deploy:vercel",
       "timestamp": "2026-06-27T07:05:03.480Z"
-    },
-    {
-      "url": "https://world-cup-rho-ten.vercel.app",
-      "environment": "production",
-      "version": "3.0.0",
-      "build": 18,
-      "message": "Production deploy via deploy:vercel",
-      "timestamp": "2026-06-27T06:58:05.156Z"
     }
   ]
 }
