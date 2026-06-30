@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T02:50:43.082Z",
+  "updatedAt": "2026-06-30T02:52:51.369Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "fcdcd4b20a42f29497240b62113b8eb6f34804b9",
+      "shortHash": "fcdcd4b",
+      "message": "Add spinning World Cup ball as the global loading indicator.",
+      "version": "4.0.0",
+      "build": 78,
+      "timestamp": "2026-06-30T02:50:43.790Z"
+    },
+    {
       "hash": "c47d40116de2e3a56634876b732a3044d3fabf24",
       "shortHash": "c47d401",
       "message": "Add football-logos branding, knockout penalty scores, and team drawer UX fixes.",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 9,
       "timestamp": "2026-06-27T14:40:01.531Z"
-    },
-    {
-      "hash": "5393ac0fa19d43fc2bda0e679efe62244ed69eb0",
-      "shortHash": "5393ac0",
-      "message": "Sync build-manifest commit record for cd21e5f.",
-      "version": "4.0.0",
-      "build": 7,
-      "timestamp": "2026-06-27T14:28:25.293Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "4.0.0",
+      "build": 78,
+      "message": "Production deploy: global loading ball",
+      "timestamp": "2026-06-30T02:52:51.367Z"
+    },
     {
       "url": "",
       "environment": "production",
