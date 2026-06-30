@@ -57,11 +57,14 @@ export function materializeFullSchedule(
   const knockoutParticipants =
     groupStandings.length > 0 ? resolveKnockoutParticipants(groupStandings, teams, liveMatches) : {};
 
-  // Index live matches by matchId and by pairKey for overlay
+  // Index live matches by matchId, espnEventId, and pairKey for overlay
   const liveByMatchId: Record<string, MergedMatch> = {};
+  const liveByEspnId: Record<string, MergedMatch> = {};
   const liveByPair: Record<string, MergedMatch> = {};
   for (const m of Object.values(liveMatches)) {
     if (m.matchId) liveByMatchId[m.matchId] = m;
+    if (m.espnEventId) liveByEspnId[m.espnEventId] = m;
+    if (/^\d+$/.test(m.id)) liveByEspnId[m.id] = m;
     const home = resolveTeamFromStore(teams, m.homeTeamId);
     const away = resolveTeamFromStore(teams, m.awayTeamId);
     if (home && away) {
@@ -79,12 +82,24 @@ export function materializeFullSchedule(
 
     // Check if a live overlay exists
     const pair = pairKey(entry.homeTeam, entry.awayTeam);
+    const scheduleVenue = `${entry.venue.name}, ${entry.venue.city}`;
     const live =
       liveByMatchId[matchId] ??
+      (entry.espnEventId ? liveByEspnId[entry.espnEventId] : undefined) ??
       liveByPair[pair];
 
     if (live) {
-      result.push(applyKnockoutTeamIds({ ...live, matchId: live.matchId ?? matchId }, matchId, knockout));
+      result.push(
+        applyKnockoutTeamIds(
+          {
+            ...live,
+            matchId,
+            venue: live.venue ?? scheduleVenue,
+          },
+          matchId,
+          knockout
+        )
+      );
       continue;
     }
 
@@ -106,7 +121,7 @@ export function materializeFullSchedule(
           locked: false,
           source: "espn",
           group: groupLetter,
-          venue: `${entry.venue.name}, ${entry.venue.city}`,
+          venue: scheduleVenue,
           stage: isKnockout
             ? (entry.stage as import("../types").Stage | undefined)
             : undefined,

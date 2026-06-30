@@ -1,5 +1,7 @@
 import type { MergedMatch, Team } from "../types";
 import { resolveCanonicalTeamId } from "../data/wc2026TeamCatalog";
+import { isBracketPlaceholderTeamId } from "../lib/brackets/isBracketPlaceholderTeamId";
+import { isInternalTeamId } from "../lib/teamIdentity";
 import { applyLiveScore } from "./DataMerger";
 import { enrichMatchWithScheduleId } from "./ScheduleLinker";
 import { logger } from "./Logger";
@@ -39,6 +41,14 @@ function sameFixture(
 function lookupTeam(teams: Record<string, Team>, teamId: string): Team | undefined {
   if (teams[teamId]) return teams[teamId];
   return Object.values(teams).find((team) => team.id === teamId);
+}
+
+/** Prefer incoming ESPN ids over empty or bracket placeholder store ids. */
+export function preferTeamId(existing: string | undefined, incoming: string): string {
+  if (!existing?.trim()) return incoming;
+  if (isBracketPlaceholderTeamId(existing)) return incoming || existing;
+  if (isInternalTeamId(existing) && incoming.trim() && !isInternalTeamId(incoming)) return incoming;
+  return existing;
 }
 
 /** Rewrite match team ids to catalog ids (bra, fra, …) so standings stay unified. */
@@ -111,8 +121,8 @@ export function mergeEspnMatchIntoStore(
     awayTeamId: normalized.awayTeamId
   });
 
-  const homeTeamId = existing?.homeTeamId ?? normalized.homeTeamId;
-  const awayTeamId = existing?.awayTeamId ?? normalized.awayTeamId;
+  const homeTeamId = preferTeamId(existing?.homeTeamId, normalized.homeTeamId);
+  const awayTeamId = preferTeamId(existing?.awayTeamId, normalized.awayTeamId);
 
   const applied = applyLiveScore(existing, {
     ...normalized,

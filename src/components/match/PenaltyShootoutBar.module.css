@@ -1,0 +1,57 @@
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.barCompact {
+  margin-top: 4px;
+}
+
+.kicks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface-2, #1a2332) 88%, transparent);
+}
+
+.side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.side:last-child {
+  flex-direction: row-reverse;
+}
+
+.kick {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.kickScored {
+  background: var(--accent, #3b82f6);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent, #3b82f6) 50%, transparent);
+}
+
+.kickMissed {
+  background: transparent;
+  border: 2px solid var(--muted, #6b7280);
+  opacity: 0.75;
+}
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted, #9ca3af);
+  letter-spacing: 0.02em;
+  text-align: center;
+}

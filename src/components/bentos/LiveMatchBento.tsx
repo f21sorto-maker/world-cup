@@ -14,11 +14,17 @@ import { APP_COPY } from "../../lib/appCopy";
 import { useMatchTheme } from "../../hooks/useMatchTheme";
 import { useGoalDetector } from "../../hooks/useGoalDetector";
 import { useEventPlayerPhotos } from "../../hooks/useEventPlayerPhotos";
-import { teamLiveCardName } from "../../lib/teamIdentity";
+import {
+  flagTeamIdForMatch,
+  teamLiveCardNameForMatch,
+  scheduleNameHintForMatch,
+} from "../../lib/matchTeamDisplay";
 import { TeamLabel } from "../team/TeamLabel";
 import { TeamLabelById } from "../team/TeamLabelById";
 import { VenueLabel } from "../venue/VenueLabel";
 import { resolveEventsForMatch } from "../../lib/resolveMatchEvents";
+import { derivePenaltyShootout } from "../../lib/derivePenaltyShootout";
+import { PenaltyShootoutBar } from "../match/PenaltyShootoutBar";
 
 type Props = {
   match: MergedMatch;
@@ -43,9 +49,21 @@ export function LiveMatchBento({ match, variant }: Props) {
   );
   const hasEvents = hasDisplayableMatchEvents(events);
 
+  const penaltyShootout = useMemo(
+    () =>
+      derivePenaltyShootout({
+        events,
+        homeTeamId: match.homeTeamId,
+        awayTeamId: match.awayTeamId,
+        period: match.period,
+        existing: match.penaltyShootout,
+      }),
+    [events, match]
+  );
+
   const { isGoalActive, latestGoal, secondsRemaining } = useGoalDetector(match.id);
-  const homeName = teamLiveCardName(home, match.homeTeamId);
-  const awayName = teamLiveCardName(away, match.awayTeamId);
+  const homeName = teamLiveCardNameForMatch(match, "home", teams);
+  const awayName = teamLiveCardNameForMatch(match, "away", teams);
   const isCompact = true;
 
   const scorerEvents = useMemo(
@@ -96,13 +114,14 @@ export function LiveMatchBento({ match, variant }: Props) {
             matchId={match.matchId}
             venueString={match.venue}
             cityHint={broadcast?.venue.city}
+            showLoading
           />
         </PanelErrorBoundary>
       </div>
 
       {match.matchId || match.venue ? (
         <div className="live-hero-meta">
-          <VenueLabel matchId={match.matchId} venueString={match.venue} inline compact />
+          <VenueLabel matchId={match.matchId} venueString={match.venue} inline />
         </div>
       ) : null}
 
@@ -110,7 +129,12 @@ export function LiveMatchBento({ match, variant }: Props) {
         {home ? (
           <TeamLabel team={home} displayName={homeName} flagCompact={isCompact} />
         ) : (
-          <TeamLabelById teamId={match.homeTeamId} displayName={homeName} flagCompact={isCompact} />
+          <TeamLabelById
+            teamId={flagTeamIdForMatch(match, "home", teams)}
+            nameHint={scheduleNameHintForMatch(match, "home")}
+            displayName={homeName}
+            flagCompact={isCompact}
+          />
         )}
         <strong className="live-hero-score">{match.homeScore ?? 0}</strong>
         <span className="schedule-score-sep">:</span>
@@ -118,9 +142,19 @@ export function LiveMatchBento({ match, variant }: Props) {
         {away ? (
           <TeamLabel team={away} align="right" displayName={awayName} flagCompact={isCompact} />
         ) : (
-          <TeamLabelById teamId={match.awayTeamId} align="right" displayName={awayName} flagCompact={isCompact} />
+          <TeamLabelById
+            teamId={flagTeamIdForMatch(match, "away", teams)}
+            nameHint={scheduleNameHintForMatch(match, "away")}
+            align="right"
+            displayName={awayName}
+            flagCompact={isCompact}
+          />
         )}
       </div>
+
+      {penaltyShootout ? (
+        <PenaltyShootoutBar match={match} shootout={penaltyShootout} compact />
+      ) : null}
 
       <div
         className="match-goal-scorers-slot"

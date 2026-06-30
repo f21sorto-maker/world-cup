@@ -414,6 +414,18 @@ export type MatchEvent = {
   varOutcome?: "confirmed" | "overturned";
 };
 
+export type PenaltyKick = {
+  scored: boolean;
+  playerName?: string;
+};
+
+export type PenaltyShootout = {
+  home: PenaltyKick[];
+  away: PenaltyKick[];
+  homeScore: number;
+  awayScore: number;
+};
+
 export type MergedMatch = {
   id: string;
   matchId?: string;
@@ -442,6 +454,7 @@ export type MergedMatch = {
   displayClock?: string;
   lastUpdatedAt?: number;
   prediction?: Prediction;
+  penaltyShootout?: PenaltyShootout;
 };
 
 export type BroadcastChip = {

@@ -1,4 +1,5 @@
 import type { MergedMatch } from "../../types";
+import { enrichMatchesPenaltyShootouts } from "../../lib/enrichMatchPenaltyShootout";
 import { deriveStandingsIfScored, standingsEqual } from "../../lib/qualification";
 import { writeLiveMatchCache } from "../../lib/liveMatchCache";
 import { readStandingsCache, writeStandingsCache } from "../../lib/standingsCache";
@@ -274,6 +275,8 @@ export async function runLiveTick(options?: { light?: boolean }): Promise<number
 
   const liveCount = Object.values(merged).filter((m) => m.status === "live").length;
   const primary = selectPrimaryMatch(Object.values(merged), store.primaryLiveMatchId);
+
+  merged = enrichMatchesPenaltyShootouts(merged, store.matchEvents);
 
   store.batchPollUpdate({
     matches: merged,

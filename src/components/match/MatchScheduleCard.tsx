@@ -163,7 +163,7 @@ export function MatchScheduleCard({
           {(match.matchId || match.venue) ? (
             <>
               {" · "}
-              <VenueLabel matchId={match.matchId} venueString={match.venue} inline compact />
+              <VenueLabel matchId={match.matchId} venueString={match.venue} inline />
             </>
           ) : null}
           {!isDone && broadcast?.venue.city ? (

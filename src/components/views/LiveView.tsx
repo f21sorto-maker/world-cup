@@ -10,6 +10,8 @@ import { APP_COPY } from "../../lib/appCopy";
 import { MODULE_IDS } from "../../lib/moduleIds";
 import { resolveTeamFromStore } from "../../data/wc2026TeamCatalog";
 import { useMaterializedSchedule } from "../../hooks/useMaterializedSchedule";
+import { useMaterializedMatchIndex } from "../../hooks/useMaterializedMatchIndex";
+import { resolveDisplayMatch } from "../../lib/resolveDisplayMatch";
 import { useStore } from "../../store";
 import { ModuleSectionActions } from "../shared/ModuleSectionActions";
 
@@ -50,12 +52,16 @@ export function LiveView() {
     return count;
   });
 
-  const live = useMemo(
-    () => Object.values(liveMatchesMap).filter((m) => m.status === "live"),
-    [liveMatchesMap]
-  );
-
   const materializedSchedule = useMaterializedSchedule();
+  const materializedIndex = useMaterializedMatchIndex();
+
+  const live = useMemo(
+    () =>
+      Object.values(liveMatchesMap)
+        .filter((m) => m.status === "live")
+        .map((m) => resolveDisplayMatch(m, materializedIndex)),
+    [liveMatchesMap, materializedIndex]
+  );
 
   const scheduleMatches = useMemo(() => {
     const todayKey = new Date().toISOString().slice(0, 10);
