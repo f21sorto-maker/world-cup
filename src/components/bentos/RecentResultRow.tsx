@@ -3,7 +3,6 @@ import { APP_COPY } from "../../lib/appCopy";
 import type { MergedMatch } from "../../types";
 import { useStore } from "../../store";
 import { useKnockoutPenaltyResult } from "../../hooks/useKnockoutPenaltyResult";
-import { VenueLabel } from "../venue/VenueLabel";
 import { KnockoutResultScoreboard } from "../match/KnockoutResultScoreboard";
 import {
   flagTeamIdForMatch,
@@ -30,40 +29,44 @@ function StandardResultRow({ match, onSelect }: ResultRowProps) {
   const ago = formatTimeAgo(match.date);
   const homeAdvancing = isAdvancingTeam(match, match.homeTeamId, teams);
   const awayAdvancing = isAdvancingTeam(match, match.awayTeamId, teams);
+  const homeScore = match.homeScore ?? 0;
+  const awayScore = match.awayScore ?? 0;
 
   return (
     <button type="button" className="recent-result-row" onClick={() => onSelect(match.homeTeamId)}>
-      <span
-        className={`recent-result-team recent-result-team--home${homeAdvancing ? " recent-result-team--advancing" : ""}`}
-      >
-        <TeamFlag
-          team={resolvedHome}
-          teamId={flagTeamIdForMatch(match, "home", teams)}
-          nameHint={scheduleNameHintForMatch(match, "home")}
-          size="sm"
-          compact
-        />
-        <span className="team-name-text">{homeName}</span>
-      </span>
-      <span className="recent-result-score">
-        {match.homeScore ?? 0} – {match.awayScore ?? 0}
-      </span>
-      <span
-        className={`recent-result-team recent-result-team--away${awayAdvancing ? " recent-result-team--advancing" : ""}`}
-      >
-        <TeamFlag
-          team={resolvedAway}
-          teamId={flagTeamIdForMatch(match, "away", teams)}
-          nameHint={scheduleNameHintForMatch(match, "away")}
-          size="sm"
-          compact
-        />
-        <span className="team-name-text">{awayName}</span>
-      </span>
-      <span className="recent-result-meta">
+      <div className="fixture-matchup">
+        <span
+          className={`recent-result-team recent-result-team--home${homeAdvancing ? " recent-result-team--advancing" : ""}`}
+        >
+          <TeamFlag
+            team={resolvedHome}
+            teamId={flagTeamIdForMatch(match, "home", teams)}
+            nameHint={scheduleNameHintForMatch(match, "home")}
+            size="sm"
+            compact
+          />
+          <span className="team-name-text">{homeName}</span>
+        </span>
+        <strong className="recent-result-score">{homeScore}</strong>
+        <span className="result-match-card-sep">–</span>
+        <strong className="recent-result-score">{awayScore}</strong>
+        <span
+          className={`recent-result-team recent-result-team--away${awayAdvancing ? " recent-result-team--advancing" : ""}`}
+        >
+          <TeamFlag
+            team={resolvedAway}
+            teamId={flagTeamIdForMatch(match, "away", teams)}
+            nameHint={scheduleNameHintForMatch(match, "away")}
+            size="sm"
+            compact
+          />
+          <span className="team-name-text">{awayName}</span>
+        </span>
+      </div>
+      <div className="fixture-matchup__meta">
         <span className="final-pill">{APP_COPY.match.final}</span>
         {ago ? <span className="recent-result-ago">{ago}</span> : null}
-      </span>
+      </div>
     </button>
   );
 }

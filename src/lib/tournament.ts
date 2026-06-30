@@ -782,6 +782,9 @@ function buildCompletedKnockoutLookup(mergedMatches: MergedMatch[]): Map<string,
     if (typeof match.homeScore !== "number" || typeof match.awayScore !== "number") continue;
     const key = match.matchId ?? match.id;
     completedKnockout.set(key, match);
+    if (match.id && match.id !== key) {
+      completedKnockout.set(match.id, match);
+    }
   }
   return completedKnockout;
 }
@@ -814,6 +817,7 @@ export function resolveKnockoutResults(
           homeScore: completed.homeScore,
           awayScore: completed.awayScore,
           winnerTeamId,
+          penaltyShootout: completed.penaltyShootout,
           source: "scheduled",
           homeCertainty: "confirmed",
           awayCertainty: "confirmed",

@@ -285,7 +285,7 @@
   overflow: hidden;
 }
 
-.schedule-card .score-line.schedule-score-line {
+.schedule-card .score-line.fixture-matchup {
   flex: 1 1 auto;
   min-height: 44px;
   align-items: center;
@@ -340,6 +340,9 @@
 /* ── Result cards ───────────────────────────────────────────────── */
 
 .result-match-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   min-height: var(--card-height-result);
   padding: var(--module-padding-compact) var(--module-padding);
 }

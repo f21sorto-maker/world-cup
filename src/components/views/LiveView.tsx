@@ -1,6 +1,7 @@
 import { lazy, Suspense, useMemo, useState } from "react";
 import { BentoErrorBoundary } from "../shared/ErrorBoundary";
 import { LiveMatchBento } from "../bentos/LiveMatchBento";
+import { LiveBracketContextPanel } from "../bentos/LiveBracketContextPanel";
 import { LiveGroupStandingsPanel } from "../bentos/LiveGroupStandingsPanel";
 import { LiveStreamsPanel } from "../bentos/LiveStreamsPanel";
 import { MatchScheduleCard } from "../match/MatchScheduleCard";
@@ -14,6 +15,8 @@ import { useMaterializedSchedule } from "../../hooks/useMaterializedSchedule";
 import { useMaterializedMatchIndex } from "../../hooks/useMaterializedMatchIndex";
 import { useTournamentPhase } from "../../hooks/useTournamentPhase";
 import { resolveDisplayMatch } from "../../lib/resolveDisplayMatch";
+import { useBracketProjection } from "../../hooks/useBracketProjection";
+import { isKnockoutMatch } from "../../lib/resolveMatchWinner";
 import { useStore } from "../../store";
 import { ModuleSectionActions } from "../shared/ModuleSectionActions";
 
@@ -57,6 +60,7 @@ export function LiveView() {
   const materializedSchedule = useMaterializedSchedule();
   const materializedIndex = useMaterializedMatchIndex();
   const { isKnockoutActive, activeRoundLabel } = useTournamentPhase();
+  const bracketProjection = useBracketProjection();
 
   const live = useMemo(
     () =>
@@ -141,6 +145,16 @@ export function LiveView() {
               ) : null}
             </div>
             <div className="live-command-aside">
+              {primary && isKnockoutMatch(primary) && bracketProjection ? (
+                <BentoErrorBoundary bento="LiveBracketContextPanel">
+                  <LiveBracketContextPanel
+                    liveMatch={primary}
+                    bracket={bracketProjection.bracket}
+                    teamsById={teams}
+                    liveMatches={liveMatchesMap}
+                  />
+                </BentoErrorBoundary>
+              ) : null}
               {!isKnockoutActive && primary?.group ? (
                 <BentoErrorBoundary bento="LiveGroupStandingsPanel">
                   <LiveGroupStandingsPanel group={primary.group} />

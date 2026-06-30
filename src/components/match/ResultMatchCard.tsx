@@ -78,59 +78,61 @@ export function ResultMatchCard({ match: rawMatch }: ResultMatchCardProps) {
         <VenueLabel matchId={match.matchId ?? match.id} venueString={match.venue} inline />
       </div>
 
-      {showPenalties ? (
-        <KnockoutResultScoreboard
-          match={match}
-          shootout={shootout ?? EMPTY_SHOOTOUT}
-          teams={teams}
-          winnerTeamId={winnerTeamId}
-          stageLabel={stageLabel}
-          loading={loading}
-        />
-      ) : (
-        <div className="result-match-card-scoreline">
-          <div
-            className={`result-match-card-team${homeAdvancing ? " result-match-card-team--advancing" : ""}`}
-          >
-            {home ? (
-              <TeamLabel team={home} displayName={homeName} nested />
-            ) : (
-              <TeamLabelById
-                teamId={flagTeamIdForMatch(match, "home", teams)}
-                nameHint={scheduleNameHintForMatch(match, "home")}
-                displayName={homeName}
-                nested
-              />
-            )}
+      <div className="fixture-card-body">
+        {showPenalties ? (
+          <KnockoutResultScoreboard
+            match={match}
+            shootout={shootout ?? EMPTY_SHOOTOUT}
+            teams={teams}
+            winnerTeamId={winnerTeamId}
+            stageLabel={stageLabel}
+            loading={loading}
+          />
+        ) : (
+          <div className="score-line fixture-matchup">
+            <div
+              className={`result-match-card-team${homeAdvancing ? " result-match-card-team--advancing" : ""}`}
+            >
+              {home ? (
+                <TeamLabel team={home} displayName={homeName} nested />
+              ) : (
+                <TeamLabelById
+                  teamId={flagTeamIdForMatch(match, "home", teams)}
+                  nameHint={scheduleNameHintForMatch(match, "home")}
+                  displayName={homeName}
+                  nested
+                />
+              )}
+            </div>
+            <strong className="result-match-card-score">{homeScore}</strong>
+            <span className="result-match-card-sep">–</span>
+            <strong className="result-match-card-score">{awayScore}</strong>
+            <div
+              className={`result-match-card-team${awayAdvancing ? " result-match-card-team--advancing" : ""}`}
+            >
+              {away ? (
+                <TeamLabel team={away} displayName={awayName} align="right" nested />
+              ) : (
+                <TeamLabelById
+                  teamId={flagTeamIdForMatch(match, "away", teams)}
+                  nameHint={scheduleNameHintForMatch(match, "away")}
+                  displayName={awayName}
+                  align="right"
+                  nested
+                />
+              )}
+            </div>
           </div>
-          <strong className="result-match-card-score">{homeScore}</strong>
-          <span className="result-match-card-sep">–</span>
-          <strong className="result-match-card-score">{awayScore}</strong>
-          <div
-            className={`result-match-card-team result-match-card-team--away${awayAdvancing ? " result-match-card-team--advancing" : ""}`}
-          >
-            {away ? (
-              <TeamLabel team={away} displayName={awayName} align="right" nested />
-            ) : (
-              <TeamLabelById
-                teamId={flagTeamIdForMatch(match, "away", teams)}
-                nameHint={scheduleNameHintForMatch(match, "away")}
-                displayName={awayName}
-                align="right"
-                nested
-              />
-            )}
-          </div>
-        </div>
-      )}
+        )}
 
-      <MatchGoalScorers
-        events={events}
-        homeTeamId={match.homeTeamId}
-        awayTeamId={match.awayTeamId}
-        homeTeam={home}
-        awayTeam={away}
-      />
+        <MatchGoalScorers
+          events={events}
+          homeTeamId={match.homeTeamId}
+          awayTeamId={match.awayTeamId}
+          homeTeam={home}
+          awayTeam={away}
+        />
+      </div>
     </article>
   );
 }

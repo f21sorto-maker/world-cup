@@ -127,6 +127,7 @@ export type BracketMatch = {
     homeGhosts?: BracketGhostCandidate[];
     /** Ghost candidates for the away slot, sorted by frequency DESC, max 2. */
     awayGhosts?: BracketGhostCandidate[];
+    penaltyShootout?: PenaltyShootout;
 };
 export type TournamentProjection = {
     scoredMatches: MatchWithScore[];

@@ -146,7 +146,7 @@ export function MatchScheduleCard({
   const body = (
     <>
       {celebrationOverlay}
-      <div className={isLive ? goalStyles.cardContentLayer : undefined}>
+      <div className={isLive ? `${goalStyles.cardContentLayer} fixture-card-body` : "fixture-card-body"}>
       {isLive ? <div className="team-accent-bar" aria-hidden /> : null}
       {showKickoffCountdown && !isLive && !isDone ? (
         <div className="schedule-card-countdown-row">
@@ -179,7 +179,7 @@ export function MatchScheduleCard({
         ) : null}
       </div>
 
-      <div className="score-line schedule-score-line">
+      <div className="score-line fixture-matchup">
         {resolvedHome ? (
           <TeamLabel
             team={resolvedHome}

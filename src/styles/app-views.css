@@ -290,7 +290,8 @@
   flex-shrink: 0;
   min-height: 48px;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, 520px);
+  margin-inline: auto;
   min-width: 0;
   overflow-x: clip;
 }
@@ -730,50 +731,70 @@
   padding: 0;
 }
 
-.schedule-card .score-line.schedule-score-line {
-  margin-top: 6px;
-  display: grid;
-  grid-template-columns: 1fr auto auto auto 1fr;
-  grid-template-rows: auto auto auto;
-  gap: 4px 6px;
+/* ── Shared horizontal centered matchup (live, schedule, results, recent) ── */
+
+.fixture-card-body {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-}
-
-/* Stacked matchup: home row → score → away row (full card width per team) */
-.schedule-card .score-line.schedule-score-line > :nth-child(1) {
-  grid-column: 1 / -1;
-  grid-row: 1;
   width: 100%;
 }
 
-.schedule-card .score-line.schedule-score-line > :nth-child(2) {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.schedule-card .score-line.schedule-score-line > :nth-child(3) {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-.schedule-card .score-line.schedule-score-line > :nth-child(4) {
-  grid-column: 4;
-  grid-row: 2;
-}
-
-.schedule-card .score-line.schedule-score-line > :nth-child(5) {
-  grid-column: 1 / -1;
-  grid-row: 3;
+.fixture-matchup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+  align-items: center;
   width: 100%;
+  max-width: min(100%, 520px);
+  margin-inline: auto;
+  gap: 4px 8px;
+}
+
+.fixture-matchup .team-label:first-of-type,
+.fixture-matchup .recent-result-team--home {
   justify-self: end;
 }
 
-.schedule-card .score-line.schedule-score-line .team-label {
+.fixture-matchup .team-label.right,
+.fixture-matchup .recent-result-team--away {
+  justify-self: start;
+}
+
+.fixture-matchup__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.fixture-card-body .match-goal-scorers,
+.fixture-card-body .match-goal-scorers-slot,
+.fixture-card-body .broadcast-bar-slot,
+.fixture-card-body .odds-panel {
+  width: 100%;
+  max-width: min(100%, 520px);
+  margin-inline: auto;
+}
+
+.schedule-card .fixture-card-body .match-meta {
+  width: 100%;
+  text-align: center;
+}
+
+.schedule-card .score-line.fixture-matchup {
+  margin-top: 6px;
+}
+
+.schedule-card .score-line.fixture-matchup .team-label {
   font-size: 13px;
 }
 
-.schedule-card .score-line.schedule-score-line .team-label.right {
-  justify-content: flex-end;
+.schedule-card .score-line.fixture-matchup .team-label.right {
+  justify-content: flex-start;
 }
 
 .schedule-score {
@@ -1537,6 +1558,22 @@
   text-align: center;
 }
 
+.bracket-card {
+  position: relative;
+  z-index: 1;
+}
+
+.bracket-scoreline-ft {
+  font-variant-numeric: tabular-nums;
+}
+
+.bracket-penalty-score {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── Bracket layout ─────────────────────────────────── */
 
 .bracket-scroll {
@@ -1929,10 +1966,20 @@
 .result-match-card-meta {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 10px;
   color: var(--muted);
   font-size: 12px;
+  text-align: center;
+}
+
+.result-match-card .fixture-matchup .result-match-card-team--advancing {
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: var(--accent-soft, color-mix(in srgb, var(--accent) 14%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .final-pill {
@@ -1945,57 +1992,6 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
-}
-
-.result-match-card-scoreline {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto 1fr;
-  grid-template-rows: auto auto auto;
-  align-items: center;
-  gap: 4px 6px;
-}
-
-.result-match-card .result-match-card-scoreline > :nth-child(1) {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  width: 100%;
-}
-
-.result-match-card .result-match-card-scoreline > :nth-child(2) {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.result-match-card .result-match-card-scoreline > :nth-child(3) {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-.result-match-card .result-match-card-scoreline > :nth-child(4) {
-  grid-column: 4;
-  grid-row: 2;
-}
-
-.result-match-card .result-match-card-scoreline > :nth-child(5) {
-  grid-column: 1 / -1;
-  grid-row: 3;
-  width: 100%;
-  justify-self: end;
-}
-
-.result-match-card .result-match-card-scoreline .team-label.right {
-  justify-content: flex-end;
-}
-
-.result-match-card-scoreline .result-match-card-team--advancing {
-  padding: 6px 8px;
-  border-radius: 10px;
-  background: var(--accent-soft, color-mix(in srgb, var(--accent) 14%, transparent));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-.result-match-card-scoreline .result-match-card-team--away {
-  justify-self: end;
 }
 
 .result-match-card-score {
@@ -2629,6 +2625,9 @@ tr.qual-row--in-contention {
 
 .result-match-card .match-goal-scorers {
   padding: 4px 0 0;
+  width: 100%;
+  max-width: min(100%, 520px);
+  margin-inline: auto;
 }
 
 .match-facts-panel {
@@ -2717,6 +2716,8 @@ tr.qual-row--in-contention {
 .recent-result-extra {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 4px;
   padding: 0 4px 4px;
 }
@@ -2729,28 +2730,31 @@ tr.qual-row--in-contention {
 }
 
 .recent-result-row--scoreboard {
-  display: block;
-  grid-template-columns: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 4px 0;
   width: 100%;
 }
 
 .recent-result-row {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr auto;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
   width: 100%;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   font: inherit;
   color: inherit;
 }
 
 .recent-result-team {
-  display: flex;
-  align-items: flex-start;
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
   min-width: 0;
+  max-width: 100%;
 }
 
 .recent-result-team .team-flag-badge {
@@ -2765,25 +2769,23 @@ tr.qual-row--in-contention {
 }
 
 .recent-result-team .team-name-text {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
-}
-
-.recent-result-team--away {
-  justify-content: flex-end;
 }
 
 .recent-result-score {
   font-family: var(--font-mono);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 .recent-result-meta {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 0.7rem;
   color: var(--muted);
 }

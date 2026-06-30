@@ -104,6 +104,10 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+## [4.0.0] build 79 — 2026-06-30 (build)
+- 21 file(s) in src — 21 files changed, 868 insertions(+), 233 deletions(-)
+
 ## [4.0.0] build 78 — 2026-06-30 (build)
 - 29 file(s) in public, src — 29 files changed, 226 insertions(+), 58 deletions(-)
 

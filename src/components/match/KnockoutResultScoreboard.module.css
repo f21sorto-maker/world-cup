@@ -4,6 +4,8 @@
   align-items: start;
   gap: 8px 12px;
   width: 100%;
+  max-width: min(100%, 520px);
+  margin-inline: auto;
 }
 
 .compact {
@@ -139,7 +141,7 @@
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 8px;
   margin-top: 2px;
   font-size: 0.7rem;

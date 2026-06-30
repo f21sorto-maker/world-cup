@@ -126,7 +126,7 @@ export function LiveMatchBento({ match, variant }: Props) {
         </div>
       ) : null}
 
-      <div className="score-line live-hero-scoreline">
+      <div className="score-line fixture-matchup live-hero-scoreline">
         {home ? (
           <TeamLabel team={home} displayName={homeName} flagCompact={isCompact} />
         ) : (

@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { knockoutSchedule } from "../../data/knockoutSchedule";
 import { buildQualificationContext, computeQualificationStatus, type QualificationMatchContext } from "../../lib/qualification";
 import { buildCanonicalTournamentDataset } from "../../lib/canonicalTournamentDataset";
@@ -24,14 +24,33 @@ import { useTeamTheme } from "../../hooks/useTeamTheme";
 import { TeamFlag } from "../team/TeamFlag";
 import { CertaintyBadge } from "../shared/CertaintyBadge";
 import { LoadingState } from "../shared/LoadingState";
+import { BracketConnectorOverlay } from "./BracketConnectorOverlay";
+import { lookupBracketLiveMatch } from "../../lib/bracketTree";
+import { resolveMatchWinner } from "../../lib/resolveMatchWinner";
 import type { TeamThemeStatus } from "../team/TeamThemeRoot";
 
 const allBracketStages: Stage[] = ["R32", "R16", "QF", "SF", "Final"];
 const stageColumns: Record<Stage, number> = { R32: 1, R16: 2, QF: 3, SF: 4, Final: 5 };
 
-/** Locked-in mode: R32 only until group stage + third-place cutoffs are FIFA-confirmed. */
-function visibleBracketStages(mode: "confirmed" | "projected"): Stage[] {
-  return mode === "confirmed" ? ["R32"] : allBracketStages;
+/** Locked-in mode: R32 first; later rounds appear as feeder winners are confirmed. */
+function visibleBracketStages(
+  mode: "confirmed" | "projected",
+  orderedByStage: Record<Stage, BracketMatch[]>
+): Stage[] {
+  if (mode === "projected") return allBracketStages;
+
+  const stages: Stage[] = ["R32"];
+  const laterStages: Stage[] = ["R16", "QF", "SF", "Final"];
+
+  for (const stage of laterStages) {
+    const hasConfirmedSlot = orderedByStage[stage].some(
+      (match) => match.homeCertainty === "confirmed" || match.awayCertainty === "confirmed"
+    );
+    if (!hasConfirmedSlot) break;
+    stages.push(stage);
+  }
+
+  return stages;
 }
 
 function GhostTeamList({
@@ -60,23 +79,18 @@ function GhostTeamList({
   );
 }
 
-function feederWinnerId(feeder: MergedMatch): string | undefined {
-  if (feeder.homeScore === undefined || feeder.awayScore === undefined) return undefined;
-  if (feeder.homeScore > feeder.awayScore) return feeder.homeTeamId;
-  if (feeder.awayScore > feeder.homeScore) return feeder.awayTeamId;
-  return undefined;
-}
-
 function isFeederWinnerConfirmed(
   seedLabel: string | undefined,
   teamId: string,
-  liveMatches: Record<string, MergedMatch>
+  liveMatches: Record<string, MergedMatch>,
+  teamsById: Record<string, Team>
 ): boolean {
   if (!seedLabel?.startsWith("W")) return false;
   const feederId = `M${seedLabel.slice(1)}`;
-  const feeder = liveMatches[feederId];
+  const feeder = lookupBracketLiveMatch(liveMatches, feederId);
   if (!feeder?.locked || feeder.status !== "completed") return false;
-  return feederWinnerId(feeder) === teamId;
+  const winner = resolveMatchWinner(feeder, teamsById);
+  return winner === teamId;
 }
 
 function isTeamSlotConfirmed(
@@ -86,11 +100,12 @@ function isTeamSlotConfirmed(
   mode: "confirmed" | "projected",
   standings: GroupStanding[],
   liveMatches: Record<string, MergedMatch>,
-  qualContext: QualificationMatchContext
+  qualContext: QualificationMatchContext,
+  teamsById: Record<string, Team>
 ): boolean {
   if (mode === "projected" || !teamId) return false;
 
-  const live = liveMatches[match.id];
+  const live = lookupBracketLiveMatch(liveMatches, match.id);
   if (live?.locked && live.status === "completed" && live.homeScore !== undefined) {
     return true;
   }
@@ -100,7 +115,7 @@ function isTeamSlotConfirmed(
   }
 
   const seedLabel = side === "home" ? match.homeSeedLabel : match.awaySeedLabel;
-  return isFeederWinnerConfirmed(seedLabel, teamId, liveMatches);
+  return isFeederWinnerConfirmed(seedLabel, teamId, liveMatches, teamsById);
 }
 
 function isSlotConfirmed(
@@ -108,13 +123,17 @@ function isSlotConfirmed(
   mode: "confirmed" | "projected",
   standings: GroupStanding[],
   liveMatches: Record<string, MergedMatch>,
-  qualContext: QualificationMatchContext
+  qualContext: QualificationMatchContext,
+  teamsById: Record<string, Team>
 ): { homeConfirmed: boolean; awayConfirmed: boolean } {
   if (mode === "projected") {
-    return { homeConfirmed: false, awayConfirmed: false };
+    return {
+      homeConfirmed: match.homeCertainty === "confirmed",
+      awayConfirmed: match.awayCertainty === "confirmed",
+    };
   }
 
-  const live = liveMatches[match.id];
+  const live = lookupBracketLiveMatch(liveMatches, match.id);
   if (live?.locked && live.status === "completed" && live.homeScore !== undefined) {
     return { homeConfirmed: true, awayConfirmed: true };
   }
@@ -126,7 +145,8 @@ function isSlotConfirmed(
     mode,
     standings,
     liveMatches,
-    qualContext
+    qualContext,
+    teamsById
   );
   const awayConfirmed = isTeamSlotConfirmed(
     match.awayTeamId,
@@ -135,7 +155,8 @@ function isSlotConfirmed(
     mode,
     standings,
     liveMatches,
-    qualContext
+    qualContext,
+    teamsById
   );
 
   return { homeConfirmed, awayConfirmed };
@@ -275,10 +296,15 @@ function BracketCardReadonly({
   const kickoffUtc = info
     ? resolveOfficialMatchKickoff({ matchId: match.id, date: info.date })
     : undefined;
-  const { homeConfirmed, awayConfirmed } = isSlotConfirmed(match, mode, standings, liveMatches, qualContext);
-  const liveMerged =
-    liveMatches[match.id] ??
-    Object.values(liveMatches).find((m) => m.matchId === match.id || m.id === match.id);
+  const { homeConfirmed, awayConfirmed } = isSlotConfirmed(
+    match,
+    mode,
+    standings,
+    liveMatches,
+    qualContext,
+    teamsById
+  );
+  const liveMerged = lookupBracketLiveMatch(liveMatches, match.id);
 
   return (
     <article className="bracket-card">
@@ -314,7 +340,14 @@ function BracketCardReadonly({
         </div>
       ) : match.homeScore !== undefined && match.awayScore !== undefined ? (
         <div className="bracket-scoreline">
-          {match.homeScore} – {match.awayScore}
+          <span className="bracket-scoreline-ft">
+            {match.homeScore} – {match.awayScore}
+          </span>
+          {match.penaltyShootout ? (
+            <span className="bracket-penalty-score">
+              ({match.penaltyShootout.homeScore} – {match.penaltyShootout.awayScore})
+            </span>
+          ) : null}
         </div>
       ) : null}
     </article>
@@ -393,7 +426,55 @@ export function BracketBento({ embedded = false }: { embedded?: boolean }) {
   }, [projection?.bracket]);
 
   const bb = APP_COPY.bracketBento;
-  const bracketStages = visibleBracketStages(mode);
+  const bracketStages = visibleBracketStages(mode, orderedByStage);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [cardRects, setCardRects] = useState<Map<string, DOMRect>>(new Map());
+  const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container || !projection?.bracket) return;
+
+    const measure = () => {
+      const cRect = container.getBoundingClientRect();
+      const map = new Map<string, DOMRect>();
+      container.querySelectorAll<HTMLElement>("[data-match-id]").forEach((el) => {
+        const id = el.dataset.matchId;
+        if (id) map.set(id, el.getBoundingClientRect());
+      });
+      setCardRects(map);
+      setContainerRect(cRect);
+    };
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(container);
+    container.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    measure();
+
+    return () => {
+      ro.disconnect();
+      container.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [projection?.bracket, bracketStages, mode]);
+
+  const confirmedWinners = useMemo(() => {
+    const winners = new Set<string>();
+    for (const [key, match] of Object.entries(liveMatchesMap)) {
+      if (match.status !== "completed" || !match.locked) continue;
+      const id = match.matchId ?? match.id ?? key;
+      winners.add(id);
+    }
+    for (const slot of projection?.bracket ?? []) {
+      if (slot.winnerTeamId && slot.homeCertainty === "confirmed" && slot.awayCertainty === "confirmed") {
+        winners.add(slot.id);
+      }
+    }
+    return winners;
+  }, [liveMatchesMap, projection?.bracket]);
+
+  const showConnectors = bracketStages.length > 1;
 
   return (
     <section
@@ -414,7 +495,7 @@ export function BracketBento({ embedded = false }: { embedded?: boolean }) {
       {!projection ? (
         <LoadingState label={bb.loading} />
       ) : (
-        <div className="bracket-scroll">
+        <div className="bracket-scroll" ref={scrollRef}>
           <div className="bracket-head">
             {bracketStages.map((stage) => (
               <h3 key={stage} style={{ gridColumn: stageColumns[stage] }}>
@@ -422,11 +503,18 @@ export function BracketBento({ embedded = false }: { embedded?: boolean }) {
               </h3>
             ))}
           </div>
-          <div className="bracket-rounds">
+          <div className="bracket-rounds" style={{ position: "relative" }}>
+            {showConnectors && containerRect ? (
+              <BracketConnectorOverlay
+                cardRects={cardRects}
+                containerRect={containerRect}
+                confirmedWinners={confirmedWinners}
+              />
+            ) : null}
             {bracketStages.map((stage) => (
               <div className={`bracket-round ${stage === "Final" ? "is-final" : ""}`} key={stage}>
                 {orderedByStage[stage].map((match) => (
-                  <div className="bracket-cell" key={match.id}>
+                  <div className="bracket-cell" key={match.id} data-match-id={match.id}>
                     <BracketCardReadonly
                       match={match}
                       teamsById={teamsMap}

@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-06-30T02:52:51.369Z",
+  "updatedAt": "2026-06-30T03:10:09.638Z",
   "builds": [
+    {
+      "version": "4.0.0",
+      "build": 79,
+      "kind": "build",
+      "message": "21 file(s) in src — 21 files changed, 868 insertions(+), 233 deletions(-)",
+      "date": "2026-06-30",
+      "timestamp": "2026-06-30T03:10:09.638Z"
+    },
     {
       "version": "4.0.0",
       "build": 78,
@@ -312,17 +320,17 @@
       "message": "Integrate all feature branches via consolidated rapid proxy",
       "date": "2026-06-27",
       "timestamp": "2026-06-27T20:45:03.500Z"
-    },
-    {
-      "version": "4.0.0",
-      "build": 39,
-      "kind": "build",
-      "message": "13 file(s) in api, config, package.json, scripts, src, vercel.json — 13 files changed, 784 insertions(+), 2 deletions(-)",
-      "date": "2026-06-27",
-      "timestamp": "2026-06-27T20:27:48.117Z"
     }
   ],
   "commits": [
+    {
+      "hash": "cfe723ac137f4aa02f01fedaa79c63f157e377a3",
+      "shortHash": "cfe723a",
+      "message": "Record v4.0.0 build 78 production deploy on Vercel.",
+      "version": "4.0.0",
+      "build": 78,
+      "timestamp": "2026-06-30T02:52:55.422Z"
+    },
     {
       "hash": "fcdcd4b20a42f29497240b62113b8eb6f34804b9",
       "shortHash": "fcdcd4b",
@@ -554,14 +562,6 @@
       "version": "4.0.0",
       "build": 9,
       "timestamp": "2026-06-27T14:40:33.567Z"
-    },
-    {
-      "hash": "c6a26f9702f9c8086c85a44841117668d7426aa3",
-      "shortHash": "c6a26f9",
-      "message": "Full-app copy sweep via appCopy.ts and fix best-third race labels",
-      "version": "4.0.0",
-      "build": 9,
-      "timestamp": "2026-06-27T14:40:01.531Z"
     }
   ],
   "deploys": [
