@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T03:10:09.638Z",
+  "updatedAt": "2026-06-30T03:12:16.175Z",
   "builds": [
     {
       "version": "4.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "980aa708679440f912618a1488d81b9591354b22",
+      "shortHash": "980aa70",
+      "message": "Unify fixture cards on centered horizontal layout and improve knockout bracket UX.",
+      "version": "4.0.0",
+      "build": 79,
+      "timestamp": "2026-06-30T03:10:10.016Z"
+    },
+    {
       "hash": "cfe723ac137f4aa02f01fedaa79c63f157e377a3",
       "shortHash": "cfe723a",
       "message": "Record v4.0.0 build 78 production deploy on Vercel.",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 15,
       "timestamp": "2026-06-27T16:39:21.010Z"
-    },
-    {
-      "hash": "a7e7a1107b29c70028d04e3d55644314193d4107",
-      "shortHash": "a7e7a11",
-      "message": "Sync build-manifest commit record for c6a26f9.",
-      "version": "4.0.0",
-      "build": 9,
-      "timestamp": "2026-06-27T14:40:33.567Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "4.0.0",
+      "build": 79,
+      "message": "Production deploy: centered fixtures and bracket UX",
+      "timestamp": "2026-06-30T03:12:16.173Z"
+    },
     {
       "url": "",
       "environment": "production",
