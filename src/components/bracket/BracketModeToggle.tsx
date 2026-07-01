@@ -21,7 +21,7 @@ export function BracketModeToggle() {
         className={mode === "projected" ? "active" : ""}
         aria-selected={mode === "projected"}
         disabled={isPending}
-        onClick={() => startTransition(() => setMode("projected"))}
+        onClick={() => startTransition(() => setMode("projected", { persist: true }))}
       >
         <span className="bracket-toggle-label">{copy.projectedLabel}</span>
         <span className="bracket-toggle-subtitle">{copy.projectedSubtitle}</span>
@@ -35,7 +35,7 @@ export function BracketModeToggle() {
         className={mode === "confirmed" ? "active" : ""}
         aria-selected={mode === "confirmed"}
         disabled={isPending}
-        onClick={() => startTransition(() => setMode("confirmed"))}
+        onClick={() => startTransition(() => setMode("confirmed", { persist: true }))}
       >
         <span className="bracket-toggle-label">{copy.confirmedLabel}</span>
         <span className="bracket-toggle-subtitle">{copy.confirmedSubtitle}</span>

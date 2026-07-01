@@ -42,4 +42,31 @@ describe("resolveGoalScorerProfilesSync", () => {
     expect(profiles[0]?.photoUrl).toBe("https://example.com/scorer.jpg");
     expect(profiles[0]?.displayName).toBe("Known Scorer");
   });
+
+  it("fills World Cup career goals from reference merge when scorer is known", () => {
+    const events: MatchEvent[] = [
+      {
+        providerId: "g1",
+        type: "goal",
+        minute: 12,
+        playerName: "Lionel Messi",
+        teamId: "arg",
+      },
+      {
+        providerId: "g2",
+        type: "goal",
+        minute: 34,
+        playerName: "Lionel Messi",
+        teamId: "arg",
+      },
+    ];
+
+    const profiles = resolveGoalScorerProfilesSync({
+      events: [events[0]!],
+      allMatchEvents: { M1: events },
+    });
+
+    expect(profiles[0]?.internationalGoals).toBe(15);
+    expect(profiles[0]?.tournamentGoals).toBe(2);
+  });
 });

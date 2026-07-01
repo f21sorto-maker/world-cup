@@ -1,6 +1,7 @@
 import { resolveTeamFromStore } from "../../../../data/wc2026TeamCatalog";
 import type { Team, TournamentPlayerStat } from "../../../../types";
 import { teamLabel } from "../../../../lib/aggregateTournamentStats";
+import { wcCareerGoalsForDisplay } from "../../../../lib/mergeWcCareerGoals";
 import { TeamFlag } from "../../../../components/team/TeamFlag";
 import { TeamClickTarget } from "../../../../components/team/TeamClickTarget";
 import { PlayerPhoto } from "../../../../components/player/PlayerPhoto";
@@ -11,9 +12,17 @@ type Props = {
   stats: TournamentPlayerStat[];
   teams: Record<string, Team>;
   unit?: string;
+  /** When set, shows World Cup career totals from the reference merge. */
+  topScorers2026?: TournamentPlayerStat[];
 };
 
-export function TournamentLeaderboard({ title, stats, teams, unit = "G" }: Props) {
+export function TournamentLeaderboard({
+  title,
+  stats,
+  teams,
+  unit = "G",
+  topScorers2026,
+}: Props) {
   if (stats.length === 0) {
     return (
       <section className={styles.statsSection}>
@@ -29,6 +38,10 @@ export function TournamentLeaderboard({ title, stats, teams, unit = "G" }: Props
       <ol className={styles.leaderboardList}>
         {stats.slice(0, 15).map((stat, i) => {
           const team = resolveTeamFromStore(teams, stat.teamId);
+          const wcCareer =
+            topScorers2026 != null
+              ? wcCareerGoalsForDisplay(stat.player.displayName, topScorers2026)
+              : undefined;
           return (
             <li key={`${stat.player.id}-${stat.teamId}`} className={styles.leaderboardRow}>
               <span className={styles.leaderboardRank}>{i + 1}</span>
@@ -42,10 +55,18 @@ export function TournamentLeaderboard({ title, stats, teams, unit = "G" }: Props
                   <span className={styles.leaderboardTeam}>{teamLabel(stat.teamId, teams)}</span>
                 </TeamClickTarget>
               </div>
-              <span className={styles.leaderboardValue}>
-                {stat.value}
-                <span className={styles.leaderboardUnit}>{unit}</span>
-              </span>
+              <div className={styles.leaderboardValues}>
+                <span className={styles.leaderboardValue}>
+                  {stat.value}
+                  <span className={styles.leaderboardUnit}>{unit}</span>
+                </span>
+                {wcCareer != null ? (
+                  <span className={styles.leaderboardCareer} title="World Cup career goals">
+                    {wcCareer}
+                    <span className={styles.leaderboardCareerUnit}>WC</span>
+                  </span>
+                ) : null}
+              </div>
             </li>
           );
         })}

@@ -4,6 +4,12 @@ export const BRACKET_LAYOUT_STORAGE_KEY = "wc-bracket-layout";
 
 const DESKTOP_TREE_MIN_WIDTH = 1024;
 
+const VALID_LAYOUT_MODES: BracketLayoutMode[] = ["tree", "schedule", "flow"];
+
+function isValidLayoutMode(value: string | null): value is BracketLayoutMode {
+  return value !== null && (VALID_LAYOUT_MODES as string[]).includes(value);
+}
+
 /** Default layout when the user has not saved a preference. */
 export function resolveDefaultBracketLayoutMode(): BracketLayoutMode {
   if (typeof window === "undefined") return "tree";
@@ -13,31 +19,36 @@ export function resolveDefaultBracketLayoutMode(): BracketLayoutMode {
 export function readStoredBracketLayoutMode(): BracketLayoutMode {
   try {
     const value = localStorage.getItem(BRACKET_LAYOUT_STORAGE_KEY);
-    if (value === "tree" || value === "schedule") return value;
+    if (isValidLayoutMode(value)) return value;
   } catch {
     /* ignore */
   }
   return resolveDefaultBracketLayoutMode();
 }
 
-/** True when the user explicitly saved tree or schedule in localStorage. */
+/** True when the user explicitly saved a layout in localStorage. */
 export function hasStoredBracketLayoutPreference(): boolean {
   try {
     const value = localStorage.getItem(BRACKET_LAYOUT_STORAGE_KEY);
-    return value === "tree" || value === "schedule";
+    return isValidLayoutMode(value);
   } catch {
     return false;
   }
 }
 
 /**
- * During knockout on desktop, prefer tree when the user has not saved a layout yet.
+ * During knockout when layout was never saved: tree on desktop, flow on mobile.
  * Returns null when no override is needed.
  */
-export function preferTreeLayoutForKnockoutIfUnset(isKnockoutActive: boolean): BracketLayoutMode | null {
+export function preferLayoutForKnockoutIfUnset(isKnockoutActive: boolean): BracketLayoutMode | null {
   if (!isKnockoutActive || hasStoredBracketLayoutPreference()) return null;
-  if (!isDesktopBracketViewport()) return null;
-  return "tree";
+  if (isDesktopBracketViewport()) return "tree";
+  return "flow";
+}
+
+/** @deprecated Use preferLayoutForKnockoutIfUnset */
+export function preferTreeLayoutForKnockoutIfUnset(isKnockoutActive: boolean): BracketLayoutMode | null {
+  return preferLayoutForKnockoutIfUnset(isKnockoutActive);
 }
 
 export function writeStoredBracketLayoutMode(mode: BracketLayoutMode): void {

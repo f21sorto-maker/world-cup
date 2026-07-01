@@ -4,11 +4,13 @@ import { BestThirdTimeline } from "../bentos/BestThirdTimeline";
 import { BracketModeToggle } from "../bracket/BracketModeToggle";
 import { BracketLayoutToggle } from "../bracket/BracketLayoutToggle";
 import { usePreferBracketTreeDuringKnockout } from "../../hooks/usePreferBracketTreeDuringKnockout";
+import { usePreferConfirmedBracketDuringKnockout } from "../../hooks/usePreferConfirmedBracketDuringKnockout";
 import { APP_COPY } from "../../lib/appCopy";
 
 export function BracketView() {
   const copy = APP_COPY.bracket;
   usePreferBracketTreeDuringKnockout();
+  usePreferConfirmedBracketDuringKnockout();
 
   return (
     <div className="bracket-view dashboard-view">

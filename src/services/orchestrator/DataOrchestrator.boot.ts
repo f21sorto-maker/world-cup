@@ -8,7 +8,9 @@ import {
   splashMinimumHoldMs,
 } from "../../lib/bootProfile";
 import { hydrateBootFromCache, persistBootCache } from "../../lib/bootCache";
+import { scheduleBackfillCompletedMatchEvents } from "../../lib/backfillCompletedMatchEvents";
 import { hasLiveMatchesInCache } from "../../lib/liveMatchCache";
+import { readMatchEventsCache } from "../../lib/matchEventsCache";
 import { reconcileEspnLiveAuthority } from "../../lib/espnLiveAuthority";
 import { mergeBootLiveMatches } from "../../lib/mergeBootLiveMatches";
 import { awaitBootPenaltyEnrichment, markBootReady, resetBootReady } from "../../lib/bootReady";
@@ -216,7 +218,12 @@ async function runDeferredEnrichment(
     await runBootstrapSim();
     endBootPhase("deferred-enrichment", "complete");
 
-    persistBootCache(store.teams, store.liveMatches, store.groupStandings);
+    persistBootCache(
+      store.teams,
+      store.liveMatches,
+      store.groupStandings,
+      store.matchEvents
+    );
   } catch (error) {
     endBootPhase("deferred-enrichment", "partial failure");
     logger.warn("Deferred enrichment failed", "DataOrchestrator.boot", {
@@ -271,6 +278,11 @@ export async function runBoot(): Promise<void> {
   const hadCache = cached.hadCache;
   const hasLiveInCache = hasLiveMatchesInCache(cached.matches);
   const deferHeavy = shouldDeferHeavyBoot();
+
+  const cachedEvents = readMatchEventsCache();
+  if (cachedEvents && Object.keys(cachedEvents).length > 0) {
+    store.hydrateMatchEvents(cachedEvents);
+  }
 
   if (hadCache) {
     store.setTeams(cached.teams);
@@ -414,11 +426,13 @@ export async function runBoot(): Promise<void> {
     persistBootCache(
       useStore.getState().teams,
       useStore.getState().liveMatches,
-      useStore.getState().groupStandings
+      useStore.getState().groupStandings,
+      useStore.getState().matchEvents
     );
     startBootPhase("services-start");
     markBootReady();
     startAppServices();
+    scheduleBackfillCompletedMatchEvents();
     endBootPhase("services-start");
 
     finishBootTracking(deferHeavy ? "cache-first deferred path" : "full path");

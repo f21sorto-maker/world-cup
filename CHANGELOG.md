@@ -1,80 +1,22 @@
 # Changelog
 
-## [5.0.0] — 2026-06-30
+## [6.0.0] — 2026-07-01
 
 ### Changed
-- v5.0.0 release: knockout UX, FIFA public API, paninarr assets, penalty pipeline
+- Live insights strip, bracket flow layout, schedule-parity locked bracket, durable goal events and WC career scorers
 
 ## [Unreleased]
 
 ### Builds
-- **5.0.0 build 68** (2026-07-01): 159 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, package.json — 159 files changed, 20632 insertions(+), 7263 deletions(-)
-- **5.0.0 build 67** (2026-07-01): Canonical locked R32 results, ESPN slot authority, knockout display fixes
-- **5.0.0 build 66** (2026-07-01): Rebase knockout bracket on FIFA schedule M## (ESPN-aligned); add crosswalk, audit script, regression tests
-- **5.0.0 build 65** (2026-07-01): Follow-team bracket path filter with persisted highlight
-- **5.0.0 build 64** (2026-07-01): Mobile bracket tree round-swipe carousel with pill nav sync
-- **5.0.0 build 63** (2026-07-01): Bracket tree pan/zoom on split canvas viewport
-- **5.0.0 build 62** (2026-07-01): Split symmetrical bracket canvas on desktop tree view
-- **5.0.0 build 61** (2026-06-30): Phase 5: sync bracket projection and tree path highlight on hover
-- **5.0.0 build 60** (2026-06-30): Phase 4: acceptance test gate, QA checklist, qa:phase4 script
-- **5.0.0 build 59** (2026-06-30): Block FIFA from overwriting ESPN live scores; defer first poll past quota gate; add FIFA merge logging
-- **5.0.0 build 58** (2026-06-30): Phase 3: Live bracket tree link, knockout desktop tree default
-- **5.0.0 build 57** (2026-06-30): Phase 2: unified completed results view model for Live recent and Results tab
-- **5.0.0 build 56** (2026-06-30): Phase 1: commitLiveMatchStore, boot poll gate, locked knockout standings guard
-- **5.0.0 build 55** (2026-06-30): Fix live dedupe count, penalty UI gate, knockout stage ids, recent results dedupe
-- **5.0.0 build 54** (2026-06-30): Week C: bracket UX polish, poll merge policy, cache write
-- **5.0.0 build 53** (2026-06-30): Week B: slot identity, view-model adapter, live context panel
-- **5.0.0 build 52** (2026-06-30): Week A: boot cache merge, lock policy, live bracket context
-- **5.0.0 build 51** (2026-06-30): Bracket UX: responsive layout, round nav, compact tree cards, match tap, desktop-only connectors
-- **5.0.0 build 50** (2026-06-30): Narrow live data contract: ESPN lifecycle, result-final lock, live-window polling
-- **5.0.0 build 49** (2026-06-30): Client registry Phases 0–2: team/fixture resolve, dedupe, kickoff validation
-- **5.0.0 build 48** (2026-06-30): Fix LiveView gate: resolve kickoff before active-phase filter
-- **5.0.0 build 47** (2026-06-30): Fix live card locked gate, kickoff drift, remove debug beacons, harden ESPN protection
-- **5.0.0 build 46** (2026-06-30): Fix bracket grid shift from connector overlay consuming first column
-- **5.0.0 build 45** (2026-06-30): Fix bracket column alignment, full R32 render, winner/score consistency
-- **5.0.0 build 44** (2026-06-30): Protect manual and locked matches from ESPN poll overwrite
-- **5.0.0 build 43** (2026-06-30): Bracket date schedule layout, visual-order date tie-break, active-phase feeders
-- **5.0.0 build 42** (2026-06-30): CI: generate bundled data before test via pretest hook
-- **5.0.0 build 41** (2026-06-30): 71 file(s) in .github, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, package.json — 71 files changed, 4138 insertions(+), 671 deletions(-)
-- **5.0.0 build 40** (2026-06-30): Bracket routing, live phase gates, CI pnpm lockfile, ThirdPlace stage types
-- **5.0.0 build 39** (2026-06-30): Live view uses lifecycle active phase instead of status===live gate
-- **5.0.0 build 38** (2026-06-30): Fix R16 cross-bracket routing, locked-in TBD slots, storedId slot trust, knockout stage pills
-- **5.0.0 build 37** (2026-06-30): Stabilize premature-live merge test against wall clock
-- **5.0.0 build 36** (2026-06-30): Self-healing tournament rules audit suite and RULES singleton
-- **5.0.0 build 35** (2026-06-30): ESPN-only live promotion with demotion reconcile
-- **5.0.0 build 34** (2026-06-30): Reject premature live status before kickoff window
-- **5.0.0 build 33** (2026-06-30): Stage-aware match lifecycle: group 100min cap, no ET phase
-- **5.0.0 build 32** (2026-06-30): Add tournament rules JSON, validators, and FIFA tiebreaker order fix
-- **5.0.0 build 31** (2026-06-30): Block secondary live promotion; reconcile with ESPN scoreboard
-- **5.0.0 build 30** (2026-06-30): Guard past-kickoff lifecycle until API leaves scheduled
-- **5.0.0 build 29** (2026-06-30): Finalize bracket SoT in getR32Slots and knockoutRoundFixtures per JSON
-- **5.0.0 build 28** (2026-06-30): Complete bracket resolution: ThirdPlace, official ESPN slot re-key, remove thirdPlaceMap from R32
-- **5.0.0 build 27** (2026-06-30): Import official knockout bracket JSON and JSON parity tests
-- **5.0.0 build 26** (2026-06-30): Align bracket engine 1:1 with world_cup_2026_knockout_bracket.json
-- **5.0.0 build 25** (2026-06-30): Bracket runtime audit instrumentation
-- **5.0.0 build 24** (2026-06-30): Audit-corrected WC2026 bracket progression and R32 fixtures
-- **5.0.0 build 23** (2026-06-30): 34 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, scripts, src, version.json — 34 files changed, 767 insertions(+), 438 deletions(-)
-- **5.0.0 build 22** (2026-06-30): Remove debug instrumentation and trim perf hot-path bloat
-- **5.0.0 build 21** (2026-06-30): Shared schedule and qual caches; dedupe expensive derived data across components
-- **5.0.0 build 20** (2026-06-30): Skip schedule/qual recompute on clock ticks; defer Live heavy sections
-- **5.0.0 build 19** (2026-06-30): Defer bracket projection and tab nav to fix UI freeze on tab/drawer switch
-- **5.0.0 build 18** (2026-06-30): Bracket team names 2-line clamp all viewports; fix embed head alignment
-- **5.0.0 build 17** (2026-06-30): 22 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 22 files changed, 942 insertions(+), 273 deletions(-)
-- **5.0.0 build 16** (2026-06-30): Show match dates on schedule cards, venue rows, and timeline
-- **5.0.0 build 15** (2026-06-30): Fix bracket fixture table, confirmed-only live overlay, R16 feeders
-- **5.0.0 build 14** (2026-06-30): Mobile bracket layout overhaul and UI debug text-truncation scan
-- **5.0.0 build 13** (2026-06-30): Defer bracket projection off main thread; fix mobile cell overflow
-- **5.0.0 build 12** (2026-06-30): 25 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, scripts, src, version.json — 25 files changed, 1139 insertions(+), 150 deletions(-)
-- **5.0.0 build 11** (2026-06-30): Remove debug instrumentation after bracket perf and smart polling verification
-- **5.0.0 build 10** (2026-06-30): Stop bracket poll cascade: projection fingerprint, remove liveMatches schedule subscription
-- **5.0.0 build 9** (2026-06-30): Bracket perf fixes: fingerprint selectors, RAF measure debounce, startTransition toggle
-- **5.0.0 build 8** (2026-06-30): Locked-in bracket uses buildConfirmedOnlyBracket, no projection leak
-- **5.0.0 build 7** (2026-06-30): Smart match-lifecycle polling: phase-aware intervals and heavy/light source selection
-- **5.0.0 build 6** (2026-06-30): Bracket perf: transition toggle, knockout selectors, RAF measure, venue hero fallback
-- **5.0.0 build 5** (2026-06-30): Bracket toggle responsiveness: click-through overlay, mobile scroll, deferred projection
-- **5.0.0 build 4** (2026-06-30): 8 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 8 files changed, 224 insertions(+), 48 deletions(-)
-- **5.0.0 build 3** (2026-06-30): Bracket visual order + paired elbow connectors fix crossing lines
-- **5.0.0 build 2** (2026-06-30): 120 file(s) in .env.example, AGENTS.md, CHANGELOG.md, VERSION_LOG.md, api, build-manifest.json — 120 files changed, 7308 insertions(+), 2610 deletions(-)
+- **6.0.0 build 5** (2026-07-01): 84 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, src, version.json — 84 files changed, 5210 insertions(+), 742 deletions(-)
+- **6.0.0 build 4** (2026-07-01): Golden Boot crown pulse, celebrate on leader change and goals
+- **6.0.0 build 3** (2026-07-01): Phase 6: WC career goals on scorer cards and tournament stats leaderboard
+- **6.0.0 build 2** (2026-07-01): Live knockout insights strip with scorer bentos, crown animation, and player popovers
+
+## [5.0.0] — 2026-06-30
+
+### Changed
+- v5.0.0 release: knockout UX, FIFA public API, paninarr assets, penalty pipeline
 
 ## [4.0.0] — 2026-06-27
 

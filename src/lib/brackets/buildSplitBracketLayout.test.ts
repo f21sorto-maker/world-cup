@@ -5,8 +5,8 @@ import {
   resolveBracketHalf,
   SPLIT_BRACKET_METRICS,
 } from "./buildSplitBracketLayout";
-import { BRACKET_STAGE_SHORT_LABELS } from "./bracketStageLabels";
 import { R32_VISUAL_ORDER } from "./bracketProgression";
+import { BRACKET_STAGE_SHORT_LABELS } from "./bracketStageLabels";
 
 const ALL_KNOCKOUT = [
   ...R32_VISUAL_ORDER,
@@ -91,5 +91,27 @@ describe("buildSplitBracketLayout", () => {
     const layout = buildSplitBracketLayout(ALL_KNOCKOUT, BRACKET_STAGE_SHORT_LABELS)!;
     expect(layout.width).toBeGreaterThan(9 * SPLIT_BRACKET_METRICS.cardWidth);
     expect(layout.height).toBeGreaterThan(8 * SPLIT_BRACKET_METRICS.rowUnit);
+  });
+
+  it("spaces adjacent R32 nodes without vertical overlap", () => {
+    const layout = buildSplitBracketLayout(ALL_KNOCKOUT, BRACKET_STAGE_SHORT_LABELS)!;
+    const minGap = 8;
+    const { cardHeight } = SPLIT_BRACKET_METRICS;
+
+    const assertColumn = (ids: string[]) => {
+      const nodes = ids
+        .map((id) => layout.nodes.get(id))
+        .filter((node): node is NonNullable<typeof node> => Boolean(node))
+        .sort((a, b) => a.y - b.y);
+
+      for (let i = 1; i < nodes.length; i += 1) {
+        const prev = nodes[i - 1]!;
+        const next = nodes[i]!;
+        expect(next.y).toBeGreaterThanOrEqual(prev.y + cardHeight + minGap);
+      }
+    };
+
+    assertColumn(R32_VISUAL_ORDER.slice(0, 8));
+    assertColumn(R32_VISUAL_ORDER.slice(8));
   });
 });

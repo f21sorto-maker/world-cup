@@ -530,6 +530,30 @@
   gap: 2px;
 }
 
+.leaderboardValues {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.leaderboardCareer {
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ss-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.leaderboardCareerUnit {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .leaderboardUnit {
   font-size: 11px;
   font-weight: 600;

@@ -3,7 +3,7 @@ import {
   readStoredBracketLayoutMode,
   writeStoredBracketLayoutMode,
   hasStoredBracketLayoutPreference,
-  preferTreeLayoutForKnockoutIfUnset,
+  preferLayoutForKnockoutIfUnset,
   BRACKET_LAYOUT_STORAGE_KEY,
 } from "./bracketLayoutPreference";
 
@@ -13,6 +13,21 @@ describe("bracketLayoutPreference", () => {
   });
 
   it("persists user layout choice", () => {
+    const storage = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        storage.set(key, value);
+      },
+    });
+
+    writeStoredBracketLayoutMode("flow");
+    expect(storage.get(BRACKET_LAYOUT_STORAGE_KEY)).toBe("flow");
+    expect(readStoredBracketLayoutMode()).toBe("flow");
+    expect(hasStoredBracketLayoutPreference()).toBe(true);
+  });
+
+  it("persists user layout choice (tree)", () => {
     const storage = new Map<string, string>();
     vi.stubGlobal("localStorage", {
       getItem: (key: string) => storage.get(key) ?? null,
@@ -41,8 +56,24 @@ describe("bracketLayoutPreference", () => {
     });
 
     expect(hasStoredBracketLayoutPreference()).toBe(false);
-    expect(preferTreeLayoutForKnockoutIfUnset(true)).toBe("tree");
-    expect(preferTreeLayoutForKnockoutIfUnset(false)).toBeNull();
+    expect(preferLayoutForKnockoutIfUnset(true)).toBe("tree");
+    expect(preferLayoutForKnockoutIfUnset(false)).toBeNull();
+  });
+
+  it("prefers flow during knockout on mobile when unset", () => {
+    vi.stubGlobal("localStorage", {
+      getItem: () => null,
+      setItem: () => {},
+    });
+    vi.stubGlobal("window", {
+      matchMedia: (query: string) => ({
+        matches: !query.includes("1024"),
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      }),
+    });
+
+    expect(preferLayoutForKnockoutIfUnset(true)).toBe("flow");
   });
 
   it("does not override when user saved schedule layout", () => {
@@ -54,6 +85,6 @@ describe("bracketLayoutPreference", () => {
       matchMedia: () => ({ matches: true, addEventListener: () => {}, removeEventListener: () => {} }),
     });
 
-    expect(preferTreeLayoutForKnockoutIfUnset(true)).toBeNull();
+    expect(preferLayoutForKnockoutIfUnset(true)).toBeNull();
   });
 });

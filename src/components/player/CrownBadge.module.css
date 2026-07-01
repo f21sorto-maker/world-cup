@@ -1,0 +1,137 @@
+.crown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5c542;
+  flex-shrink: 0;
+  transform-origin: center bottom;
+  animation: crownPulse 2.4s ease-in-out infinite;
+}
+
+.sizeSm .icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.sizeMd .icon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.sparkle {
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(245, 197, 66, 0.45) 0%, rgba(245, 197, 66, 0) 70%);
+  opacity: 0.55;
+  animation: crownGlow 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.celebrate {
+  animation: crownCelebrate 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 1,
+    crownPulse 2.4s ease-in-out 0.85s infinite;
+}
+
+.celebrate .sparkle {
+  animation: crownGlowBurst 0.85s ease-out 1, crownGlow 2.4s ease-in-out 0.85s infinite;
+}
+
+.reducedMotion {
+  animation: none;
+}
+
+.reducedMotion .sparkle {
+  animation: none;
+  opacity: 0.35;
+}
+
+.reducedMotion.celebrate {
+  animation: none;
+}
+
+@keyframes crownPulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 0 rgba(245, 197, 66, 0));
+  }
+
+  50% {
+    transform: translateY(-1px) scale(1.12) rotate(-4deg);
+    filter: drop-shadow(0 0 6px rgba(245, 197, 66, 0.85));
+  }
+}
+
+@keyframes crownGlow {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.35;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.75;
+  }
+}
+
+@keyframes crownGlowBurst {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.2;
+  }
+
+  40% {
+    transform: scale(1.6);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+}
+
+@keyframes crownCelebrate {
+  0% {
+    transform: translateY(6px) scale(0.45) rotate(-18deg);
+    opacity: 0.25;
+  }
+
+  35% {
+    transform: translateY(-4px) scale(1.45) rotate(8deg);
+    opacity: 1;
+  }
+
+  60% {
+    transform: translateY(1px) scale(0.95) rotate(-3deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crown {
+    animation: none;
+  }
+
+  .sparkle {
+    animation: none;
+  }
+
+  .celebrate {
+    animation: none;
+  }
+}

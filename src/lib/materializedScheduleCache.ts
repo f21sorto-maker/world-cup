@@ -19,7 +19,7 @@ let cachedBundle: MaterializedScheduleBundle = {
   index: new Map(),
 };
 
-function effectiveStandings(groupStandings: GroupStanding[]): GroupStanding[] {
+export function effectiveStandings(groupStandings: GroupStanding[]): GroupStanding[] {
   if (groupStandings.length > 0) return groupStandings;
   return readStandingsCache() ?? [];
 }

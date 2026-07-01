@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MatchEvent, MergedMatch } from "../types";
-import { aggregateTournamentStats } from "./aggregateTournamentStats";
+import { aggregateTournamentStats, aggregateTournamentStatsFromEvents } from "./aggregateTournamentStats";
 
 const baseMatch = (id: string, home: string, away: string): MergedMatch => ({
   id,
@@ -43,5 +43,24 @@ describe("aggregateTournamentStats", () => {
     expect(topScorers[0]?.value).toBe(2);
     expect(topAssists[0]?.player.displayName).toBe("Vinicius Jr");
     expect(topAssists[0]?.value).toBe(1);
+  });
+
+  it("aggregateTournamentStatsFromEvents aggregates without match rows", () => {
+    const matchEvents = {
+      M1: [goal({ providerId: "a", playerName: "Neymar" })],
+    };
+
+    const { topScorers } = aggregateTournamentStatsFromEvents(matchEvents);
+    expect(topScorers[0]?.player.displayName).toBe("Neymar");
+    expect(topScorers[0]?.value).toBe(1);
+  });
+
+  it("falls back to event-only aggregation when matches list is empty", () => {
+    const matchEvents = {
+      M1: [goal({ providerId: "a", playerName: "Neymar" })],
+    };
+
+    const { topScorers } = aggregateTournamentStats({ matches: [], matchEvents });
+    expect(topScorers[0]?.value).toBe(1);
   });
 });

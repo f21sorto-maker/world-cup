@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import { ensurePlayerDatabase } from "../../../../data/playerDatabase";
 import { useStore } from "../../../../store";
-import { aggregateTournamentStats } from "../../../../lib/aggregateTournamentStats";
 import { deriveMatchAwards } from "../../../../lib/deriveMatchAwards";
 import { buildWorldCupHistoryStats } from "../../../../lib/worldCupHistoryStats";
+import {
+  useTopAssists2026,
+  useTopScorers2026,
+} from "../../../../store/selectors/tournamentStatsSelectors";
 import {
   ALL_TIME_APPEARANCES,
   ALL_TIME_TEAM_TITLES,
@@ -39,16 +43,17 @@ export function TournamentStatsTab() {
   const [loading, setLoading] = useState(true);
 
   const allMatches = useMemo(() => Object.values(liveMatches), [liveMatches]);
-
-  const { topScorers, topAssists } = useMemo(
-    () => aggregateTournamentStats({ matches: allMatches, matchEvents }),
-    [allMatches, matchEvents]
-  );
+  const topScorers = useTopScorers2026();
+  const topAssists = useTopAssists2026();
 
   const matchAwards = useMemo(
     () => deriveMatchAwards({ matches: allMatches, matchEvents }),
     [allMatches, matchEvents]
   );
+
+  useEffect(() => {
+    void ensurePlayerDatabase();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,6 +92,7 @@ export function TournamentStatsTab() {
         stats={topScorers}
         teams={teams}
         unit="G"
+        topScorers2026={topScorers}
       />
 
       <TournamentLeaderboard

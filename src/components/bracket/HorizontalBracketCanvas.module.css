@@ -1,0 +1,157 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.shellEmbedded {
+  margin-bottom: 0;
+  gap: 8px;
+}
+
+.shellEmbedded .toolbar {
+  gap: 6px;
+}
+
+.shellEmbedded .hint {
+  font-size: 0.72rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.halfToggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.halfBtn,
+.halfBtnActive {
+  border: none;
+  border-radius: calc(var(--radius-md) - 2px);
+  padding: 6px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+}
+
+.halfBtnActive {
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-card);
+}
+
+.halfBtn:focus-visible,
+.halfBtnActive:focus-visible {
+  outline: 2px solid var(--fwc-royal-blue);
+  outline-offset: 2px;
+}
+
+.scroll {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 12px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+}
+
+.canvas {
+  position: relative;
+  min-height: 280px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.headers {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 28px;
+  pointer-events: none;
+}
+
+.header {
+  position: absolute;
+  top: 6px;
+  text-align: center;
+  font-family: var(--font-brand);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.connectors {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.connectors :global(.pathConfirmed),
+.connectors :global(path.pathConfirmed) {
+  stroke: var(--success, #22c55e);
+  stroke-width: 2.5;
+}
+
+.connectors :global(.pathPending),
+.connectors :global(path.pathPending) {
+  stroke: var(--line-2, #4b5563);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.connectors :global(.pathLiveProvisional),
+.connectors :global(path.pathLiveProvisional) {
+  stroke: var(--accent, #f59e0b);
+  stroke-width: 2.5;
+  stroke-dasharray: 6 4;
+}
+
+.connectors :global(.pathHighlighted),
+.connectors :global(path.pathHighlighted) {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent, #38bdf8) 45%, transparent));
+}
+
+.connectors :global(.pathDimmed),
+.connectors :global(path.pathDimmed) {
+  opacity: 0.18;
+}
+
+.node {
+  position: absolute;
+  z-index: 1;
+}
+
+.node :global(.bracket-card) {
+  width: 100%;
+}

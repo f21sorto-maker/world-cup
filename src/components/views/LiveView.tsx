@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, useMemo, useState } from "react";
+import { lazy, memo, Suspense, useEffect, useMemo, useState } from "react";
 import { BentoErrorBoundary } from "../shared/ErrorBoundary";
 import { LiveMatchBento } from "../bentos/LiveMatchBento";
 import { LiveBracketContextPanel } from "../bentos/LiveBracketContextPanel";
@@ -11,6 +11,7 @@ import { APP_COPY } from "../../lib/appCopy";
 import { SectionLoadingFallback } from "../shared/LoadingState";
 import { MODULE_IDS } from "../../lib/moduleIds";
 import { resolveTeamFromStore } from "../../data/wc2026TeamCatalog";
+import { ensurePlayerDatabase } from "../../data/playerDatabase";
 import { useMaterializedScheduleBundle } from "../../hooks/useMaterializedSchedule";
 import { useActiveLiveDisplayMatches } from "../../hooks/useActiveLiveDisplayMatches";
 import { useDeferredMount } from "../../hooks/useDeferredMount";
@@ -18,7 +19,7 @@ import { useTournamentPhase } from "../../hooks/useTournamentPhase";
 import { useBracketProjection } from "../../hooks/useBracketProjection";
 import { isKnockoutMatch } from "../../lib/resolveMatchWinner";
 import { useStore } from "../../store";
-import { KnockoutRoundStatusBento } from "../bentos/KnockoutRoundStatusBento";
+import { LiveKnockoutInsightsStrip } from "../bentos/LiveKnockoutInsightsStrip";
 import { ModuleSectionActions } from "../shared/ModuleSectionActions";
 
 const BestThirdLiveGraph = lazy(() =>
@@ -213,6 +214,10 @@ export function LiveView() {
   const bracketEmbedReady = useDeferredMount(isKnockoutActive);
   const recentResultsReady = useDeferredMount(true);
 
+  useEffect(() => {
+    void ensurePlayerDatabase();
+  }, []);
+
   return (
     <div className="dashboard-view" data-state={liveCount > 0 ? "live" : "idle"}>
       <section className="hero-panel hero-panel--compact">
@@ -255,8 +260,8 @@ export function LiveView() {
 
       {isKnockoutActive ? (
         <div className="dashboard-section">
-          <BentoErrorBoundary bento="KnockoutRoundStatusBento">
-            <KnockoutRoundStatusBento />
+          <BentoErrorBoundary bento="LiveKnockoutInsightsStrip">
+            <LiveKnockoutInsightsStrip />
           </BentoErrorBoundary>
         </div>
       ) : null}

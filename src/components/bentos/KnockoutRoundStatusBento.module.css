@@ -2,6 +2,36 @@
   margin-bottom: 24px;
 }
 
+.stripPanel {
+  flex: 0 0 min(320px, 88vw);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+.stripPanel .header {
+  margin-bottom: 0;
+}
+
+.stripPanel .grid {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x mandatory;
+}
+
+.stripPanel .roundCard {
+  flex: 0 0 200px;
+}
+
 .header {
   margin-bottom: 14px;
 }

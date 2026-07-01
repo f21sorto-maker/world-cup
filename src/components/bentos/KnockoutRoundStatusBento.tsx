@@ -19,7 +19,7 @@ const ROUND_LABELS: Record<KnockoutStage, string> = {
   Final: "Final",
 };
 
-interface RoundSummary {
+export interface KnockoutRoundSummary {
   stage: KnockoutStage;
   label: string;
   advancing: string[];
@@ -30,10 +30,10 @@ function deriveStageFromMatchId(matchId: string): string {
   return knockoutStageFromMatchId(matchId) ?? "";
 }
 
-function buildConfirmedRoundSummaries(
+export function buildKnockoutRoundSummaries(
   matches: MergedMatch[],
   teams: Record<string, Team>
-): RoundSummary[] {
+): KnockoutRoundSummary[] {
   const confirmedKnockout = matches.filter(
     (m) => m.status === "completed" && m.locked === true && isKnockoutMatch(m)
   );
@@ -46,7 +46,7 @@ function buildConfirmedRoundSummaries(
     byStage.get(stage)!.push(m);
   }
 
-  const summaries: RoundSummary[] = [];
+  const summaries: KnockoutRoundSummary[] = [];
 
   for (const stage of ROUND_ORDER) {
     const stageMatches = byStage.get(stage) ?? [];
@@ -80,6 +80,16 @@ function buildConfirmedRoundSummaries(
   return summaries;
 }
 
+export function useKnockoutRoundSummaries(): KnockoutRoundSummary[] {
+  const liveMatches = useStore((s) => s.liveMatches);
+  const teams = useStore((s) => s.teams);
+
+  return useMemo(() => {
+    const allMatches = Object.values(liveMatches);
+    return buildKnockoutRoundSummaries(allMatches, teams);
+  }, [liveMatches, teams]);
+}
+
 function TeamPill({ teamId, variant }: { teamId: string; variant: "advancing" | "eliminated" }) {
   const teams = useStore((s) => s.teams);
   const team = teams[teamId];
@@ -95,7 +105,7 @@ function TeamPill({ teamId, variant }: { teamId: string; variant: "advancing" | 
   );
 }
 
-function RoundCard({ round }: { round: RoundSummary }) {
+function RoundCard({ round }: { round: KnockoutRoundSummary }) {
   return (
     <article className={styles.roundCard}>
       <header className={styles.roundHead}>
@@ -127,29 +137,37 @@ function RoundCard({ round }: { round: RoundSummary }) {
   );
 }
 
-export function KnockoutRoundStatusBento() {
-  const { isKnockoutActive } = useTournamentPhase();
-  const liveMatches = useStore((s) => s.liveMatches);
-  const teams = useStore((s) => s.teams);
+type PanelProps = {
+  summaries: KnockoutRoundSummary[];
+};
 
-  const summaries = useMemo(() => {
-    const allMatches = Object.values(liveMatches);
-    return buildConfirmedRoundSummaries(allMatches, teams);
-  }, [liveMatches, teams]);
-
-  if (!isKnockoutActive || summaries.length === 0) return null;
+export function KnockoutRoundStatusPanel({ summaries }: PanelProps) {
+  if (summaries.length === 0) return null;
 
   return (
-    <section className={styles.root} aria-label="Knockout stage overview">
+    <article className={styles.stripPanel} aria-label="Knockout stage overview">
       <header className={styles.header}>
         <span className={styles.kicker}>CONFIRMED RESULTS</span>
         <h2 className={styles.title}>Knockout Stage</h2>
       </header>
       <div className={styles.grid}>
-        {summaries.map((r) => (
-          <RoundCard key={r.stage} round={r} />
+        {summaries.map((round) => (
+          <RoundCard key={round.stage} round={round} />
         ))}
       </div>
+    </article>
+  );
+}
+
+export function KnockoutRoundStatusBento() {
+  const { isKnockoutActive } = useTournamentPhase();
+  const summaries = useKnockoutRoundSummaries();
+
+  if (!isKnockoutActive || summaries.length === 0) return null;
+
+  return (
+    <section className={styles.root} aria-label="Knockout stage overview">
+      <KnockoutRoundStatusPanel summaries={summaries} />
     </section>
   );
 }

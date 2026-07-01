@@ -27,7 +27,7 @@ import { useStore } from "../../store";
 import {
   useBracketProjectionFingerprint,
   useBracketTeams,
-  useKnockoutLiveMatches,
+  usePreparedKnockoutLiveMatches,
 } from "../../store/selectors/bracketSelectors";
 import { LoadingState } from "../shared/LoadingState";
 import { BracketConnectorOverlay } from "./BracketConnectorOverlay";
@@ -38,6 +38,7 @@ import { BracketCard } from "../bracket/BracketCard";
 import { BracketFollowTeamControl } from "../bracket/BracketFollowTeamControl";
 import { BracketMobileRoundSwipe } from "../bracket/BracketMobileRoundSwipe";
 import { SplitBracketCanvas } from "../bracket/SplitBracketCanvas";
+import { HorizontalBracketCanvas } from "../bracket/HorizontalBracketCanvas";
 
 const allBracketStages: Stage[] = ["R32", "R16", "QF", "SF", "Final"];
 
@@ -63,7 +64,7 @@ function visibleBracketStages(
 
 type BracketBentoProps = {
   embedded?: boolean;
-  /** Overrides store layout — live embed always uses schedule list. */
+  /** Overrides store layout — e.g. Live embed compact tree. */
   forceLayoutMode?: BracketLayoutMode;
 };
 
@@ -77,7 +78,8 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
   const openMatchDetail = useStore((s) => s.openMatchDetail);
   const followedTeamId = useStore((s) => s.followedTeamId);
   const teamsMap = useBracketTeams();
-  const knockoutLiveMatches = useKnockoutLiveMatches();
+  const knockoutLiveMatches = usePreparedKnockoutLiveMatches();
+  const groupStandings = useStore((s) => s.groupStandings);
   const projectionFingerprint = useBracketProjectionFingerprint(deferredMode);
   const { isKnockoutActive } = useTournamentPhase();
   const [activeStage, setActiveStage] = useState<Stage>("R32");
@@ -107,11 +109,12 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
       matches,
       liveMatches: store.liveMatches,
       qualContext,
+      groupStandings,
       mergedSchedule,
       knockoutMarkets: store.knockoutMarkets,
       scoreOverrides: store.scoreOverrides,
     });
-  }, [deferredMode, projectionFingerprint, teams, matches, qualContext]);
+  }, [deferredMode, projectionFingerprint, teams, matches, qualContext, groupStandings]);
 
   const orderedByStage = useMemo(() => {
     if (!projection?.bracket) {
@@ -149,11 +152,13 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
   }, [orderedByStage, bracketStages]);
 
   const isScheduleLayout = deferredLayout === "schedule";
+  const isFlowLayout = deferredLayout === "flow";
   const showConnectors =
-    !isScheduleLayout && isDesktopViewport && !embedded && bracketStages.length > 1;
+    !isScheduleLayout && !isFlowLayout && isDesktopViewport && !embedded && bracketStages.length > 1;
   const showSplitCanvas = showConnectors;
+  const showFlowCanvas = isFlowLayout && bracketStages.length > 1;
   const showMobileRoundSwipe =
-    !isScheduleLayout && !showSplitCanvas && !embedded && bracketStages.length > 1;
+    !isScheduleLayout && !isFlowLayout && !showSplitCanvas && !embedded && bracketStages.length > 1;
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const roundsRef = useRef<HTMLDivElement>(null);
@@ -173,7 +178,7 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
   useEffect(() => {
     const scrollEl = scrollRef.current;
     const roundsEl = roundsRef.current;
-    if (!scrollEl || !roundsEl || !projection?.bracket || showSplitCanvas) return;
+    if (!scrollEl || !roundsEl || !projection?.bracket || showSplitCanvas || showFlowCanvas) return;
 
     const measure = () => {
       const origin = roundsEl.getBoundingClientRect();
@@ -221,7 +226,7 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
       scrollEl.removeEventListener("scroll", debouncedMeasure);
       window.removeEventListener("resize", debouncedMeasure);
     };
-  }, [projection?.bracket, bracketStages, deferredMode, deferredLayout, updateScrollEdges, showSplitCanvas]);
+  }, [projection?.bracket, bracketStages, deferredMode, deferredLayout, updateScrollEdges, showSplitCanvas, showFlowCanvas]);
 
   const { confirmedWinners, liveProvisionalFeeders } = useMemo(() => {
     const confirmed = new Set<string>();
@@ -276,7 +281,8 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
   }, [followedTeamId, projection?.bracket, knockoutLiveMatches, teamsMap]);
 
   const activePathHighlight = pathHighlight ?? followedPath;
-  const showPathFilter = Boolean(activePathHighlight?.size) && (showConnectors || showMobileRoundSwipe);
+  const showPathFilter =
+    Boolean(activePathHighlight?.size) && (showConnectors || showMobileRoundSwipe || showFlowCanvas);
 
   const showPathHighlight = showPathFilter;
 
@@ -366,13 +372,15 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
           </div>
         </div>
       ) : null}
-      <p className="bracket-hint">
-        {mode === "confirmed"
-          ? isKnockoutActive
-            ? bb.confirmedKnockoutHint
-            : bb.confirmedHint
-          : bb.projectedHint}
-      </p>
+      {!(embedded && isFlowLayout) ? (
+        <p className="bracket-hint">
+          {mode === "confirmed"
+            ? isKnockoutActive
+              ? bb.confirmedKnockoutHint
+              : bb.confirmedHint
+            : bb.projectedHint}
+        </p>
+      ) : null}
       {!projection ? (
         <LoadingState label={bb.loading} />
       ) : (
@@ -384,7 +392,26 @@ function BracketBentoInner({ embedded = false, forceLayoutMode }: BracketBentoPr
               embedded={embedded}
             />
           ) : null}
-          {showSplitCanvas ? (
+          {showFlowCanvas ? (
+            <HorizontalBracketCanvas
+              embedded={embedded}
+              visibleMatchIds={visibleMatchIds}
+              matchesById={matchesById}
+              teamsById={teamsMap}
+              mode={deferredMode}
+              standings={projection.standings}
+              liveMatches={knockoutLiveMatches}
+              qualContext={qualContextStable}
+              confirmedWinners={confirmedWinners}
+              liveProvisionalFeeders={liveProvisionalFeeders}
+              pathHighlight={activePathHighlight}
+              showPathHighlight={showPathHighlight}
+              onTeamSelect={openTeamSheet}
+              onMatchSelect={handleMatchSelect}
+              onTeamPathHoverStart={handleTeamPathHoverStart}
+              onTeamPathHoverEnd={handleTeamPathHoverEnd}
+            />
+          ) : showSplitCanvas ? (
             <SplitBracketCanvas
               visibleMatchIds={visibleMatchIds}
               matchesById={matchesById}

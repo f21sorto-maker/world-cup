@@ -1,6 +1,110 @@
 {
-  "updatedAt": "2026-07-01T03:18:34.500Z",
+  "updatedAt": "2026-07-01T08:07:12.296Z",
   "builds": [
+    {
+      "version": "6.0.0",
+      "build": 5,
+      "kind": "build",
+      "message": "84 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, src, version.json — 84 files changed, 5210 insertions(+), 742 deletions(-)",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T08:07:12.296Z"
+    },
+    {
+      "version": "6.0.0",
+      "build": 4,
+      "kind": "build",
+      "message": "Golden Boot crown pulse, celebrate on leader change and goals",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:48:05.031Z"
+    },
+    {
+      "version": "6.0.0",
+      "build": 3,
+      "kind": "build",
+      "message": "Phase 6: WC career goals on scorer cards and tournament stats leaderboard",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:44:36.121Z"
+    },
+    {
+      "version": "6.0.0",
+      "build": 2,
+      "kind": "build",
+      "message": "Live knockout insights strip with scorer bentos, crown animation, and player popovers",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:41:19.402Z"
+    },
+    {
+      "version": "6.0.0",
+      "build": 1,
+      "kind": "major",
+      "message": "Live insights strip, bracket flow layout, schedule-parity locked bracket, durable goal events and WC career scorers",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:38:25.761Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 76,
+      "kind": "build",
+      "message": "Live knockout insights strip with scorer bentos and crown animation",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:37:52.415Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 75,
+      "kind": "build",
+      "message": "Live recent results: stage-grouped sections with see-more during knockout",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:37:21.081Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 74,
+      "kind": "build",
+      "message": "Tournament player stats index, selectors, and stats cache for golden boot UI",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:34:49.950Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 73,
+      "kind": "build",
+      "message": "Persist match goal events cache; import WC career goalscorers reference JSON",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:32:08.074Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 72,
+      "kind": "build",
+      "message": "Live embed flow layout on mobile, path highlight on flow, scroll-snap polish",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:32:02.225Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 71,
+      "kind": "build",
+      "message": "Horizontal bracket flow layout mode with mobile half toggle and L→R column scroll",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:27:54.870Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 70,
+      "kind": "build",
+      "message": "Live recent results grouped by tournament stage with per-section see more",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T07:23:21.886Z"
+    },
+    {
+      "version": "5.0.0",
+      "build": 69,
+      "kind": "build",
+      "message": "Bracket–Schedule parity: schedule-first Locked in, split tree spacing, Live embed tree, auto-confirmed mode during knockout",
+      "date": "2026-07-01",
+      "timestamp": "2026-07-01T05:17:40.769Z"
+    },
     {
       "version": "5.0.0",
       "build": 68,
@@ -216,113 +320,17 @@
       "message": "CI: generate bundled data before test via pretest hook",
       "date": "2026-06-30",
       "timestamp": "2026-06-30T18:13:59.351Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 41,
-      "kind": "build",
-      "message": "71 file(s) in .github, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, package.json — 71 files changed, 4138 insertions(+), 671 deletions(-)",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:12:53.696Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 40,
-      "kind": "build",
-      "message": "Bracket routing, live phase gates, CI pnpm lockfile, ThirdPlace stage types",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:12:44.595Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 39,
-      "kind": "build",
-      "message": "Live view uses lifecycle active phase instead of status===live gate",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:08:15.373Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 38,
-      "kind": "build",
-      "message": "Fix R16 cross-bracket routing, locked-in TBD slots, storedId slot trust, knockout stage pills",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:05:39.425Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 37,
-      "kind": "build",
-      "message": "Stabilize premature-live merge test against wall clock",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:00:31.444Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 36,
-      "kind": "build",
-      "message": "Self-healing tournament rules audit suite and RULES singleton",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:59:39.666Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 35,
-      "kind": "build",
-      "message": "ESPN-only live promotion with demotion reconcile",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:52:20.056Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 34,
-      "kind": "build",
-      "message": "Reject premature live status before kickoff window",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:48:20.483Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 33,
-      "kind": "build",
-      "message": "Stage-aware match lifecycle: group 100min cap, no ET phase",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:46:17.764Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 32,
-      "kind": "build",
-      "message": "Add tournament rules JSON, validators, and FIFA tiebreaker order fix",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:43:50.146Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 31,
-      "kind": "build",
-      "message": "Block secondary live promotion; reconcile with ESPN scoreboard",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:39:28.734Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 30,
-      "kind": "build",
-      "message": "Guard past-kickoff lifecycle until API leaves scheduled",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:34:42.772Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 29,
-      "kind": "build",
-      "message": "Finalize bracket SoT in getR32Slots and knockoutRoundFixtures per JSON",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T17:33:05.322Z"
     }
   ],
   "commits": [
+    {
+      "hash": "c409d1a6da88eb7f4fede4ece608b8ba3796cb9e",
+      "shortHash": "c409d1a",
+      "message": "Record v5.0.0 build 68 production deploy on Vercel.",
+      "version": "5.0.0",
+      "build": 68,
+      "timestamp": "2026-07-01T03:18:42.452Z"
+    },
     {
       "hash": "dd9a55f8f02f59469fadc016b2c5d987e40d7a66",
       "shortHash": "dd9a55f",
@@ -554,14 +562,6 @@
       "version": "4.0.0",
       "build": 74,
       "timestamp": "2026-06-30T01:54:16.770Z"
-    },
-    {
-      "hash": "b4bc175b626b669d30ae97a590f408112a930b01",
-      "shortHash": "b4bc175",
-      "message": "Fix live and results match cards with resolved teams, venue, penalties, and weather.",
-      "version": "4.0.0",
-      "build": 74,
-      "timestamp": "2026-06-30T01:52:52.360Z"
     }
   ],
   "deploys": [

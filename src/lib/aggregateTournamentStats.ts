@@ -61,6 +61,58 @@ function toStat(entry: PlayerAccumulator, value: number): TournamentPlayerStat {
   };
 }
 
+function aggregateFromEvents(matchEvents: Record<string, MatchEvent[]>): {
+  topScorers: TournamentPlayerStat[];
+  topAssists: TournamentPlayerStat[];
+} {
+  const players = new Map<string, PlayerAccumulator>();
+
+  for (const events of Object.values(matchEvents)) {
+    for (const event of events) {
+      if (event.type !== "goal" || !event.playerName) continue;
+
+      const scorer = upsertPlayer(players, {
+        teamId: event.teamId,
+        name: event.playerName,
+        playerId: event.playerId,
+      });
+      scorer.goals += 1;
+
+      if (event.assistName) {
+        const assist =
+          findPlayerByName(players, event.teamId, event.assistName) ??
+          upsertPlayer(players, {
+            teamId: event.teamId,
+            name: event.assistName,
+          });
+        assist.assists += 1;
+      }
+    }
+  }
+
+  const topScorers = [...players.values()]
+    .filter((p) => p.goals > 0)
+    .sort((a, b) => b.goals - a.goals || a.displayName.localeCompare(b.displayName))
+    .map((p) => toStat(p, p.goals));
+
+  const topAssists = [...players.values()]
+    .filter((p) => p.assists > 0)
+    .sort((a, b) => b.assists - a.assists || a.displayName.localeCompare(b.displayName))
+    .map((p) => toStat(p, p.assists));
+
+  return { topScorers, topAssists };
+}
+
+/** Aggregates 2026 leaders when only the event map is available (e.g. goal-scorer profiles). */
+export function aggregateTournamentStatsFromEvents(
+  matchEvents: Record<string, MatchEvent[]>
+): {
+  topScorers: TournamentPlayerStat[];
+  topAssists: TournamentPlayerStat[];
+} {
+  return aggregateFromEvents(matchEvents);
+}
+
 /** Aggregates 2026 tournament goals and assists from recorded match events. */
 export function aggregateTournamentStats(input: {
   matches: MergedMatch[];
@@ -69,6 +121,10 @@ export function aggregateTournamentStats(input: {
   topScorers: TournamentPlayerStat[];
   topAssists: TournamentPlayerStat[];
 } {
+  if (input.matches.length === 0) {
+    return aggregateFromEvents(input.matchEvents);
+  }
+
   const players = new Map<string, PlayerAccumulator>();
 
   for (const match of input.matches) {

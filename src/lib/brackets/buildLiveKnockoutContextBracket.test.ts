@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { buildConfirmedBracketFromSchedule } from "./buildConfirmedBracketFromSchedule";
 import { buildLiveKnockoutContextBracket } from "./buildLiveKnockoutContextBracket";
-import type { Match, MergedMatch, Team, TeamRecord } from "../../types";
+import type { MergedMatch, Team, TeamRecord } from "../../types";
 
 function team(id: string, group: Team["group"] = "E"): Team {
   return {
@@ -42,7 +43,8 @@ function lockedKnockout(
     locked: true,
     source: "espn",
     homeScore: 1,
-    awayScore: 2,
+    awayScore: 1,
+    penaltyShootout: { homeScore: 2, awayScore: 3, home: [], away: [] },
     homeConduct: 0,
     awayConduct: 0,
     stage: "R32",
@@ -74,15 +76,27 @@ describe("buildLiveKnockoutContextBracket", () => {
       ],
       I: [
         row("fra", "I", 9),
-        row("swe", "I", 6),
-        row("nor", "I", 3),
-        row("civ", "I", 0),
+        row("nor", "I", 6),
+        row("civ", "I", 3),
+        row("swe", "I", 0),
       ],
     },
   };
 
+  const teamsList = [team("ned", "F"), team("mar", "C"), team("fra", "I"), team("ger", "E")];
+  const teamsById = Object.fromEntries(teamsList.map((t) => [t.id, t]));
+
+  function buildWithLive(liveMatches: Record<string, MergedMatch>) {
+    const base = buildConfirmedBracketFromSchedule({
+      teams: teamsById,
+      liveMatches,
+      groupStandings: [],
+      qualContext,
+    });
+    return buildLiveKnockoutContextBracket(base, liveMatches, teamsById);
+  }
+
   it("does not advance NED from unlocked stale M76 into R16", () => {
-    const teams = [team("ned", "F"), team("mar", "C"), team("fra", "I"), team("ger", "E")];
     const liveMatches: Record<string, MergedMatch> = {
       M76: {
         ...lockedKnockout({
@@ -97,36 +111,25 @@ describe("buildLiveKnockoutContextBracket", () => {
       },
     };
 
-    const { bracket } = buildLiveKnockoutContextBracket(
-      teams,
-      [] as Match[],
-      liveMatches,
-      qualContext
-    );
-
+    const { bracket } = buildWithLive(liveMatches);
     const m90 = bracket.find((slot) => slot.id === "M90");
-    expect(m90?.homeTeamId).not.toBe("ned");
+    expect(m90?.homeTeamId).toBe("par");
+    expect(m90?.awayTeamId).toBe("mar");
+    expect(m90?.awayTeamId).not.toBe("ned");
   });
 
   it("places locked MAR winner on M90 when M76 is official", () => {
-    const teams = [team("ned", "F"), team("mar", "C"), team("fra", "I"), team("ger", "E")];
     const liveMatches: Record<string, MergedMatch> = {
       M76: lockedKnockout({
         id: "M76",
         matchId: "M76",
+        espnEventId: "760488",
         homeTeamId: "ned",
         awayTeamId: "mar",
-        homeScore: 1,
-        awayScore: 2,
       }),
     };
 
-    const { bracket } = buildLiveKnockoutContextBracket(
-      teams,
-      [] as Match[],
-      liveMatches,
-      qualContext
-    );
+    const { bracket } = buildWithLive(liveMatches);
 
     const m76 = bracket.find((slot) => slot.id === "M76");
     const m90 = bracket.find((slot) => slot.id === "M90");

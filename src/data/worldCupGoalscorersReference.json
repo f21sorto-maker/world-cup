@@ -1,0 +1,663 @@
+{
+  "description": "FIFA World Cup Goalscorers with 5 or more goals (1930 - 2022). Includes active squad status for the 2026 edition (goals scored after June 10, 2026, are excluded).",
+  "scorers": [
+    {
+      "number_of_goals": 16,
+      "player_name": "Miroslav Klose",
+      "scored_by": "Miroslav Klose",
+      "country": "Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 15,
+      "player_name": "Ronaldo",
+      "scored_by": "Ronaldo",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 14,
+      "player_name": "Gerd Müller",
+      "scored_by": "Gerd Müller",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 13,
+      "player_name": "Just Fontaine",
+      "scored_by": "Just Fontaine",
+      "country": "France",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 13,
+      "player_name": "Lionel Messi",
+      "scored_by": "Lionel Messi",
+      "country": "Argentina",
+      "currently_playing_in_this_wc": true
+    },
+    {
+      "number_of_goals": 12,
+      "player_name": "Kylian Mbappé",
+      "scored_by": "Kylian Mbappé",
+      "country": "France",
+      "currently_playing_in_this_wc": true
+    },
+    {
+      "number_of_goals": 12,
+      "player_name": "Pelé",
+      "scored_by": "Pelé",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 11,
+      "player_name": "Sándor Kocsis",
+      "scored_by": "Sándor Kocsis",
+      "country": "Hungary",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 11,
+      "player_name": "Jürgen Klinsmann",
+      "scored_by": "Jürgen Klinsmann",
+      "country": "Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 10,
+      "player_name": "Helmut Rahn",
+      "scored_by": "Helmut Rahn",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 10,
+      "player_name": "Gary Lineker",
+      "scored_by": "Gary Lineker",
+      "country": "England",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 10,
+      "player_name": "Gabriel Batistuta",
+      "scored_by": "Gabriel Batistuta",
+      "country": "Argentina",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 10,
+      "player_name": "Teófilo Cubillas",
+      "scored_by": "Teófilo Cubillas",
+      "country": "Peru",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 10,
+      "player_name": "Thomas Müller",
+      "scored_by": "Thomas Müller",
+      "country": "Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 10,
+      "player_name": "Grzegorz Lato",
+      "scored_by": "Grzegorz Lato",
+      "country": "Poland",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Ademir",
+      "scored_by": "Ademir",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Eusébio",
+      "scored_by": "Eusébio",
+      "country": "Portugal",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Christian Vieri",
+      "scored_by": "Christian Vieri",
+      "country": "Italy",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Vavá",
+      "scored_by": "Vavá",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "David Villa",
+      "scored_by": "David Villa",
+      "country": "Spain",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Paolo Rossi",
+      "scored_by": "Paolo Rossi",
+      "country": "Italy",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Jairzinho",
+      "scored_by": "Jairzinho",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Roberto Baggio",
+      "scored_by": "Roberto Baggio",
+      "country": "Italy",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Karl-Heinz Rummenigge",
+      "scored_by": "Karl-Heinz Rummenigge",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 9,
+      "player_name": "Uwe Seeler",
+      "scored_by": "Uwe Seeler",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Guillermo Stábile",
+      "scored_by": "Guillermo Stábile",
+      "country": "Argentina",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Leônidas",
+      "scored_by": "Leônidas",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Óscar Míguez",
+      "scored_by": "Óscar Míguez",
+      "country": "Uruguay",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Rivaldo",
+      "scored_by": "Rivaldo",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Neymar",
+      "scored_by": "Neymar",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": true
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Rudi Völler",
+      "scored_by": "Rudi Völler",
+      "country": "Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Diego Maradona",
+      "scored_by": "Diego Maradona",
+      "country": "Argentina",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Cristiano Ronaldo",
+      "scored_by": "Cristiano Ronaldo",
+      "country": "Portugal",
+      "currently_playing_in_this_wc": true
+    },
+    {
+      "number_of_goals": 8,
+      "player_name": "Harry Kane",
+      "scored_by": "Harry Kane",
+      "country": "England",
+      "currently_playing_in_this_wc": true
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Oldřich Nejedlý",
+      "scored_by": "Oldřich Nejedlý",
+      "country": "Czechoslovakia",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Lajos Tichy",
+      "scored_by": "Lajos Tichy",
+      "country": "Hungary",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Careca",
+      "scored_by": "Careca",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Johnny Rep",
+      "scored_by": "Johnny Rep",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Andrzej Szarmach",
+      "scored_by": "Andrzej Szarmach",
+      "country": "Poland",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Hans Schäfer",
+      "scored_by": "Hans Schäfer",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 7,
+      "player_name": "Luis Suárez",
+      "scored_by": "Luis Suárez",
+      "country": "Uruguay",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Josef Hügi",
+      "scored_by": "Josef Hügi",
+      "country": "Switzerland",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Oleg Salenko",
+      "scored_by": "Oleg Salenko",
+      "country": "Russia",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "György Sárosi",
+      "scored_by": "György Sárosi",
+      "country": "Hungary",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Max Morlock",
+      "scored_by": "Max Morlock",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Erich Probst",
+      "scored_by": "Erich Probst",
+      "country": "Austria",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Salvatore Schillaci",
+      "scored_by": "Salvatore Schillaci",
+      "country": "Italy",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Davor Šuker",
+      "scored_by": "Davor Šuker",
+      "country": "Croatia",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Helmut Haller",
+      "scored_by": "Helmut Haller",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Enner Valencia",
+      "scored_by": "Enner Valencia",
+      "country": "Ecuador",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Hristo Stoichkov",
+      "scored_by": "Hristo Stoichkov",
+      "country": "Bulgaria",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Diego Forlán",
+      "scored_by": "Diego Forlán",
+      "country": "Uruguay",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Asamoah Gyan",
+      "scored_by": "Asamoah Gyan",
+      "country": "Ghana",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "James Rodríguez",
+      "scored_by": "James Rodríguez",
+      "country": "Colombia",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Dennis Bergkamp",
+      "scored_by": "Dennis Bergkamp",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Rob Rensenbrink",
+      "scored_by": "Rob Rensenbrink",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Rivellino",
+      "scored_by": "Rivellino",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Bebeto",
+      "scored_by": "Bebeto",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Arjen Robben",
+      "scored_by": "Arjen Robben",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Romelu Lukaku",
+      "scored_by": "Romelu Lukaku",
+      "country": "Belgium",
+      "currently_playing_in_this_wc": true
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Zbigniew Boniek",
+      "scored_by": "Zbigniew Boniek",
+      "country": "Poland",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Thierry Henry",
+      "scored_by": "Thierry Henry",
+      "country": "France",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Robin van Persie",
+      "scored_by": "Robin van Persie",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Wesley Sneijder",
+      "scored_by": "Wesley Sneijder",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 6,
+      "player_name": "Mario Kempes",
+      "scored_by": "Mario Kempes",
+      "country": "Argentina",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Roger Milla",
+      "scored_by": "Roger Milla",
+      "country": "Cameroon",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Emilio Butragueño",
+      "scored_by": "Emilio Butragueño",
+      "country": "Spain",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Fernando Hierro",
+      "scored_by": "Fernando Hierro",
+      "country": "Spain",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Raúl",
+      "scored_by": "Raúl",
+      "country": "Spain",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Romário",
+      "scored_by": "Romário",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Zinedine Zidane",
+      "scored_by": "Zinedine Zidane",
+      "country": "France",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Michel Platini",
+      "scored_by": "Michel Platini",
+      "country": "France",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Garrincha",
+      "scored_by": "Garrincha",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Zico",
+      "scored_by": "Zico",
+      "country": "Brazil",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Johan Neeskens",
+      "scored_by": "Johan Neeskens",
+      "country": "Netherlands",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Lukas Podolski",
+      "scored_by": "Lukas Podolski",
+      "country": "Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Franz Beckenbauer",
+      "scored_by": "Franz Beckenbauer",
+      "country": "West Germany",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Pedro Cea",
+      "scored_by": "Pedro Cea",
+      "country": "Uruguay",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Juan Alberto Schiaffino",
+      "scored_by": "Juan Alberto Schiaffino",
+      "country": "Uruguay",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Edinson Cavani",
+      "scored_by": "Edinson Cavani",
+      "country": "Uruguay",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Gonzalo Higuaín",
+      "scored_by": "Gonzalo Higuaín",
+      "country": "Argentina",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Mario Mandžukić",
+      "scored_by": "Mario Mandžukić",
+      "country": "Croatia",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Ivan Perišić",
+      "scored_by": "Ivan Perišić",
+      "country": "Croatia",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Xherdan Shaqiri",
+      "scored_by": "Xherdan Shaqiri",
+      "country": "Switzerland",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Jon Dahl Tomasson",
+      "scored_by": "Jon Dahl Tomasson",
+      "country": "Denmark",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Tomas Brolin",
+      "scored_by": "Tomas Brolin",
+      "country": "Sweden",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Kennet Andersson",
+      "scored_by": "Kennet Andersson",
+      "country": "Sweden",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Henrik Larsson",
+      "scored_by": "Henrik Larsson",
+      "country": "Sweden",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Alessandro Altobelli",
+      "scored_by": "Alessandro Altobelli",
+      "country": "Italy",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Silvio Piola",
+      "scored_by": "Silvio Piola",
+      "country": "Italy",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Peter McParland",
+      "scored_by": "Peter McParland",
+      "country": "Northern Ireland",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Geoff Hurst",
+      "scored_by": "Geoff Hurst",
+      "country": "England",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Marc Wilmots",
+      "scored_by": "Marc Wilmots",
+      "country": "Belgium",
+      "currently_playing_in_this_wc": false
+    },
+    {
+      "number_of_goals": 5,
+      "player_name": "Landon Donovan",
+      "scored_by": "Landon Donovan",
+      "country": "United States",
+      "currently_playing_in_this_wc": false
+    }
+  ]
+}

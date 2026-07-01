@@ -1,5 +1,4 @@
-import { buildLiveKnockoutContextBracket } from "./buildLiveKnockoutContextBracket";
-import { buildConfirmedOnlyBracket } from "./buildConfirmedOnlyBracket";
+import { buildConfirmedBracketFromSchedule } from "./buildConfirmedBracketFromSchedule";
 import { projectTournament } from "../tournament";
 import type {
   BracketMatch,
@@ -12,6 +11,7 @@ import type {
   Team,
 } from "../../types";
 import type { QualificationMatchContext } from "../qualification";
+import { buildLiveKnockoutContextBracket } from "./buildLiveKnockoutContextBracket";
 
 export type BracketViewModel = {
   bracket: BracketMatch[];
@@ -26,6 +26,7 @@ export type BuildBracketViewModelInput = {
   matches: Match[];
   liveMatches: Record<string, MergedMatch>;
   qualContext: QualificationMatchContext;
+  groupStandings?: GroupStanding[];
   mergedSchedule?: MergedMatch[];
   knockoutMarkets?: PolymarketMatchMarket[];
   scoreOverrides?: Record<string, ScoreOverride>;
@@ -60,7 +61,10 @@ function buildFingerprint(input: BuildBracketViewModelInput): string {
       return `${key}:${m.status}:${m.locked}:${m.homeScore}:${m.awayScore}`;
     })
     .join("|");
-  return `${input.mode}:${input.context ?? "tab"}:${input.teams.length}:${input.matches.length}:${liveDigest}`;
+  const standingsDigest = (input.groupStandings ?? [])
+    .flatMap((s) => s.rows.map((r) => `${s.group}:${r.teamId}:${r.points}`))
+    .join("|");
+  return `${input.mode}:${input.context ?? "tab"}:${input.teams.length}:${input.matches.length}:${liveDigest}:${standingsDigest}`;
 }
 
 /**
@@ -69,22 +73,20 @@ function buildFingerprint(input: BuildBracketViewModelInput): string {
 export function buildBracketViewModel(input: BuildBracketViewModelInput): BracketViewModel {
   const context = input.context ?? "tab";
   const fingerprint = buildFingerprint(input);
+  const teamsById = Object.fromEntries(input.teams.map((team) => [team.id, team]));
 
   if (input.mode === "confirmed") {
+    const base = buildConfirmedBracketFromSchedule({
+      teams: teamsById,
+      liveMatches: input.liveMatches,
+      groupStandings: input.groupStandings ?? [],
+      qualContext: input.qualContext,
+    });
+
     const result =
       context === "live"
-        ? buildLiveKnockoutContextBracket(
-            input.teams,
-            input.matches,
-            input.liveMatches,
-            input.qualContext
-          )
-        : buildConfirmedOnlyBracket(
-            input.teams,
-            input.matches,
-            input.liveMatches,
-            input.qualContext
-          );
+        ? buildLiveKnockoutContextBracket(base, input.liveMatches, teamsById)
+        : base;
 
     return { ...result, fingerprint };
   }

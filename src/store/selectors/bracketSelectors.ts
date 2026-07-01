@@ -1,4 +1,7 @@
+import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { prepareLiveMatchStore } from "../../lib/liveMatchStorePipeline";
+import { buildScheduleOverlayFingerprint } from "./scheduleSelectors";
 import type { BracketViewMode, GroupStanding, MergedMatch, PolymarketMatchMarket, ScoreOverride } from "../../types";
 import { useStore } from "../index";
 
@@ -34,6 +37,23 @@ export function useKnockoutLiveMatches() {
       return result;
     })
   );
+}
+
+/** Registry-normalized knockout rows for bracket card feeder lookups. */
+export function usePreparedKnockoutLiveMatches() {
+  const overlayFingerprint = useStore((s) =>
+    buildScheduleOverlayFingerprint(s.liveMatches, s.groupStandings)
+  );
+
+  return useMemo(() => {
+    const { liveMatches, teams } = useStore.getState();
+    const prepared = prepareLiveMatchStore(liveMatches, teams);
+    const result: Record<string, MergedMatch> = {};
+    for (const [key, match] of Object.entries(prepared)) {
+      if (isKnockoutLiveMatch(match)) result[key] = match;
+    }
+    return result;
+  }, [overlayFingerprint]);
 }
 
 export function useBracketTeams() {

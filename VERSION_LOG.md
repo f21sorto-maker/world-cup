@@ -202,6 +202,58 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## [6.0.0] build 5 — 2026-07-01 (build)
+- 84 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, src, version.json — 84 files changed, 5210 insertions(+), 742 deletions(-)
+
+## [6.0.0] build 4 — 2026-07-01 (build)
+- Golden Boot crown pulse, celebrate on leader change and goals
+
+## [6.0.0] build 3 — 2026-07-01 (build)
+- Phase 6: WC career goals on scorer cards and tournament stats leaderboard
+
+## [6.0.0] build 2 — 2026-07-01 (build)
+- Live knockout insights strip with scorer bentos, crown animation, and player popovers
+
+## [6.0.0] build 1 — 2026-07-01 (major)
+- Live insights strip, bracket flow layout, schedule-parity locked bracket, durable goal events and WC career scorers
+
+## [5.0.0] build 76 — 2026-07-01 (build)
+- Live knockout insights strip with scorer bentos and crown animation
+
+## [5.0.0] build 75 — 2026-07-01 (build)
+- Live recent results: stage-grouped sections with see-more during knockout
+
+## [5.0.0] build 74 — 2026-07-01 (build)
+- Tournament player stats index, selectors, and stats cache for golden boot UI
+
+## [5.0.0] build 73 — 2026-07-01 (build)
+- Persist match goal events cache; import WC career goalscorers reference JSON
+
+## [5.0.0] build 72 — 2026-07-01 (build)
+- Live embed flow layout on mobile, path highlight on flow, scroll-snap polish
+
+## [5.0.0] build 71 — 2026-07-01 (build)
+- Horizontal bracket flow layout mode with mobile half toggle and L→R column scroll
+
+## [5.0.0] build 70 — 2026-07-01 (build)
+- Live recent results grouped by tournament stage with per-section see more
+
+## [5.0.0] build 69 — 2026-07-01 (build)
+- Bracket–Schedule parity: schedule-first Locked in, split tree spacing, Live embed tree, auto-confirmed mode during knockout
+
 ## [5.0.0] build 68 — 2026-07-01 (build)
 - 159 file(s) in .cursor, CHANGELOG.md, VERSION_LOG.md, build-manifest.json, docs, package.json — 159 files changed, 20632 insertions(+), 7263 deletions(-)
 

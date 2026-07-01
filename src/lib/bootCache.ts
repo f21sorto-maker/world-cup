@@ -1,4 +1,4 @@
-import type { GroupStanding, MergedMatch, Team } from "../types";
+import type { GroupStanding, MatchEvent, MergedMatch, Team } from "../types";
 import { mergeStandingsPartials } from "../services/adapters/normalizeStandings";
 import {
   BOOT_CACHE_SCHEMA_VERSION,
@@ -12,6 +12,14 @@ import {
   writeLiveMatchCache,
 } from "./liveMatchCache";
 import {
+  readMatchEventsCache,
+  writeMatchEventsCache,
+} from "./matchEventsCache";
+import {
+  rebuildTournamentPlayerStatsIndex,
+  writeTournamentPlayerStatsCache,
+} from "./tournamentPlayerStatsIndex";
+import {
   STANDINGS_CACHE_KEY,
   readStandingsCache,
   writeStandingsCache,
@@ -20,6 +28,7 @@ import {
 export { BOOT_CACHE_SCHEMA_VERSION, BOOT_CACHE_VERSION } from "./bootCacheVersion";
 export { matchesBootCacheSchema, bootCacheSchemaFields } from "./bootCacheSchema";
 export { LIVE_MATCH_CACHE_KEY } from "./liveMatchCache";
+export { MATCH_EVENTS_CACHE_KEY } from "./matchEventsCache";
 export { STANDINGS_CACHE_KEY } from "./standingsCache";
 
 export const BOOT_TEAMS_CACHE_KEY = `wc-boot-teams-v${BOOT_CACHE_VERSION}`;
@@ -176,7 +185,8 @@ export function hydrateBootFromCache(): BootCacheHydration {
 export function persistBootCache(
   teams: Record<string, Team>,
   matches: Record<string, MergedMatch>,
-  standings: GroupStanding[]
+  standings: GroupStanding[],
+  matchEvents?: Record<string, MatchEvent[]>
 ): void {
   if (Object.keys(teams).length > 0) {
     writeBootTeamsCache(teams);
@@ -187,6 +197,12 @@ export function persistBootCache(
   if (standings.length > 0) {
     const merged = mergeStandingsPartials(readStandingsCache() ?? [], standings);
     writeStandingsCache(merged);
+  }
+  if (matchEvents && Object.keys(matchEvents).length > 0) {
+    writeMatchEventsCache(matchEvents);
+    writeTournamentPlayerStatsCache(
+      rebuildTournamentPlayerStatsIndex(Object.values(matches), matchEvents)
+    );
   }
   pruneUnmigratedLegacyKeys();
 }

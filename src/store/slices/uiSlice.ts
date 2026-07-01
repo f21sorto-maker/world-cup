@@ -8,6 +8,10 @@ import {
   type ColorSchemePreference,
 } from "../../lib/colorScheme";
 import { readStoredFollowedTeamId, writeStoredFollowedTeamId } from "../../lib/followedTeamPreference";
+import {
+  readStoredBracketViewMode,
+  writeStoredBracketViewMode,
+} from "../../lib/bracketViewModePreference";
 import type { ModuleId } from "../../lib/moduleIds";
 
 export type UiSliceState = {
@@ -31,7 +35,7 @@ export type UiSliceState = {
   setSplashPhase: (phase: SplashPhase) => void;
   setSplashProgress: (progress: number, message?: string) => void;
   setPrimaryMatch: (matchId: string | null) => void;
-  setBracketViewMode: (mode: BracketViewMode) => void;
+  setBracketViewMode: (mode: BracketViewMode, options?: { persist?: boolean }) => void;
   setBracketLayoutMode: (mode: BracketLayoutMode) => void;
   setGroupsViewMode: (mode: GroupsViewMode) => void;
   setColorScheme: (scheme: ColorSchemePreference) => void;
@@ -53,7 +57,7 @@ export const createUiSlice = (
   splashProgress: 0,
   splashMessage: "Connecting to live data...",
   primaryLiveMatchId: null,
-  bracketViewMode: "projected",
+  bracketViewMode: readStoredBracketViewMode() ?? "projected",
   bracketLayoutMode: readStoredBracketLayoutMode(),
   groupsViewMode: "flags",
   activeTeamId: null,
@@ -72,7 +76,12 @@ export const createUiSlice = (
       splashMessage: message ?? state.splashMessage
     })),
   setPrimaryMatch: (matchId) => set(() => ({ primaryLiveMatchId: matchId })),
-  setBracketViewMode: (mode) => set(() => ({ bracketViewMode: mode })),
+  setBracketViewMode: (mode, options) => {
+    if (options?.persist !== false) {
+      writeStoredBracketViewMode(mode);
+    }
+    set(() => ({ bracketViewMode: mode }));
+  },
   setBracketLayoutMode: (mode) => {
     writeStoredBracketLayoutMode(mode);
     set(() => ({ bracketLayoutMode: mode }));

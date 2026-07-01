@@ -2119,6 +2119,9 @@
 
 .bracket-card--tree .bracket-card-head .match-date {
   font-size: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bracket-card--tree .bracket-team-slot {
@@ -2127,7 +2130,7 @@
 
 .bracket-card--tree .bracket-team-slot .bracket-team,
 .bracket-card--tree .bracket-team-slot .bracket-team-themed {
-  min-height: var(--touch-target-min, 44px);
+  min-height: 32px;
 }
 
 .bracket-ghost-count {
@@ -3478,6 +3481,32 @@ tr.qual-row--in-contention {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.recent-results-see-more {
+  display: block;
+  width: 100%;
+  margin: 4px 0 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.recent-results-see-more:hover {
+  border-color: var(--fwc-royal-blue);
+  background: var(--surface-raised);
+}
+
+.recent-results-see-more:focus-visible {
+  outline: 2px solid var(--fwc-royal-blue);
+  outline-offset: 2px;
 }
 
 .recent-result-item {

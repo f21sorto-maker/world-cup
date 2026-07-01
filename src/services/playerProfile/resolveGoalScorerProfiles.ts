@@ -1,5 +1,7 @@
-import type { GoalScorerProfile, MatchEvent, Team } from "../../types";
+import type { GoalScorerProfile, MatchEvent, Team, TournamentPlayerStat } from "../../types";
 import { isApiEnabled } from "../../config/apiFlags";
+import { aggregateTournamentStatsFromEvents } from "../../lib/aggregateTournamentStats";
+import { wcCareerGoalsForDisplay } from "../../lib/mergeWcCareerGoals";
 import {
   fetchTeamPlayers,
   getWc2026TeamIdFromCache,
@@ -25,15 +27,17 @@ async function resolveWcTeamId(team: Team | undefined): Promise<string | undefin
 function buildProfileFromRoster(
   event: MatchEvent,
   rosterPlayer: Wc2026Player | undefined,
-  tournamentGoals: number
+  tournamentGoals: number,
+  topScorers2026: TournamentPlayerStat[]
 ): GoalScorerProfile {
+  const displayName = rosterPlayer?.fullName ?? event.playerName;
   const hometown =
     rosterPlayer?.hometown ?? rosterPlayer?.birthplace ?? rosterPlayer?.citizenship;
 
   return {
     eventId: event.providerId,
     playerId: rosterPlayer?.id ?? event.playerId,
-    displayName: rosterPlayer?.fullName ?? event.playerName,
+    displayName,
     minute: event.minute,
     minuteExtra: event.minuteExtra,
     teamId: event.teamId,
@@ -46,12 +50,16 @@ function buildProfileFromRoster(
     position: rosterPlayer?.position,
     jerseyNumber: rosterPlayer?.jerseyNumber,
     tournamentGoals,
-    internationalGoals: undefined,
+    internationalGoals: wcCareerGoalsForDisplay(displayName, topScorers2026),
     internationalAppearances: undefined,
   };
 }
 
-function buildFallbackProfile(event: MatchEvent, tournamentGoals: number): GoalScorerProfile {
+function buildFallbackProfile(
+  event: MatchEvent,
+  tournamentGoals: number,
+  topScorers2026: TournamentPlayerStat[]
+): GoalScorerProfile {
   const fromIndex = lookupWc2026Player({
     playerId: event.playerId,
     playerName: event.playerName,
@@ -67,6 +75,10 @@ function buildFallbackProfile(event: MatchEvent, tournamentGoals: number): GoalS
     isOwnGoal: event.type === "own_goal",
     photoUrl: photoUrlFromPlayer(fromIndex),
     tournamentGoals,
+    internationalGoals: wcCareerGoalsForDisplay(
+      fromIndex?.fullName ?? event.playerName,
+      topScorers2026
+    ),
   };
 }
 
@@ -76,6 +88,8 @@ export function resolveGoalScorerProfilesSync(input: {
   allMatchEvents: Record<string, MatchEvent[]>;
 }): GoalScorerProfile[] {
   const goalEvents = input.events.filter(isGoalEvent);
+  const { topScorers: topScorers2026 } = aggregateTournamentStatsFromEvents(input.allMatchEvents);
+
   return goalEvents.map((event) => {
     const fromIndex = lookupWc2026Player({
       playerId: event.playerId,
@@ -87,9 +101,9 @@ export function resolveGoalScorerProfilesSync(input: {
       teamId: event.teamId,
     });
     if (fromIndex) {
-      return buildProfileFromRoster(event, fromIndex, tournamentGoals);
+      return buildProfileFromRoster(event, fromIndex, tournamentGoals, topScorers2026);
     }
-    return buildFallbackProfile(event, tournamentGoals);
+    return buildFallbackProfile(event, tournamentGoals, topScorers2026);
   });
 }
 
@@ -102,6 +116,8 @@ export async function resolveGoalScorerProfiles(input: {
 }): Promise<GoalScorerProfile[]> {
   const goalEvents = input.events.filter(isGoalEvent);
   if (goalEvents.length === 0) return [];
+
+  const { topScorers: topScorers2026 } = aggregateTournamentStatsFromEvents(input.allMatchEvents);
 
   const canFetchRoster =
     isApiEnabled("wc2026Teams") && !isWorldCup2026Disabled();
@@ -146,7 +162,7 @@ export async function resolveGoalScorerProfiles(input: {
     });
 
     if (rosterPlayer) {
-      return buildProfileFromRoster(event, rosterPlayer, tournamentGoals);
+      return buildProfileFromRoster(event, rosterPlayer, tournamentGoals, topScorers2026);
     }
 
     const fromIndex = lookupWc2026Player({
@@ -154,9 +170,9 @@ export async function resolveGoalScorerProfiles(input: {
       playerName: event.playerName,
     });
     if (fromIndex) {
-      return buildProfileFromRoster(event, fromIndex, tournamentGoals);
+      return buildProfileFromRoster(event, fromIndex, tournamentGoals, topScorers2026);
     }
 
-    return buildFallbackProfile(event, tournamentGoals);
+    return buildFallbackProfile(event, tournamentGoals, topScorers2026);
   });
 }

@@ -4,6 +4,11 @@ import { enrichKnockoutPenaltiesFromZafronix } from "../../lib/fetchKnockoutPena
 import { reconcileEspnLiveAuthority } from "../../lib/espnLiveAuthority";
 import { deriveStandingsIfScored, standingsEqual } from "../../lib/qualification";
 import { writeLiveMatchCache } from "../../lib/liveMatchCache";
+import { flushMatchEventsCachePersist } from "../../lib/matchEventsCache";
+import {
+  rebuildTournamentPlayerStatsIndex,
+  writeTournamentPlayerStatsCache,
+} from "../../lib/tournamentPlayerStatsIndex";
 import { readStandingsCache, writeStandingsCache } from "../../lib/standingsCache";
 import { mergeStandingsPartials } from "../adapters/normalizeStandings";
 import { useStore } from "../../store";
@@ -371,6 +376,11 @@ export async function runLiveTick(options?: { light?: boolean }): Promise<number
   store.touchModuleFreshness(MODULE_IDS.liveMatches);
 
   writeLiveMatchCache(useStore.getState().liveMatches);
+  const storeState = useStore.getState();
+  flushMatchEventsCachePersist(storeState.matchEvents);
+  writeTournamentPlayerStatsCache(
+    rebuildTournamentPlayerStatsIndex(Object.values(storeState.liveMatches), storeState.matchEvents)
+  );
 
   if (primary && primary !== store.primaryLiveMatchId) {
     store.setPrimaryMatch(primary);

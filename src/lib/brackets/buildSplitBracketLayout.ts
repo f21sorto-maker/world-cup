@@ -4,9 +4,9 @@ import type { Stage } from "../../types";
 
 export const SPLIT_BRACKET_METRICS = {
   cardWidth: 196,
-  cardHeight: 76,
+  cardHeight: 128,
   colGap: 40,
-  rowUnit: 34,
+  rowUnit: 68,
   headerHeight: 32,
   paddingY: 16,
   centerExtraGap: 48,

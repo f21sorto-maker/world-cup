@@ -8,7 +8,33 @@ export type ResultsSection = {
   matches: MergedMatch[];
 };
 
-const STAGE_SORT_ORDER: Record<string, number> = {
+export type ResultsStageSectionKey =
+  | "group"
+  | "round_of_32"
+  | "round_of_16"
+  | "quarterfinal"
+  | "semifinal"
+  | "third_place"
+  | "final"
+  | "knockout";
+
+const STAGE_KEYS: ResultsStageSectionKey[] = [
+  "group",
+  "knockout",
+  "round_of_32",
+  "round_of_16",
+  "quarterfinal",
+  "semifinal",
+  "third_place",
+  "final",
+];
+
+function isResultsStageSectionKey(value: string): value is ResultsStageSectionKey {
+  return (STAGE_KEYS as string[]).includes(value);
+}
+
+/** Sort order for Live recent-results stage sections (higher = more advanced). */
+export const RESULTS_STAGE_SORT_ORDER: Record<ResultsStageSectionKey, number> = {
   group: 0,
   round_of_32: 100,
   round_of_16: 200,
@@ -16,8 +42,10 @@ const STAGE_SORT_ORDER: Record<string, number> = {
   semifinal: 400,
   third_place: 500,
   final: 600,
-  knockout: 150
+  knockout: 150,
 };
+
+const STAGE_SORT_ORDER: Record<string, number> = RESULTS_STAGE_SORT_ORDER;
 
 const STAGE_LABELS: Record<string, string> = {
   round_of_32: "Round of 32",
@@ -69,6 +97,23 @@ export function getKnockoutStageLabel(match: MergedMatch): string | undefined {
   if (match.group) return undefined;
   const stage = resolveScheduleStage(match);
   return STAGE_LABELS[stage] ?? "Knockout";
+}
+
+/** Bucket key for Live/Results stage sections (group stage vs knockout round). */
+export function getResultsStageSectionKey(match: MergedMatch): ResultsStageSectionKey {
+  if (match.group) return "group";
+  const stage = resolveScheduleStage(match);
+  if (isResultsStageSectionKey(stage)) return stage;
+  return "knockout";
+}
+
+export type ResultsStageSectionLabels = Record<ResultsStageSectionKey, string>;
+
+export function getResultsStageSectionLabel(
+  key: ResultsStageSectionKey,
+  labels: ResultsStageSectionLabels
+): string {
+  return labels[key];
 }
 
 function sectionKeyForMatch(match: MergedMatch): { key: string; label: string; sortOrder: number } {

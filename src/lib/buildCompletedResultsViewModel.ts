@@ -3,6 +3,13 @@ import { teamDisplayNameFromId } from "./matchTeamDisplay";
 import { prepareLiveMatchStore } from "./liveMatchStorePipeline";
 import { resolveTeamRef } from "./registry";
 import {
+  getResultsStageSectionKey,
+  getResultsStageSectionLabel,
+  RESULTS_STAGE_SORT_ORDER,
+  type ResultsStageSectionKey,
+  type ResultsStageSectionLabels,
+} from "./resultsGrouping";
+import {
   resolveDisplayMatch,
   type MaterializedMatchIndex,
 } from "./resolveDisplayMatch";
@@ -15,16 +22,22 @@ export type BuildCompletedResultsOptions = {
   materializedIndex?: MaterializedMatchIndex;
 };
 
-export type RecentResultsSectionLabels = {
+export type RecentResultsTimeLabels = {
   today: string;
   yesterday: string;
-  earlierKnockout: string;
 };
 
+export type RecentResultsSectionKey = "today" | "yesterday" | ResultsStageSectionKey;
+
 export type RecentResultsSection = {
+  key: RecentResultsSectionKey;
+  kind: "time" | "stage";
   label: string;
   matches: MergedMatch[];
+  total: number;
 };
+
+export { type ResultsStageSectionLabels } from "./resultsGrouping";
 
 function totalGoals(match: MergedMatch): number {
   return (match.homeScore ?? 0) + (match.awayScore ?? 0);
@@ -125,43 +138,73 @@ export function buildCompletedResultsViewModel(
 export function buildRecentResultsSections(
   completed: MergedMatch[],
   options: {
-    maxTotal?: number;
     isKnockoutActive?: boolean;
     now?: Date;
-    labels: RecentResultsSectionLabels;
+    timeLabels: RecentResultsTimeLabels;
+    stageLabels: ResultsStageSectionLabels;
   }
 ): { sections: RecentResultsSection[]; total: number } {
-  const maxTotal = options.maxTotal ?? 8;
   const now = options.now ?? new Date();
   const todayKey = localDateKey(now);
   const yKey = yesterdayDateKey(now);
-  const { labels, isKnockoutActive = false } = options;
+  const { timeLabels, stageLabels, isKnockoutActive = false } = options;
 
   const todayMatches = completed.filter((m) => localDateKey(new Date(m.date)) === todayKey);
   const yesterdayMatches = completed.filter((m) => localDateKey(new Date(m.date)) === yKey);
 
   const sections: RecentResultsSection[] = [];
-  let remaining = maxTotal;
 
   if (todayMatches.length > 0) {
-    const slice = todayMatches.slice(0, remaining);
-    sections.push({ label: `${labels.today} (${todayMatches.length})`, matches: slice });
-    remaining -= slice.length;
-  }
-  if (remaining > 0 && yesterdayMatches.length > 0) {
-    const slice = yesterdayMatches.slice(0, remaining);
-    sections.push({ label: `${labels.yesterday} (${yesterdayMatches.length})`, matches: slice });
-    remaining -= slice.length;
-  }
-  if (remaining > 0 && isKnockoutActive) {
-    const earlierMatches = completed.filter((m) => {
-      const key = localDateKey(new Date(m.date));
-      return key !== todayKey && key !== yKey;
+    sections.push({
+      key: "today",
+      kind: "time",
+      label: `${timeLabels.today} (${todayMatches.length})`,
+      matches: todayMatches,
+      total: todayMatches.length,
     });
-    if (earlierMatches.length > 0) {
+  }
+
+  if (!isKnockoutActive && yesterdayMatches.length > 0) {
+    sections.push({
+      key: "yesterday",
+      kind: "time",
+      label: `${timeLabels.yesterday} (${yesterdayMatches.length})`,
+      matches: yesterdayMatches,
+      total: yesterdayMatches.length,
+    });
+  }
+
+  if (isKnockoutActive) {
+    const stagePool = completed.filter((m) => {
+      const key = localDateKey(new Date(m.date));
+      return key !== todayKey;
+    });
+
+    const byStage = new Map<ResultsStageSectionKey, MergedMatch[]>();
+    for (const match of stagePool) {
+      const stageKey = getResultsStageSectionKey(match);
+      const bucket = byStage.get(stageKey) ?? [];
+      bucket.push(match);
+      byStage.set(stageKey, bucket);
+    }
+
+    const stageKeys = [...byStage.keys()].sort(
+      (a, b) => RESULTS_STAGE_SORT_ORDER[b] - RESULTS_STAGE_SORT_ORDER[a]
+    );
+
+    for (const stageKey of stageKeys) {
+      const matches = [...(byStage.get(stageKey) ?? [])].sort((a, b) =>
+        compareCompletedResults(a, b, "recent")
+      );
+      if (matches.length === 0) continue;
+
+      const stageLabel = getResultsStageSectionLabel(stageKey, stageLabels);
       sections.push({
-        label: `${labels.earlierKnockout} (${earlierMatches.length})`,
-        matches: earlierMatches.slice(0, remaining),
+        key: stageKey,
+        kind: "stage",
+        label: `${stageLabel} (${matches.length})`,
+        matches,
+        total: matches.length,
       });
     }
   }

@@ -1,21 +1,20 @@
-import { buildConfirmedOnlyBracket } from "./buildConfirmedOnlyBracket";
 import { resolveKnockoutResults } from "../tournament";
 import { isKnockoutMatch } from "../resolveMatchWinner";
-import type { Match, MergedMatch, Team } from "../../types";
-import type { QualificationMatchContext } from "../qualification";
+import type { BracketMatch, GroupStanding, MergedMatch, Team } from "../../types";
+
+type ConfirmedBracketBase = {
+  bracket: BracketMatch[];
+  standings: GroupStanding[];
+};
 
 /**
- * Live knockout context: official locked results + provisional live feeders only.
- * Avoids projectTournament putting eliminated teams in R16 as "confirmed".
+ * Live knockout context: schedule-first locked bracket + in-progress live overlay only.
  */
 export function buildLiveKnockoutContextBracket(
-  teams: Team[],
-  matches: Match[],
+  base: ConfirmedBracketBase,
   liveMatches: Record<string, MergedMatch>,
-  qualContext: QualificationMatchContext
-): ReturnType<typeof buildConfirmedOnlyBracket> {
-  const base = buildConfirmedOnlyBracket(teams, matches, liveMatches, qualContext);
-  const teamsById = Object.fromEntries(teams.map((team) => [team.id, team]));
+  teamsById: Record<string, Team>
+): ConfirmedBracketBase {
   const liveKnockout = Object.values(liveMatches).filter(
     (match) =>
       isKnockoutMatch(match) &&

@@ -16,6 +16,7 @@ export function useBracketProjection(
   mergedSchedule: MergedMatch[]
 ): BracketProjection | null {
   const liveMatches = useStore((s) => s.liveMatches);
+  const groupStandings = useStore((s) => s.groupStandings);
   const inputFingerprint = useStore((s) =>
     buildScheduleOverlayFingerprint(s.liveMatches, s.groupStandings)
   );
@@ -46,6 +47,7 @@ export function useBracketProjection(
       matches: canonical.matches,
       liveMatches,
       qualContext,
+      groupStandings,
       mergedSchedule: deferredMergedSchedule,
     });
   }, [
@@ -54,6 +56,7 @@ export function useBracketProjection(
     canonical.matches,
     liveMatches,
     qualContext,
+    groupStandings,
     deferredMergedSchedule,
     inputFingerprint,
   ]);

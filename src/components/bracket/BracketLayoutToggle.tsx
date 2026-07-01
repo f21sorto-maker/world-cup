@@ -37,6 +37,17 @@ export function BracketLayoutToggle() {
         <span className="bracket-toggle-label">{copy.scheduleLabel}</span>
         <span className="bracket-toggle-subtitle">{copy.scheduleSubtitle}</span>
       </button>
+      <button
+        type="button"
+        role="tab"
+        className={layout === "flow" ? "active" : ""}
+        aria-selected={layout === "flow"}
+        disabled={isPending}
+        onClick={() => startTransition(() => setLayout("flow"))}
+      >
+        <span className="bracket-toggle-label">{copy.flowLabel}</span>
+        <span className="bracket-toggle-subtitle">{copy.flowSubtitle}</span>
+      </button>
     </div>
   );
 }
