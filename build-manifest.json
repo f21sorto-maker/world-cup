@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T03:16:28.081Z",
+  "updatedAt": "2026-07-01T03:18:34.500Z",
   "builds": [
     {
       "version": "5.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "dd9a55f8f02f59469fadc016b2c5d987e40d7a66",
+      "shortHash": "dd9a55f",
+      "message": "Narrow live contract and ship bracket/live UI fixes for knockout phase.",
+      "version": "5.0.0",
+      "build": 68,
+      "timestamp": "2026-07-01T03:16:28.645Z"
+    },
+    {
       "hash": "5f169d630ac8cda741583152ac2ab0c58c18fb22",
       "shortHash": "5f169d6",
       "message": "Record v5.0.0 build 42 production deploy on Vercel.",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 74,
       "timestamp": "2026-06-30T01:52:52.360Z"
-    },
-    {
-      "hash": "b1a90ad67ca854ed88c418d68a5ec4a18e9a8ca8",
-      "shortHash": "b1a90ad",
-      "message": "Record v4.0.0 build 73 production deploy on Vercel.",
-      "version": "4.0.0",
-      "build": 73,
-      "timestamp": "2026-06-28T20:13:29.835Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "5.0.0",
+      "build": 68,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-07-01T03:18:34.499Z"
+    },
     {
       "url": "",
       "environment": "production",
@@ -716,14 +724,6 @@
       "build": 2,
       "message": "Production deploy via deploy:vercel",
       "timestamp": "2026-06-27T07:37:25.188Z"
-    },
-    {
-      "url": "",
-      "environment": "production",
-      "version": "4.0.0",
-      "build": 1,
-      "message": "Production deploy via deploy:vercel",
-      "timestamp": "2026-06-27T07:24:35.743Z"
     }
   ]
 }
