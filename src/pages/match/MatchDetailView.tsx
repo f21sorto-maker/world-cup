@@ -38,6 +38,7 @@ import { PlayerPhoto } from "../../components/player/PlayerPhoto";
 import { useGoalScorerProfiles } from "../../hooks/useGoalScorerProfiles";
 import { useEventPlayerPhotos } from "../../hooks/useEventPlayerPhotos";
 import { useHighlightlyMatchData } from "../../hooks/useHighlightlyMatchData";
+import { useYouTubeMatchVideos } from "../../hooks/useYouTubeMatchVideos";
 import { useMatchSupplement } from "../../hooks/useMatchSupplement";
 import { getHighlightlyQuotaStatus } from "../../lib/highlightlyQuota";
 import { useLiveStreamForMatch } from "../../hooks/useLiveStreamForMatch";
@@ -122,6 +123,8 @@ export function MatchDetailView() {
 
   const homeTeam = match ? resolveMatchTeam(match, "home", teams) : undefined;
   const awayTeam = match ? resolveMatchTeam(match, "away", teams) : undefined;
+  const homeTeamName = match ? teamDisplayNameForMatch(match, "home", teams) : "Home";
+  const awayTeamName = match ? teamDisplayNameForMatch(match, "away", teams) : "Away";
 
   const { profiles: scorerProfiles, loading: scorersLoading } = useGoalScorerProfiles({
     events,
@@ -135,6 +138,16 @@ export function MatchDetailView() {
   );
   const eventPhotos = useEventPlayerPhotos({ events: goalEvents, homeTeam, awayTeam });
   const highlightly = useHighlightlyMatchData(match, homeTeam, awayTeam);
+  const youtubeHighlightsEnabled =
+    activeMatchTab === "highlights" && match?.status === "completed";
+  const { videos: youtubeVideos, loading: youtubeLoading } = useYouTubeMatchVideos({
+    match,
+    homeTeam,
+    awayTeam,
+    homeTeamName,
+    awayTeamName,
+    enabled: youtubeHighlightsEnabled,
+  });
   const kampSupplement = useMatchSupplement(match);
   const kampHighlightsFallback =
     highlightly.highlights.length === 0 && !highlightly.loading
@@ -198,9 +211,6 @@ export function MatchDetailView() {
   };
 
   if (!activeMatchId) return null;
-
-  const homeTeamName = match ? teamDisplayNameForMatch(match, "home", teams) : "Home";
-  const awayTeamName = match ? teamDisplayNameForMatch(match, "away", teams) : "Away";
 
   const isLive = match?.status === "live";
   const isDone = match?.status === "completed";
@@ -467,6 +477,9 @@ export function MatchDetailView() {
               attribution={highlightly.attribution}
               quotaLabel={highlightQuotaLabel}
               fallbackHighlightsUrl={kampHighlightsFallback}
+              youtubeVideos={youtubeVideos}
+              youtubeLoading={youtubeLoading}
+              matchStatus={match?.status}
             />
           </PanelErrorBoundary>
         ) : null}

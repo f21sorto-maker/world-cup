@@ -295,8 +295,8 @@ export async function resolveYouTubeMatchVideos(input: MatchVideoInput): Promise
   const queryBase = `${input.homeTeamName} ${input.awayTeamName} World Cup`;
   const googleCandidates = (
     await Promise.all([
-      fetchGoogleVideoSearch(`${queryBase} highlights FOX Soccer Telemundo Deportes YouTube`),
-      fetchGoogleVideoSearch(`${queryBase} preview pre match FOX Soccer Telemundo Deportes YouTube`),
+      fetchGoogleVideoSearch(`${queryBase} highlights FOX Sports FOX Soccer Telemundo Deportes YouTube`),
+      fetchGoogleVideoSearch(`${queryBase} preview pre match FOX Sports FOX Soccer Telemundo Deportes YouTube`),
     ])
   ).flat();
 

@@ -1,7 +1,9 @@
+import { WC2026_TEAM_NAMES_ES, resolveTeamAbbrevFromHint } from "../../data/wc2026TeamCatalog";
 import type { Team, MergedMatch } from "../../types";
 import type { YouTubeMatchVideo, YouTubeRawCandidate, YouTubeVideoKind } from "../../types/youtubeHighlights";
 import {
   FOX_SOCCER_CHANNEL_ID,
+  FOX_SPORTS_CHANNEL_ID,
   OFFICIAL_MATCH_VIDEO_CHANNELS,
   TELEMUNDO_DEPORTES_CHANNEL_ID,
 } from "../../config/youtubeHighlightsEndpoints";
@@ -58,12 +60,22 @@ function compact(value: string): string {
 }
 
 function termsForTeam(teamName: string, team?: Team): string[] {
+  const abbrev =
+    resolveTeamAbbrevFromHint(team?.abbreviation) ??
+    resolveTeamAbbrevFromHint(team?.name) ??
+    resolveTeamAbbrevFromHint(teamName) ??
+    resolveTeamAbbrevFromHint(team?.id);
+
+  const spanishFromCatalog = abbrev ? WC2026_TEAM_NAMES_ES[abbrev] : undefined;
+
   const raw = [
     teamName,
     team?.name,
     team?.shortName,
     team?.abbreviation,
     team?.id,
+    team?.nameEs,
+    spanishFromCatalog,
   ].filter((v): v is string => Boolean(v?.trim()));
 
   const terms = new Set<string>();
@@ -95,7 +107,12 @@ function inferKind(text: string): YouTubeVideoKind | null {
 function inferProvider(candidate: YouTubeRawCandidate): YouTubeMatchVideo["provider"] {
   const channelId = candidate.channelId;
   const text = normalizeText(`${candidate.channelTitle ?? ""} ${candidate.title ?? ""}`);
-  if (channelId === FOX_SOCCER_CHANNEL_ID || text.includes("fox soccer") || text.includes("fox sports")) {
+  if (
+    channelId === FOX_SPORTS_CHANNEL_ID ||
+    channelId === FOX_SOCCER_CHANNEL_ID ||
+    text.includes("fox soccer") ||
+    text.includes("fox sports")
+  ) {
     return "fox";
   }
   if (

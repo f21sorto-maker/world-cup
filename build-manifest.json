@@ -1,6 +1,22 @@
 {
-  "updatedAt": "2026-07-01T08:25:55.258Z",
+  "updatedAt": "2026-07-02T16:31:26.044Z",
   "builds": [
+    {
+      "version": "6.0.0",
+      "build": 9,
+      "kind": "build",
+      "message": "12 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 12 files changed, 356 insertions(+), 95 deletions(-)",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T16:31:26.044Z"
+    },
+    {
+      "version": "6.0.0",
+      "build": 8,
+      "kind": "build",
+      "message": "wire YouTube highlights into match tab",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T16:30:59.744Z"
+    },
     {
       "version": "6.0.0",
       "build": 7,
@@ -304,25 +320,17 @@
       "message": "Fix bracket grid shift from connector overlay consuming first column",
       "date": "2026-06-30",
       "timestamp": "2026-06-30T18:43:15.363Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 45,
-      "kind": "build",
-      "message": "Fix bracket column alignment, full R32 render, winner/score consistency",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:28:08.205Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 44,
-      "kind": "build",
-      "message": "Protect manual and locked matches from ESPN poll overwrite",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:23:06.818Z"
     }
   ],
   "commits": [
+    {
+      "hash": "43d0be148291520bc5e341c159bd3bb01fb56d06",
+      "shortHash": "43d0be1",
+      "message": "Record v6.0.0 build 7 production deploy on Vercel.",
+      "version": "6.0.0",
+      "build": 7,
+      "timestamp": "2026-07-01T08:26:10.309Z"
+    },
     {
       "hash": "19dd2224b688bb1020c5d7c994e90b9f9819f394",
       "shortHash": "19dd222",
@@ -554,14 +562,6 @@
       "version": "4.0.0",
       "build": 77,
       "timestamp": "2026-06-30T02:42:27.582Z"
-    },
-    {
-      "hash": "96ce7e72679adf8515cf38f9c295747709c4ebfb",
-      "shortHash": "96ce7e7",
-      "message": "Record v4.0.0 build 76 production deploy on Vercel.",
-      "version": "4.0.0",
-      "build": 76,
-      "timestamp": "2026-06-30T02:10:17.231Z"
     }
   ],
   "deploys": [

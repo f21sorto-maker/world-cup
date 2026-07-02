@@ -7,6 +7,11 @@ import {
   youtubeScreenshotUrl,
 } from "./YouTubeMatchHighlightsClient";
 import { verifyYouTubeMatchVideo } from "./youtubeHighlights/verifyYouTubeMatchVideo";
+import {
+  FOX_SOCCER_CHANNEL_ID,
+  FOX_SPORTS_CHANNEL_ID,
+  TELEMUNDO_DEPORTES_CHANNEL_ID,
+} from "../config/youtubeHighlightsEndpoints";
 
 const match: MergedMatch = {
   id: "m1",
@@ -39,6 +44,34 @@ const awayTeam: Team = {
   abbreviation: "FRA",
   group: "A",
   rating: 90,
+};
+
+const paraguayTeam: Team = {
+  id: "par",
+  name: "Paraguay",
+  shortName: "Paraguay",
+  abbreviation: "PAR",
+  nameEs: "Paraguay",
+  group: "D",
+  rating: 75,
+};
+
+const franceTeam: Team = {
+  id: "fra",
+  name: "France",
+  shortName: "France",
+  abbreviation: "FRA",
+  nameEs: "Francia",
+  group: "D",
+  rating: 90,
+};
+
+const parFraMatch: MergedMatch = {
+  ...match,
+  id: "m90",
+  matchId: "M90",
+  homeTeamId: "par",
+  awayTeamId: "fra",
 };
 
 describe("YouTubeMatchHighlightsClient normalize", () => {
@@ -84,7 +117,7 @@ describe("verifyYouTubeMatchVideo", () => {
       {
         videoId: "PuQFESk0BrA",
         title: "Brazil vs France extended highlights | FIFA World Cup | FOX Soccer",
-        channelId: "UCooTLkxcpnTNx6vfOovfBFA",
+        channelId: FOX_SOCCER_CHANNEL_ID,
         channelTitle: "FOX Soccer",
         source: "youtube138",
       },
@@ -94,12 +127,50 @@ describe("verifyYouTubeMatchVideo", () => {
     expect(verified?.verified).toBe(true);
   });
 
+  it("accepts FOX Sports channel highlights", () => {
+    const verified = verifyYouTubeMatchVideo(
+      {
+        videoId: "abc12345678",
+        title: "Brazil vs France extended highlights | FIFA World Cup | FOX Sports",
+        channelId: FOX_SPORTS_CHANNEL_ID,
+        channelTitle: "FOX Sports",
+        source: "youtube138",
+      },
+      { match, homeTeam, awayTeam, homeTeamName: "Brazil", awayTeamName: "France" }
+    );
+    expect(verified?.kind).toBe("highlights");
+    expect(verified?.provider).toBe("fox");
+    expect(verified?.verified).toBe(true);
+  });
+
+  it("accepts Telemundo Spanish titles with catalog team names", () => {
+    const verified = verifyYouTubeMatchVideo(
+      {
+        videoId: "xyz98765432",
+        title: "Paraguay vs. Francia | Resumen | Copa Mundial | Telemundo Deportes",
+        channelId: TELEMUNDO_DEPORTES_CHANNEL_ID,
+        channelTitle: "Telemundo Deportes",
+        source: "youtube138",
+      },
+      {
+        match: parFraMatch,
+        homeTeam: paraguayTeam,
+        awayTeam: franceTeam,
+        homeTeamName: "Paraguay",
+        awayTeamName: "France",
+      }
+    );
+    expect(verified?.kind).toBe("highlights");
+    expect(verified?.provider).toBe("telemundo");
+    expect(verified?.verified).toBe(true);
+  });
+
   it("rejects unrelated videos from an official channel", () => {
     const verified = verifyYouTubeMatchVideo(
       {
         videoId: "PuQFESk0BrA",
         title: "Spain vs Germany highlights | FIFA World Cup | FOX Soccer",
-        channelId: "UCooTLkxcpnTNx6vfOovfBFA",
+        channelId: FOX_SOCCER_CHANNEL_ID,
         channelTitle: "FOX Soccer",
         source: "youtube138",
       },

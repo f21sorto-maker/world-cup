@@ -3,6 +3,7 @@ export const YOUTUBE_V2_HOST = "youtube-v2.p.rapidapi.com";
 export const YOUTUBE138_HOST = "youtube138.p.rapidapi.com";
 export const WEBSITE_SOCIAL_SCRAPER_HOST = "website-social-scraper-api.p.rapidapi.com";
 
+export const FOX_SPORTS_CHANNEL_ID = "UCwNqHDsnBCKT-olwJwIFyfg";
 export const FOX_SOCCER_CHANNEL_ID = "UCooTLkxcpnTNx6vfOovfBFA";
 export const TELEMUNDO_DEPORTES_CHANNEL_ID = "UCjZ7QPKb89R-4SxzBoceyOg";
 
@@ -14,6 +15,12 @@ export type OfficialYouTubeChannel = {
 };
 
 export const OFFICIAL_MATCH_VIDEO_CHANNELS: OfficialYouTubeChannel[] = [
+  {
+    id: FOX_SPORTS_CHANNEL_ID,
+    label: "FOX Sports",
+    provider: "fox",
+    website: "https://www.foxsports.com",
+  },
   {
     id: FOX_SOCCER_CHANNEL_ID,
     label: "FOX Soccer",
