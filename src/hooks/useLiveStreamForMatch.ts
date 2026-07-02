@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { MergedMatch, Team } from "../types";
 import type { LiveStreamMatchBundle } from "../types/liveStream";
+import { logMatchDetailFetch } from "../lib/matchDetailDebug";
 import { teamDisplayNameForMatch } from "../lib/matchTeamDisplay";
 import { useStore } from "../store";
 import {
@@ -107,42 +108,72 @@ async function loadLiveStreamBundle(
   };
 }
 
+type Options = {
+  /** When false, skips fetch and polling until the Watch tab (or live match) needs streams. */
+  enabled?: boolean;
+};
+
 export function useLiveStreamForMatch(
   match: MergedMatch | null,
   homeTeam?: Team,
-  awayTeam?: Team
+  awayTeam?: Team,
+  options?: Options
 ): LiveStreamMatchBundle & { loading: boolean } {
-  const teams = useStore((s) => s.teams);
+  const enabled = options?.enabled !== false;
+  const matchRef = useRef(match);
+  const homeTeamRef = useRef(homeTeam);
+  const awayTeamRef = useRef(awayTeam);
+  matchRef.current = match;
+  homeTeamRef.current = homeTeam;
+  awayTeamRef.current = awayTeam;
+
+  const matchId = match?.id;
+  const matchDate = match?.date;
+  const matchStatus = match?.status;
+  const homeTeamId = homeTeam?.id;
+  const awayTeamId = awayTeam?.id;
+
   const [bundle, setBundle] = useState<LiveStreamMatchBundle>(EMPTY);
   const [loading, setLoading] = useState(false);
 
-  const warmEnabled = match?.status === "live";
+  const warmEnabled = enabled && matchStatus === "live";
 
-  const load = useCallback(
-    async (signal?: AbortSignal) => {
-      if (!match) return;
-      setLoading(true);
-      try {
-        const next = await loadLiveStreamBundle(match, teams, homeTeam, awayTeam, signal);
-        if (!signal?.aborted) setBundle(next);
-      } finally {
-        if (!signal?.aborted) setLoading(false);
-      }
-    },
-    [match, teams, homeTeam, awayTeam]
-  );
+  const load = useCallback(async (signal?: AbortSignal) => {
+    const currentMatch = matchRef.current;
+    if (!currentMatch) return;
+
+    setLoading(true);
+    try {
+      const teams = useStore.getState().teams;
+      logMatchDetailFetch("liveStream", currentMatch.id);
+      const next = await loadLiveStreamBundle(
+        currentMatch,
+        teams,
+        homeTeamRef.current,
+        awayTeamRef.current,
+        signal
+      );
+      if (!signal?.aborted) setBundle(next);
+    } finally {
+      if (!signal?.aborted) setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!match) {
-      setBundle(EMPTY);
-      setLoading(false);
+    if (!enabled || !matchId) {
+      if (!enabled) {
+        setLoading(false);
+      } else {
+        setBundle(EMPTY);
+        setLoading(false);
+      }
       return;
     }
 
     const ac = new AbortController();
     void load(ac.signal);
     return () => ac.abort();
-  }, [match?.id, match?.date, match?.status, homeTeam?.id, awayTeam?.id, load]);
+  }, [enabled, matchId, matchDate, matchStatus, homeTeamId, awayTeamId, load]);
 
   usePollingGov(() => {
     void load();

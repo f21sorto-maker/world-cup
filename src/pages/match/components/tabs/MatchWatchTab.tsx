@@ -1,4 +1,7 @@
+import { useMemo } from "react";
 import type { LiveStreamMatchBundle } from "../../../../types/liveStream";
+import { extractIframeSrc } from "../../../../lib/extractIframeSrc";
+import { TapToPlayEmbed } from "../../../../components/shared/TapToPlayEmbed";
 import styles from "./MatchWatchTab.module.css";
 
 type Props = {
@@ -19,6 +22,11 @@ export function MatchWatchTab({
   onOpenStream,
 }: Props) {
   const { loading, scheduleMatch, play, scheduleError, streamMatchId, iptv } = bundle;
+
+  const iframeHtmlSrc = useMemo(
+    () => (play?.iframeHtml ? extractIframeSrc(play.iframeHtml) : undefined),
+    [play?.iframeHtml]
+  );
 
   if (loading && !play && !scheduleMatch) {
     return (
@@ -59,6 +67,9 @@ export function MatchWatchTab({
 
   const embedUrl = play?.embedUrl ?? play?.streamUrl;
   const servers = play?.servers ?? [];
+  const streamTitle = `Live stream: ${homeTeamName} vs ${awayTeamName}`;
+  const playableEmbedUrl =
+    embedUrl && isEmbedUrl(embedUrl) ? embedUrl : iframeHtmlSrc && isEmbedUrl(iframeHtmlSrc) ? iframeHtmlSrc : undefined;
 
   return (
     <div className={styles.panel}>
@@ -81,18 +92,14 @@ export function MatchWatchTab({
         </div>
       ) : (
         <>
-          {embedUrl && isEmbedUrl(embedUrl) ? (
-            <div className={styles.playerWrap}>
-              <iframe
-                src={embedUrl}
-                title={`Live stream: ${homeTeamName} vs ${awayTeamName}`}
-                className={styles.player}
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
+          {playableEmbedUrl ? (
+            <TapToPlayEmbed
+              embedUrl={playableEmbedUrl}
+              title={streamTitle}
+              posterLabel="Tap to load live stream"
+              openUrl={embedUrl && !isEmbedUrl(embedUrl) ? embedUrl : undefined}
+              className={styles.playerWrapMargin}
+            />
           ) : null}
 
           {servers.length > 0 ? (
@@ -117,7 +124,7 @@ export function MatchWatchTab({
                 </li>
               ))}
             </ul>
-          ) : embedUrl && !isEmbedUrl(embedUrl) ? (
+          ) : embedUrl && !isEmbedUrl(embedUrl) && !playableEmbedUrl ? (
             <a
               href={embedUrl}
               target="_blank"
@@ -126,11 +133,11 @@ export function MatchWatchTab({
             >
               Open stream
             </a>
-          ) : play.iframeHtml ? (
-            <div
-              className={styles.embedHtml}
-              dangerouslySetInnerHTML={{ __html: play.iframeHtml }}
-            />
+          ) : play?.iframeHtml && !iframeHtmlSrc ? (
+            <p className={styles.muted}>
+              Embedded player markup could not be loaded safely. Use a server link below or open the
+              stream in an external player.
+            </p>
           ) : null}
 
           {iptv?.available && !play?.available ? (

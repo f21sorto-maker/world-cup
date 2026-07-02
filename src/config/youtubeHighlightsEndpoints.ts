@@ -5,12 +5,14 @@ export const WEBSITE_SOCIAL_SCRAPER_HOST = "website-social-scraper-api.p.rapidap
 
 export const FOX_SPORTS_CHANNEL_ID = "UCwNqHDsnBCKT-olwJwIFyfg";
 export const FOX_SOCCER_CHANNEL_ID = "UCooTLkxcpnTNx6vfOovfBFA";
+export const FIFA_CHANNEL_ID = "UCpcTrCXblq78GZrTUTLWeBw";
+export const TELEMUNDO_CADENA_CHANNEL_ID = "UCajrNVKvG2xVlVcSr3GcsDA";
 export const TELEMUNDO_DEPORTES_CHANNEL_ID = "UCjZ7QPKb89R-4SxzBoceyOg";
 
 export type OfficialYouTubeChannel = {
   id: string;
   label: string;
-  provider: "fox" | "telemundo";
+  provider: "fox" | "telemundo" | "fifa";
   website: string;
 };
 
@@ -26,6 +28,18 @@ export const OFFICIAL_MATCH_VIDEO_CHANNELS: OfficialYouTubeChannel[] = [
     label: "FOX Soccer",
     provider: "fox",
     website: "https://www.foxsports.com/soccer",
+  },
+  {
+    id: FIFA_CHANNEL_ID,
+    label: "FIFA",
+    provider: "fifa",
+    website: "https://www.fifa.com",
+  },
+  {
+    id: TELEMUNDO_CADENA_CHANNEL_ID,
+    label: "Telemundo",
+    provider: "telemundo",
+    website: "https://www.telemundo.com",
   },
   {
     id: TELEMUNDO_DEPORTES_CHANNEL_ID,

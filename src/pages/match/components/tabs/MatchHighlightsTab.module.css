@@ -144,26 +144,44 @@
   opacity: 0.85;
 }
 
+.noticeList {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notice {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ss-muted) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+
+.noticeTitle {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ss-text);
+}
+
+.externalLinks {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .youtubeFeatured {
   margin-bottom: 16px;
 }
 
-.playerWrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #000;
+.playerWrapMargin {
   margin: 12px 0;
-}
-
-.player {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
 }
 
 .providerBadge {

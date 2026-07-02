@@ -101,6 +101,8 @@ npm run dev:portal
 npm run sync-keys:wc
 ```
 
+**Match highlights:** YouTube search and Highlightly clips need `VITE_RAPIDAPI_KEY` in `.env.local` during local dev (production uses `RAPIDAPI_KEY` on Vercel). Without a key, bundled fallback clips still load for selected canonical knockout matches. The Highlights tab explains missing keys or blocked API responses in the empty state.
+
 ## Deployment
 
 Vercel is the recommended target. The app relies on same-origin rewrites for external APIs (`vercel.json` proxies ESPN, Polymarket, FIFA, RapidAPI hosts, etc.). GitHub Pages alone is not ideal without a separate proxy.

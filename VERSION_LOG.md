@@ -226,6 +226,22 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+
+
+## [7.0.0] build 11 — 2026-07-02 (build)
+- 47 file(s) in .cursor, .env.example, .githooks, CHANGELOG.md, README.md, VERSION_LOG.md — 47 files changed, 1993 insertions(+), 407 deletions(-)
+
+## [7.0.0] build 10 — 2026-07-02 (build)
+- Highlights empty-state diagnostics, RapidAPI key docs, and external search links
+
+## [7.0.0] build 9 — 2026-07-02 (build)
+- Highlightly intro cache TTL, quota messaging, and empty-state clarity
+
+## [7.0.0] build 8 — 2026-07-02 (build)
+- FIFA + Telemundo Cadena highlight channels and M75 bundled YouTube fallbacks
+
 ## [7.0.0] build 7 — 2026-07-02 (build)
 - 9 file(s) in .cursor, .idx, .mcp.json, .vscode, CHANGELOG.md, VERSION_LOG.md — 9 files changed, 110 insertions(+), 27 deletions(-)
 

@@ -88,7 +88,10 @@ export async function fetchHighlightlyMatchBundle(input: {
   };
 
   if (isSportHighlightsDisabled()) {
-    return baseEmpty;
+    return {
+      ...baseEmpty,
+      attribution: "Highlightly API unavailable — YouTube highlights may still appear below.",
+    };
   }
 
   if (match.status !== "completed") {
@@ -107,6 +110,10 @@ export async function fetchHighlightlyMatchBundle(input: {
 
   if (!detailView || !canSpendHighlightlyRequests(6)) {
     const light = bundleFromIntro(match, intro);
+    if (intro.status === "quota_exceeded" && !light.attribution) {
+      light.attribution =
+        "Monthly Highlightly quota reached (100 requests/month). YouTube highlights are shown when available.";
+    }
     bundleCache.set(key, light, TTL_FINISHED_MS);
     return light;
   }

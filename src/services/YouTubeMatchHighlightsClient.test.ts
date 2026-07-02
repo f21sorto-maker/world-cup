@@ -8,6 +8,7 @@ import {
 } from "./YouTubeMatchHighlightsClient";
 import { verifyYouTubeMatchVideo } from "./youtubeHighlights/verifyYouTubeMatchVideo";
 import {
+  FIFA_CHANNEL_ID,
   FOX_SOCCER_CHANNEL_ID,
   FOX_SPORTS_CHANNEL_ID,
   TELEMUNDO_DEPORTES_CHANNEL_ID,
@@ -177,6 +178,25 @@ describe("verifyYouTubeMatchVideo", () => {
       { match, homeTeam, awayTeam, homeTeamName: "Brazil", awayTeamName: "France" }
     );
     expect(verified).toBeNull();
+  });
+
+  it("accepts FIFA official channel highlights", () => {
+    const verified = verifyYouTubeMatchVideo(
+      {
+        videoId: "Gw6vNwAvkTs",
+        title: "Highlights | Germany (3)1-1(4) Paraguay | FIFA World Cup 2026",
+        channelId: FIFA_CHANNEL_ID,
+        channelTitle: "FIFA",
+        source: "youtube138",
+      },
+      {
+        match: { ...match, homeTeamId: "ger", awayTeamId: "par" },
+        homeTeamName: "Germany",
+        awayTeamName: "Paraguay",
+      }
+    );
+    expect(verified?.provider).toBe("fifa");
+    expect(verified?.verified).toBe(true);
   });
 });
 

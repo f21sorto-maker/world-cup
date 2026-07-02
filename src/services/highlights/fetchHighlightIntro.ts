@@ -21,7 +21,7 @@ const INTRO_REQUEST_BUDGET = 2;
 
 /**
  * Fetch post-match highlight intro — only for completed fixtures.
- * Results are stored permanently (static) to conserve the 100 req/month quota.
+ * Successful intros persist; misses/errors TTL after 24h; quota blocks are never cached.
  */
 export async function fetchHighlightIntroForMatch(input: {
   match: MergedMatch;
@@ -50,13 +50,22 @@ export async function fetchHighlightIntroForMatch(input: {
   }
 
   if (isSportHighlightsDisabled()) {
-    return cached ?? emptyBase("error");
+    return (
+      cached ?? {
+        ...emptyBase("error"),
+        attribution: "Highlightly API unavailable — YouTube highlights may still appear below.",
+      }
+    );
   }
 
   if (!canSpendHighlightlyRequests(INTRO_REQUEST_BUDGET)) {
-    const blocked = emptyBase("quota_exceeded");
-    blocked.attribution = "Monthly Highlightly quota reached — cached clips still available.";
-    return cached ?? blocked;
+    return (
+      cached ?? {
+        ...emptyBase("quota_exceeded"),
+        attribution:
+          "Monthly Highlightly quota reached (100 requests/month). YouTube highlights are shown when available.",
+      }
+    );
   }
 
   const homeName = teamDisplayName(homeTeam, match.homeTeamId);
@@ -72,7 +81,8 @@ export async function fetchHighlightIntroForMatch(input: {
 
   if (!highlightlyMatchId) {
     const miss = emptyBase("empty");
-    miss.attribution = "No Highlightly match id found for this fixture.";
+    miss.attribution =
+      "No Highlightly match id found for this fixture — retrying for 24 hours. YouTube highlights may still appear below.";
     writeHighlightIntro(miss);
     return miss;
   }
@@ -97,12 +107,22 @@ export async function fetchHighlightIntroForMatch(input: {
     status: highlights.length > 0 ? "available" : "empty",
   };
 
-  writeHighlightIntro(intro);
-  logger.info("Highlight intro cached", "fetchHighlightIntroForMatch", {
-    matchId: match.id,
-    clips: highlights.length,
-    requestsUsed,
-  });
+  if (intro.status === "available") {
+    writeHighlightIntro(intro);
+    logger.info("Highlight intro cached", "fetchHighlightIntroForMatch", {
+      matchId: match.id,
+      clips: highlights.length,
+      requestsUsed,
+    });
+  } else {
+    const emptyIntro: HighlightlyMatchIntro = {
+      ...intro,
+      attribution:
+        "Highlightly returned no clips for this fixture — retrying for 24 hours. YouTube highlights may still appear below.",
+    };
+    writeHighlightIntro(emptyIntro);
+    return emptyIntro;
+  }
 
   return intro;
 }

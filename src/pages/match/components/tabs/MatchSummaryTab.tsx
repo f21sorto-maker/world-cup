@@ -1,4 +1,4 @@
-import type { MatchEvent, MergedMatch, Team } from "../../../../types";
+import type { GoalScorerProfile, MatchEvent, MergedMatch, Team } from "../../../../types";
 import type { MatchBundle } from "../../../../services/matchDetail/fetchMatchBundle";
 import { MatchFactsPanel } from "../summary/MatchFactsPanel";
 import { MatchEventTimeline } from "../summary/MatchEventTimeline";
@@ -6,8 +6,6 @@ import type { HighlightlyMatchBundle } from "../../../../types/sportHighlights";
 import { HighlightlyFactsPanel } from "../summary/HighlightlyFactsPanel";
 import { HighlightlyStatsPanel } from "../statistics/HighlightlyStatsPanel";
 import { GoalScorersPanel } from "../../../../components/match/GoalScorersPanel";
-import { useGoalScorerProfiles } from "../../../../hooks/useGoalScorerProfiles";
-import { useStore } from "../../../../store";
 import styles from "../../MatchDetailView.module.css";
 
 type Props = {
@@ -19,6 +17,8 @@ type Props = {
   homeTeam?: Team;
   awayTeam?: Team;
   highlightly?: HighlightlyMatchBundle & { loading?: boolean };
+  scorerProfiles: GoalScorerProfile[];
+  scorersLoading?: boolean;
 };
 
 export function MatchSummaryTab({
@@ -30,14 +30,9 @@ export function MatchSummaryTab({
   homeTeam,
   awayTeam,
   highlightly,
+  scorerProfiles,
+  scorersLoading = false,
 }: Props) {
-  const matchEvents = useStore((s) => s.matchEvents);
-  const { profiles, loading } = useGoalScorerProfiles({
-    events,
-    homeTeam,
-    awayTeam,
-    allMatchEvents: matchEvents,
-  });
   const hasEvents = events.length > 0;
   const isLive = match.status === "live";
   const isDone = match.status === "completed";
@@ -67,10 +62,10 @@ export function MatchSummaryTab({
   return (
     <>
       <GoalScorersPanel
-        profiles={profiles}
+        profiles={scorerProfiles}
         homeTeam={homeTeam}
         awayTeam={awayTeam}
-        loading={loading}
+        loading={scorersLoading}
       />
       {highlightly ? (
         <>

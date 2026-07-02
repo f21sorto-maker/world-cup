@@ -2,9 +2,11 @@ import { WC2026_TEAM_NAMES_ES, resolveTeamAbbrevFromHint } from "../../data/wc20
 import type { Team, MergedMatch } from "../../types";
 import type { YouTubeMatchVideo, YouTubeRawCandidate, YouTubeVideoKind } from "../../types/youtubeHighlights";
 import {
+  FIFA_CHANNEL_ID,
   FOX_SOCCER_CHANNEL_ID,
   FOX_SPORTS_CHANNEL_ID,
   OFFICIAL_MATCH_VIDEO_CHANNELS,
+  TELEMUNDO_CADENA_CHANNEL_ID,
   TELEMUNDO_DEPORTES_CHANNEL_ID,
 } from "../../config/youtubeHighlightsEndpoints";
 
@@ -46,7 +48,7 @@ const SOCCER_CONTEXT_TERMS = [
   "copa mundial",
 ] as const;
 
-const PROVIDER_TERMS = ["fox soccer", "fox sports", "telemundo deportes", "telemundo"] as const;
+const PROVIDER_TERMS = ["fox soccer", "fox sports", "telemundo deportes", "telemundo", "fifa"] as const;
 
 function normalizeText(value: string): string {
   return value
@@ -107,20 +109,25 @@ function inferKind(text: string): YouTubeVideoKind | null {
 function inferProvider(candidate: YouTubeRawCandidate): YouTubeMatchVideo["provider"] {
   const channelId = candidate.channelId;
   const text = normalizeText(`${candidate.channelTitle ?? ""} ${candidate.title ?? ""}`);
-  if (
-    channelId === FOX_SPORTS_CHANNEL_ID ||
-    channelId === FOX_SOCCER_CHANNEL_ID ||
-    text.includes("fox soccer") ||
-    text.includes("fox sports")
-  ) {
+
+  if (channelId === FOX_SPORTS_CHANNEL_ID || channelId === FOX_SOCCER_CHANNEL_ID) {
     return "fox";
   }
-  if (
-    channelId === TELEMUNDO_DEPORTES_CHANNEL_ID ||
-    text.includes("telemundo deportes") ||
-    text.includes("telemundo")
-  ) {
+  if (channelId === TELEMUNDO_DEPORTES_CHANNEL_ID || channelId === TELEMUNDO_CADENA_CHANNEL_ID) {
     return "telemundo";
+  }
+  if (channelId === FIFA_CHANNEL_ID) {
+    return "fifa";
+  }
+
+  if (text.includes("fox soccer") || text.includes("fox sports")) {
+    return "fox";
+  }
+  if (text.includes("telemundo deportes") || text.includes("telemundo")) {
+    return "telemundo";
+  }
+  if (text.includes("fifa")) {
+    return "fifa";
   }
   return "unknown";
 }

@@ -1,0 +1,37 @@
+{
+  "description": "Bundled verified YouTube highlight clips for locked canonical knockout matches (no RapidAPI required).",
+  "matches": {
+    "M75": {
+      "candidates": [
+        {
+          "videoId": "-gtI96YhJek",
+          "title": "Germany vs Paraguay Highlights | 2026 FIFA World Cup | Round of 32",
+          "channelId": "UCwNqHDsnBCKT-olwJwIFyfg",
+          "channelTitle": "FOX Sports",
+          "source": "youtube138"
+        },
+        {
+          "videoId": "Gw6vNwAvkTs",
+          "title": "Highlights | Germany (3)1-1(4) Paraguay | FIFA World Cup 2026",
+          "channelId": "UCpcTrCXblq78GZrTUTLWeBw",
+          "channelTitle": "FIFA",
+          "source": "youtube138"
+        },
+        {
+          "videoId": "zGZGTRKNxvs",
+          "title": "Alemania vs Paraguay | Resumen y Goles | Copa Mundial de la FIFA 2026 | Telemundo Deportes",
+          "channelId": "UCjZ7QPKb89R-4SxzBoceyOg",
+          "channelTitle": "Telemundo Deportes",
+          "source": "youtube138"
+        },
+        {
+          "videoId": "Rpu8Yf7DBAk",
+          "title": "Alemania vs Paraguay | Resumen Extendido | Copa Mundial de la FIFA 2026 | Telemundo Deportes",
+          "channelId": "UCjZ7QPKb89R-4SxzBoceyOg",
+          "channelTitle": "Telemundo Deportes",
+          "source": "youtube138"
+        }
+      ]
+    }
+  }
+}

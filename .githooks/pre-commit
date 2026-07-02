@@ -1,4 +1,6 @@
 #!/bin/sh
 # Auto-increment build when substantive files are staged.
 set -e
-node scripts/version-auto-bump.mjs
+HOOK_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
+. "$HOOK_DIR/hook-env.sh"
+exec "$NODE" scripts/version-auto-bump.mjs

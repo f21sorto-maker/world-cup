@@ -2,6 +2,9 @@ import type { HighlightlyHighlight, HighlightlyMatchIntro } from "../types/sport
 
 const STORAGE_KEY = "wc-highlightly-static-v1";
 
+/** Miss/error intros expire after 24h so fixtures can be retried. Available intros persist. */
+export const HIGHLIGHT_INTRO_MISS_TTL_MS = 24 * 60 * 60_000;
+
 type StaticStore = {
   version: 1;
   intros: Record<string, HighlightlyMatchIntro>;
@@ -38,11 +41,41 @@ function writeStore(store: StaticStore): void {
   }
 }
 
+export function isHighlightIntroCacheFresh(
+  intro: HighlightlyMatchIntro,
+  now = Date.now()
+): boolean {
+  if (intro.status === "available") return true;
+  if (intro.status === "quota_exceeded") return false;
+  const fetchedAt = Date.parse(intro.fetchedAt);
+  if (Number.isNaN(fetchedAt)) return false;
+  return now - fetchedAt < HIGHLIGHT_INTRO_MISS_TTL_MS;
+}
+
+export function purgeHighlightIntro(matchId: string): void {
+  const store = readStore();
+  if (!(matchId in store.intros)) return;
+  delete store.intros[matchId];
+  writeStore(store);
+}
+
 export function readHighlightIntro(matchId: string): HighlightlyMatchIntro | null {
+  const intro = readStore().intros[matchId] ?? null;
+  if (!intro) return null;
+  if (!isHighlightIntroCacheFresh(intro)) {
+    purgeHighlightIntro(matchId);
+    return null;
+  }
+  return intro;
+}
+
+/** Raw store read — ignores TTL (tests / diagnostics only). */
+export function readHighlightIntroRaw(matchId: string): HighlightlyMatchIntro | null {
   return readStore().intros[matchId] ?? null;
 }
 
 export function writeHighlightIntro(intro: HighlightlyMatchIntro): void {
+  if (intro.status === "quota_exceeded") return;
   const store = readStore();
   store.intros[intro.matchId] = intro;
   writeStore(store);

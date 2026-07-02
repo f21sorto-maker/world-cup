@@ -8,6 +8,10 @@
 ## [Unreleased]
 
 ### Builds
+- **7.0.0 build 11** (2026-07-02): 47 file(s) in .cursor, .env.example, .githooks, CHANGELOG.md, README.md, VERSION_LOG.md — 47 files changed, 1993 insertions(+), 407 deletions(-)
+- **7.0.0 build 10** (2026-07-02): Highlights empty-state diagnostics, RapidAPI key docs, and external search links
+- **7.0.0 build 9** (2026-07-02): Highlightly intro cache TTL, quota messaging, and empty-state clarity
+- **7.0.0 build 8** (2026-07-02): FIFA + Telemundo Cadena highlight channels and M75 bundled YouTube fallbacks
 - **7.0.0 build 7** (2026-07-02): 9 file(s) in .cursor, .idx, .mcp.json, .vscode, CHANGELOG.md, VERSION_LOG.md — 9 files changed, 110 insertions(+), 27 deletions(-)
 - **7.0.0 build 6** (2026-07-02): Wrap match detail Statistics/Lineups/Commentary/H2H tabs in error boundaries
 - **7.0.0 build 5** (2026-07-02): Replace PitchDiagram foreignObject with CSS player overlay for Safari perf

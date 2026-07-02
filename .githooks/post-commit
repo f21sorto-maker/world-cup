@@ -1,4 +1,6 @@
 #!/bin/sh
 # Record commit hash + sync release canvas.
 set -e
-node scripts/version.mjs record-commit
+HOOK_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
+. "$HOOK_DIR/hook-env.sh"
+exec "$NODE" scripts/version.mjs record-commit

@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MergedMatch, Team } from "../types";
 import type { YouTubeMatchVideo } from "../types/youtubeHighlights";
-import { resolveYouTubeMatchVideos } from "../services/YouTubeMatchHighlightsClient";
+import { logMatchDetailFetch } from "../lib/matchDetailDebug";
+import {
+  resolveYouTubeMatchVideos,
+  type YouTubeMatchVideosResolveResult,
+} from "../services/YouTubeMatchHighlightsClient";
 
 type Input = {
   match: MergedMatch | null;
@@ -13,36 +17,64 @@ type Input = {
   enabled?: boolean;
 };
 
+const EMPTY_RESOLVE: YouTubeMatchVideosResolveResult = {
+  videos: [],
+  source: "none",
+  apiBlocked: false,
+};
+
 /** Cold tier — resolve YouTube clips once when match is completed and enabled. */
 export function useYouTubeMatchVideos(input: Input): {
   videos: YouTubeMatchVideo[];
   loading: boolean;
+  resolveResult: YouTubeMatchVideosResolveResult;
 } {
+  const matchRef = useRef(input.match);
+  const homeTeamRef = useRef(input.homeTeam);
+  const awayTeamRef = useRef(input.awayTeam);
+  matchRef.current = input.match;
+  homeTeamRef.current = input.homeTeam;
+  awayTeamRef.current = input.awayTeam;
+
   const [videos, setVideos] = useState<YouTubeMatchVideo[]>([]);
+  const [resolveResult, setResolveResult] = useState<YouTubeMatchVideosResolveResult>(EMPTY_RESOLVE);
   const [loading, setLoading] = useState(false);
+
   const enabled = input.enabled !== false;
-  const isCompleted = input.match?.status === "completed";
-  const shouldFetch = enabled && Boolean(input.match) && isCompleted;
+  const matchId = input.match?.id;
+  const matchStatus = input.match?.status;
+  const homeTeamId = input.homeTeam?.id;
+  const awayTeamId = input.awayTeam?.id;
+  const isCompleted = matchStatus === "completed";
+  const shouldFetch = enabled && Boolean(matchId) && isCompleted;
 
   useEffect(() => {
     if (!shouldFetch) {
       setVideos([]);
+      setResolveResult(EMPTY_RESOLVE);
       setLoading(false);
       return;
     }
 
+    const currentMatch = matchRef.current;
+    if (!currentMatch) return;
+
     const ac = new AbortController();
     setLoading(true);
+    logMatchDetailFetch("youtubeHighlights", currentMatch.id);
 
     void resolveYouTubeMatchVideos({
-      match: input.match!,
-      homeTeam: input.homeTeam,
-      awayTeam: input.awayTeam,
+      match: currentMatch,
+      homeTeam: homeTeamRef.current,
+      awayTeam: awayTeamRef.current,
       homeTeamName: input.homeTeamName,
       awayTeamName: input.awayTeamName,
     })
       .then((result) => {
-        if (!ac.signal.aborted) setVideos(result);
+        if (!ac.signal.aborted) {
+          setVideos(result.videos);
+          setResolveResult(result);
+        }
       })
       .finally(() => {
         if (!ac.signal.aborted) setLoading(false);
@@ -51,17 +83,14 @@ export function useYouTubeMatchVideos(input: Input): {
     return () => ac.abort();
   }, [
     shouldFetch,
-    input.match?.id,
+    matchId,
     input.match?.matchId,
-    input.match?.status,
-    input.homeTeam?.id,
-    input.awayTeam?.id,
+    matchStatus,
+    homeTeamId,
+    awayTeamId,
     input.homeTeamName,
     input.awayTeamName,
-    input.homeTeam,
-    input.awayTeam,
-    input.match,
   ]);
 
-  return { videos, loading };
+  return { videos, loading, resolveResult };
 }

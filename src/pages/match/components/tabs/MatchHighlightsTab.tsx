@@ -1,7 +1,13 @@
 import type { HighlightlyHighlight, HighlightlyMatchIntro } from "../../../../types/sportHighlights";
 import type { YouTubeMatchVideo } from "../../../../types/youtubeHighlights";
 import type { MatchStatus } from "../../../../types";
+import type { YouTubeMatchVideosResolveResult } from "../../../../services/YouTubeMatchHighlightsClient";
+import {
+  buildHighlightsExternalLinks,
+  resolveHighlightsEmptyNotices,
+} from "../../../../lib/matchHighlightsDiagnostics";
 import { LoadingState } from "../../../../components/shared/LoadingState";
+import { TapToPlayEmbed } from "../../../../components/shared/TapToPlayEmbed";
 import styles from "./MatchHighlightsTab.module.css";
 
 type Props = {
@@ -10,11 +16,13 @@ type Props = {
   homeTeamName: string;
   awayTeamName: string;
   introHighlight?: HighlightlyHighlight | null;
+  introStatus?: HighlightlyMatchIntro["status"];
   attribution?: string;
   quotaLabel?: string;
   fallbackHighlightsUrl?: string;
   youtubeVideos?: YouTubeMatchVideo[];
   youtubeLoading?: boolean;
+  youtubeResolve?: YouTubeMatchVideosResolveResult;
   matchStatus?: MatchStatus;
 };
 
@@ -30,7 +38,90 @@ function highlightHost(url?: string): string | null {
 function providerLabel(provider: YouTubeMatchVideo["provider"]): string {
   if (provider === "fox") return "FOX";
   if (provider === "telemundo") return "Telemundo";
+  if (provider === "fifa") return "FIFA";
   return "YouTube";
+}
+
+function HighlightsEmptyPanel({
+  homeTeamName,
+  awayTeamName,
+  isCompleted,
+  introStatus,
+  attribution,
+  quotaLabel,
+  fallbackHighlightsUrl,
+  youtubeResolve,
+}: {
+  homeTeamName: string;
+  awayTeamName: string;
+  isCompleted: boolean;
+  introStatus?: HighlightlyMatchIntro["status"];
+  attribution?: string;
+  quotaLabel?: string;
+  fallbackHighlightsUrl?: string;
+  youtubeResolve: YouTubeMatchVideosResolveResult;
+}) {
+  const notices = resolveHighlightsEmptyNotices({
+    isCompleted,
+    introStatus,
+    youtube: youtubeResolve,
+    hasHighlightly: false,
+    hasKampFallback: Boolean(fallbackHighlightsUrl),
+  });
+  const externalLinks = isCompleted
+    ? buildHighlightsExternalLinks({
+        homeTeamName,
+        awayTeamName,
+        kampHighlightsUrl: fallbackHighlightsUrl,
+      })
+    : [];
+
+  return (
+    <div className={styles.panel}>
+      <p className={styles.emptyTitle}>No highlights yet</p>
+      <ul className={styles.noticeList}>
+        {notices.map((notice) => (
+          <li key={notice.reason} className={styles.notice}>
+            <p className={styles.noticeTitle}>{notice.title}</p>
+            <p className={styles.muted}>{notice.body}</p>
+          </li>
+        ))}
+      </ul>
+      {externalLinks.length > 0 ? (
+        <ul className={styles.externalLinks}>
+          {externalLinks.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {attribution ? <p className={styles.attribution}>{attribution}</p> : null}
+      {quotaLabel ? <p className={styles.quota}>{quotaLabel}</p> : null}
+    </div>
+  );
+}
+
+function HighlightlyStatusNote({
+  introStatus,
+  attribution,
+  quotaLabel,
+}: {
+  introStatus?: HighlightlyMatchIntro["status"];
+  attribution?: string;
+  quotaLabel?: string;
+}) {
+  if (!attribution && !quotaLabel && introStatus !== "quota_exceeded" && introStatus !== "error") {
+    return null;
+  }
+  return (
+    <>
+      {attribution ? <p className={styles.attribution}>{attribution}</p> : null}
+      {quotaLabel ? <p className={styles.quota}>{quotaLabel}</p> : null}
+    </>
+  );
 }
 
 function YouTubeVideoCard({ video }: { video: YouTubeMatchVideo }) {
@@ -69,11 +160,13 @@ export function MatchHighlightsTab({
   homeTeamName,
   awayTeamName,
   introHighlight,
+  introStatus,
   attribution,
   quotaLabel,
   fallbackHighlightsUrl,
   youtubeVideos = [],
   youtubeLoading = false,
+  youtubeResolve = { videos: [], source: "none", apiBlocked: false },
   matchStatus,
 }: Props) {
   const isCompleted = matchStatus === "completed";
@@ -165,17 +258,15 @@ export function MatchHighlightsTab({
             <span className={styles.providerBadge}>{providerLabel(featuredYoutube.provider)}</span>
           </div>
           <h3 className={styles.introTitle}>{featuredYoutube.title}</h3>
-          <div className={styles.playerWrap}>
-            <iframe
-              src={featuredYoutube.embedUrl}
-              title={`Highlights: ${homeTeamName} vs ${awayTeamName}`}
-              className={styles.player}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          <TapToPlayEmbed
+            embedUrl={featuredYoutube.embedUrl}
+            title={`Highlights: ${homeTeamName} vs ${awayTeamName}`}
+            posterUrl={featuredYoutube.thumbnailUrl}
+            posterLabel="Tap to load highlights"
+            openUrl={featuredYoutube.watchUrl}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            className={styles.playerWrapMargin}
+          />
           <a
             href={featuredYoutube.watchUrl}
             target="_blank"
@@ -192,6 +283,11 @@ export function MatchHighlightsTab({
             ))}
           </ul>
         ) : null}
+        <HighlightlyStatusNote
+          introStatus={introStatus}
+          attribution={attribution}
+          quotaLabel={quotaLabel}
+        />
       </div>
     );
   }
@@ -204,30 +300,25 @@ export function MatchHighlightsTab({
             <YouTubeVideoCard key={video.id} video={video} />
           ))}
         </ul>
+        <HighlightlyStatusNote
+          introStatus={introStatus}
+          attribution={attribution}
+          quotaLabel={quotaLabel}
+        />
       </div>
     );
   }
 
   return (
-    <div className={styles.panel}>
-      <p className={styles.emptyTitle}>No highlights yet</p>
-      <p className={styles.muted}>
-        {isCompleted
-          ? `Highlights for ${homeTeamName} vs ${awayTeamName} usually appear within 1–2 hours after full time from FOX or Telemundo on YouTube.`
-          : `Clips for ${homeTeamName} vs ${awayTeamName} appear after kickoff — full recaps usually land within 1–48 hours.`}
-      </p>
-      {fallbackHighlightsUrl ? (
-        <a
-          href={fallbackHighlightsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.link}
-        >
-          Watch highlights{highlightHost(fallbackHighlightsUrl) ? ` on ${highlightHost(fallbackHighlightsUrl)}` : ""}
-        </a>
-      ) : null}
-      {attribution ? <p className={styles.attribution}>{attribution}</p> : null}
-      {quotaLabel ? <p className={styles.quota}>{quotaLabel}</p> : null}
-    </div>
+    <HighlightsEmptyPanel
+      homeTeamName={homeTeamName}
+      awayTeamName={awayTeamName}
+      isCompleted={isCompleted}
+      introStatus={introStatus}
+      attribution={attribution}
+      quotaLabel={quotaLabel}
+      fallbackHighlightsUrl={fallbackHighlightsUrl}
+      youtubeResolve={youtubeResolve}
+    />
   );
 }

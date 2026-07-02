@@ -3,18 +3,74 @@
   border-radius: 10px;
 }
 
-.svg {
-  display: block;
+.pitch {
+  position: relative;
+  width: 100%;
   max-width: 340px;
   margin: 0 auto;
+  aspect-ratio: 300 / 420;
 }
 
-.photoWrap {
-  width: 28px;
-  height: 28px;
+.pitchSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.playersLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.playerToken {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 52px;
+  pointer-events: auto;
+}
+
+.photoRing {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ss-surface) 40%, #000);
+}
+
+.playerTokenHome .photoRing {
+  box-shadow: 0 0 0 2px var(--ss-brand);
+}
+
+.playerTokenAway .photoRing {
+  box-shadow: 0 0 0 2px var(--ss-danger);
+}
+
+.playerLabel {
+  max-width: 52px;
+  font-size: 8px;
+  line-height: 1.2;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.captainBadge {
+  position: absolute;
+  top: -10px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #fcc419;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
 }
 
 .legend {

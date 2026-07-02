@@ -12,7 +12,7 @@ export type YouTubeMatchVideo = {
   watchUrl: string;
   embedUrl: string;
   source: "youtube138" | "google-api31";
-  provider: "fox" | "telemundo" | "unknown";
+  provider: "fox" | "telemundo" | "fifa" | "unknown";
   kind: YouTubeVideoKind;
   verified: boolean;
   confidence: number;

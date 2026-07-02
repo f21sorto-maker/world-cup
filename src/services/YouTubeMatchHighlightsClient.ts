@@ -13,6 +13,7 @@ import {
 } from "../config/youtubeHighlightsEndpoints";
 import type { MergedMatch, Team } from "../types";
 import type { WebsiteContact, YouTubeMatchVideo, YouTubeRawCandidate } from "../types/youtubeHighlights";
+import { resolveCanonicalMatchHighlightVideos } from "../lib/canonicalMatchHighlights";
 import { logger } from "./Logger";
 import { verifyYouTubeMatchVideo } from "./youtubeHighlights/verifyYouTubeMatchVideo";
 
@@ -25,17 +26,38 @@ type MatchVideoInput = {
 };
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
-const matchVideoCache = new Map<string, { expiresAt: number; videos: YouTubeMatchVideo[] }>();
+const matchVideoCache = new Map<
+  string,
+  { expiresAt: number; videos: YouTubeMatchVideo[]; source: YouTubeMatchVideosResolveResult["source"] }
+>();
+const matchVideoInFlight = new Map<string, Promise<YouTubeMatchVideosResolveResult>>();
 
 let youtube138Disabled = false;
 let googleApi31Disabled = false;
 let socialScraperDisabled = false;
+
+export type YouTubeMatchVideosResolveResult = {
+  videos: YouTubeMatchVideo[];
+  source: "canonical" | "api" | "disabled" | "none";
+  apiBlocked: boolean;
+};
+
+const EMPTY_RESOLVE: YouTubeMatchVideosResolveResult = {
+  videos: [],
+  source: "none",
+  apiBlocked: false,
+};
+
+export function isYouTubeHighlightsApiBlocked(): boolean {
+  return youtube138Disabled || googleApi31Disabled || socialScraperDisabled;
+}
 
 export function resetYouTubeMatchHighlightsSessionForTests(): void {
   youtube138Disabled = false;
   googleApi31Disabled = false;
   socialScraperDisabled = false;
   matchVideoCache.clear();
+  matchVideoInFlight.clear();
 }
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -273,13 +295,17 @@ function dedupeVideos(videos: YouTubeMatchVideo[]): YouTubeMatchVideo[] {
   return out;
 }
 
-export async function resolveYouTubeMatchVideos(input: MatchVideoInput): Promise<YouTubeMatchVideo[]> {
-  if (!isApiEnabled("youtubeMatchVideos")) return [];
-  const key = cacheKey(input);
-  const cached = matchVideoCache.get(key);
-  if (cached && Date.now() < cached.expiresAt) return cached.videos;
+function verifyCandidates(
+  candidates: YouTubeRawCandidate[],
+  input: MatchVideoInput
+): YouTubeMatchVideo[] {
+  return candidates
+    .map((candidate) => verifyYouTubeMatchVideo(candidate, input))
+    .filter((video): video is YouTubeMatchVideo => video != null);
+}
 
-  const channelCandidates = (
+async function fetchOfficialChannelCandidates(): Promise<YouTubeRawCandidate[]> {
+  return (
     await Promise.all(
       OFFICIAL_MATCH_VIDEO_CHANNELS.map(async (channel) => {
         const videos = await fetchYouTube138ChannelVideos(channel.id);
@@ -291,22 +317,81 @@ export async function resolveYouTubeMatchVideos(input: MatchVideoInput): Promise
       })
     )
   ).flat();
+}
 
+function storeResolvedVideos(
+  key: string,
+  videos: YouTubeMatchVideo[],
+  meta: Pick<YouTubeMatchVideosResolveResult, "source" | "apiBlocked">
+): YouTubeMatchVideosResolveResult {
+  const verified = dedupeVideos(videos).slice(0, 4);
+  matchVideoCache.set(key, {
+    videos: verified,
+    expiresAt: Date.now() + CACHE_TTL_MS,
+    source: meta.source,
+  });
+  return { videos: verified, ...meta };
+}
+
+async function resolveYouTubeMatchVideosInner(
+  input: MatchVideoInput
+): Promise<YouTubeMatchVideosResolveResult> {
+  const key = cacheKey(input);
   const queryBase = `${input.homeTeamName} ${input.awayTeamName} World Cup`;
-  const googleCandidates = (
-    await Promise.all([
-      fetchGoogleVideoSearch(`${queryBase} highlights FOX Sports FOX Soccer Telemundo Deportes YouTube`),
-      fetchGoogleVideoSearch(`${queryBase} preview pre match FOX Sports FOX Soccer Telemundo Deportes YouTube`),
-    ])
-  ).flat();
 
-  const verified = dedupeVideos(
-    [...channelCandidates, ...googleCandidates]
-      .map((candidate) => verifyYouTubeMatchVideo(candidate, input))
-      .filter((video): video is YouTubeMatchVideo => video != null)
-  ).slice(0, 4);
+  const highlightsSearch = await fetchGoogleVideoSearch(
+    `${queryBase} highlights FOX Sports FOX Soccer FIFA Telemundo Deportes YouTube`
+  );
+  let verified = verifyCandidates(highlightsSearch, input);
+  if (verified.length > 0) {
+    return storeResolvedVideos(key, verified, { source: "api", apiBlocked: false });
+  }
 
-  matchVideoCache.set(key, { videos: verified, expiresAt: Date.now() + CACHE_TTL_MS });
-  return verified;
+  const previewSearch = await fetchGoogleVideoSearch(
+    `${queryBase} preview pre match FOX Sports FOX Soccer Telemundo Deportes YouTube`
+  );
+  verified = verifyCandidates([...highlightsSearch, ...previewSearch], input);
+  if (verified.length > 0) {
+    return storeResolvedVideos(key, verified, { source: "api", apiBlocked: false });
+  }
+
+  const channelCandidates = await fetchOfficialChannelCandidates();
+  verified = verifyCandidates([...highlightsSearch, ...previewSearch, ...channelCandidates], input);
+  return storeResolvedVideos(key, verified, {
+    source: verified.length > 0 ? "api" : "none",
+    apiBlocked: isYouTubeHighlightsApiBlocked(),
+  });
+}
+
+export async function resolveYouTubeMatchVideos(
+  input: MatchVideoInput
+): Promise<YouTubeMatchVideosResolveResult> {
+  const key = cacheKey(input);
+  const cached = matchVideoCache.get(key);
+  if (cached && Date.now() < cached.expiresAt) {
+    return {
+      videos: cached.videos,
+      source: cached.source,
+      apiBlocked: isYouTubeHighlightsApiBlocked(),
+    };
+  }
+
+  const inFlight = matchVideoInFlight.get(key);
+  if (inFlight) return inFlight;
+
+  const promise = (async (): Promise<YouTubeMatchVideosResolveResult> => {
+    const canonical = resolveCanonicalMatchHighlightVideos(input);
+    if (canonical.length > 0) {
+      return storeResolvedVideos(key, canonical, { source: "canonical", apiBlocked: false });
+    }
+    if (!isApiEnabled("youtubeMatchVideos")) {
+      return { ...EMPTY_RESOLVE, source: "disabled" };
+    }
+    return resolveYouTubeMatchVideosInner(input);
+  })().finally(() => {
+    matchVideoInFlight.delete(key);
+  });
+  matchVideoInFlight.set(key, promise);
+  return promise;
 }
 

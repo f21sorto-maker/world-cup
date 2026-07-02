@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Lineup, MatchStatisticsBundle, MergedMatch } from "../types";
 import type { WcCommentaryEntry } from "../services/WorldCup2026LiveClient";
+import { logMatchDetailFetch } from "../lib/matchDetailDebug";
 import { useMatchEnrichment } from "./useMatchEnrichment";
 import { DataOrchestrator } from "../services/orchestrator/DataOrchestrator";
 import { fetchMatchBundle } from "../services/matchDetail/fetchMatchBundle";
 import { mapEventsToCommentary } from "../services/matchDetail/mapEventsToCommentary";
 import { publishMatchEvents } from "../services/matchDetail/fetchMatchEvents";
-import { teamDisplayNameFromId, teamDisplayNameForMatch } from "../lib/matchTeamDisplay";
+import { teamDisplayNameFromId } from "../lib/matchTeamDisplay";
 import { useStore } from "../store";
 
 type BundleState = {
@@ -45,6 +46,14 @@ export function useMatchDetailBundle(
   wcMatchId: string | null
 ): BundleState & { refetch: () => void } {
   const matchId = match?.id ?? null;
+  const matchStatus = match?.status;
+  const matchDate = match?.date;
+  const homeTeamId = match?.homeTeamId;
+  const awayTeamId = match?.awayTeamId;
+
+  const matchRef = useRef(match);
+  matchRef.current = match;
+
   const enrichment = useMatchEnrichment(matchId);
   const matchEvents = useStore((s) => s.matchEvents);
   const [direct, setDirect] = useState<Pick<BundleState, "statistics" | "lineups" | "commentary">>({
@@ -62,18 +71,19 @@ export function useMatchDetailBundle(
     }
   }, [enrichment.enrichment]);
 
-  const teams = useStore((s) => s.teams);
-
   useEffect(() => {
-    if (!match) return;
+    const currentMatch = matchRef.current;
+    if (!currentMatch || currentMatch.id !== matchId) return;
 
-    const homeName = teamDisplayNameFromId(match.homeTeamId, teams);
-    const awayName = teamDisplayNameFromId(match.awayTeamId, teams);
+    const teams = useStore.getState().teams;
+    const homeName = teamDisplayNameFromId(currentMatch.homeTeamId, teams);
+    const awayName = teamDisplayNameFromId(currentMatch.awayTeamId, teams);
 
     let cancelled = false;
     setDirectLoading(true);
+    logMatchDetailFetch("matchBundle", matchId);
 
-    void fetchMatchBundle(match, wcMatchId, forceKey > 0, { homeName, awayName, teams }).then(
+    void fetchMatchBundle(currentMatch, wcMatchId, forceKey > 0, { homeName, awayName, teams }).then(
       (bundle) => {
         if (cancelled) return;
         setDirect({
@@ -83,26 +93,27 @@ export function useMatchDetailBundle(
         });
         setFetchedAt(bundle.fetchedAt);
         setDirectLoading(false);
-        if (bundle.events.length > 0) publishMatchEvents(match, bundle.events);
+        if (bundle.events.length > 0) publishMatchEvents(currentMatch, bundle.events);
       }
     );
 
     return () => {
       cancelled = true;
     };
-  }, [match, wcMatchId, forceKey, teams]);
+  }, [matchId, matchStatus, matchDate, homeTeamId, awayTeamId, wcMatchId, forceKey]);
 
   const refetch = () => {
-    if (match) {
-      DataOrchestrator.getInstance().clearEnrichmentCache(match.id);
-      void DataOrchestrator.getInstance().enrichMatch(match.id);
+    const currentMatch = matchRef.current;
+    if (currentMatch) {
+      DataOrchestrator.getInstance().clearEnrichmentCache(currentMatch.id);
+      void DataOrchestrator.getInstance().enrichMatch(currentMatch.id);
     }
     setForceKey((k) => k + 1);
   };
 
   const storedEvents = useMemo(
-    () => (match ? resolveStoredEvents(match, matchEvents) : []),
-    [match, matchEvents]
+    () => (match && matchId ? resolveStoredEvents(match, matchEvents) : []),
+    [match, matchId, matchEvents]
   );
 
   const statistics = enrichment.statistics ?? direct.statistics;

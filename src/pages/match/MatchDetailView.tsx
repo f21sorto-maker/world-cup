@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { logMatchDetailTabSwitch } from "../../lib/matchDetailDebug";
 import { useScrollHeader } from "../../hooks/useScrollHeader";
 import { usePullToRefresh } from "../../hooks/usePullToRefresh";
 import {
@@ -114,12 +115,13 @@ export function MatchDetailView() {
     match?.clockRunning ?? false
   );
 
-  // Restore scroll on tab switch
+  // Restore scroll on tab switch + dev baseline logging
   useEffect(() => {
+    logMatchDetailTabSwitch(activeMatchTab, activeMatchId);
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
     }
-  }, [activeMatchTab]);
+  }, [activeMatchTab, activeMatchId]);
 
   const homeTeam = match ? resolveMatchTeam(match, "home", teams) : undefined;
   const awayTeam = match ? resolveMatchTeam(match, "away", teams) : undefined;
@@ -130,17 +132,26 @@ export function MatchDetailView() {
     events,
     homeTeam,
     awayTeam,
-    allMatchEvents: matchEvents,
   });
   const goalEvents = useMemo(
     () => events.filter((e) => e.type === "goal" || e.type === "own_goal"),
     [events]
   );
   const eventPhotos = useEventPlayerPhotos({ events: goalEvents, homeTeam, awayTeam });
-  const highlightly = useHighlightlyMatchData(match, homeTeam, awayTeam);
+
+  const highlightlyEnabled =
+    activeMatchTab === "summary" ||
+    activeMatchTab === "statistics" ||
+    activeMatchTab === "lineups" ||
+    activeMatchTab === "highlights";
+  const highlightly = useHighlightlyMatchData(match, homeTeam, awayTeam, {
+    enabled: highlightlyEnabled,
+  });
+
   const youtubeHighlightsEnabled =
     activeMatchTab === "highlights" && match?.status === "completed";
-  const { videos: youtubeVideos, loading: youtubeLoading } = useYouTubeMatchVideos({
+  const { videos: youtubeVideos, loading: youtubeLoading, resolveResult: youtubeResolve } =
+    useYouTubeMatchVideos({
     match,
     homeTeam,
     awayTeam,
@@ -155,7 +166,11 @@ export function MatchDetailView() {
       : undefined;
   const highlightQuota = useMemo(() => getHighlightlyQuotaStatus(), [highlightly.fetchedAt]);
   const highlightQuotaLabel = `${highlightQuota.remaining}/${highlightQuota.limit} API requests left this month`;
-  const liveStream = useLiveStreamForMatch(match, homeTeam, awayTeam);
+
+  const liveStreamEnabled = activeMatchTab === "watch" || match?.status === "live";
+  const liveStream = useLiveStreamForMatch(match, homeTeam, awayTeam, {
+    enabled: liveStreamEnabled,
+  });
   const mergedStatistics = useMemo(() => {
     if (statistics) return statistics;
     if (!match || highlightly.statistics.length === 0) return null;
@@ -453,6 +468,8 @@ export function MatchDetailView() {
             homeTeam={homeTeam}
             awayTeam={awayTeam}
             highlightly={highlightly}
+            scorerProfiles={scorerProfiles}
+            scorersLoading={scorersLoading}
           />
         ) : null}
 
@@ -474,51 +491,61 @@ export function MatchDetailView() {
               homeTeamName={homeTeamName}
               awayTeamName={awayTeamName}
               introHighlight={highlightly.intro?.introHighlight}
+              introStatus={highlightly.intro?.status}
               attribution={highlightly.attribution}
               quotaLabel={highlightQuotaLabel}
               fallbackHighlightsUrl={kampHighlightsFallback}
               youtubeVideos={youtubeVideos}
               youtubeLoading={youtubeLoading}
+              youtubeResolve={youtubeResolve}
               matchStatus={match?.status}
             />
           </PanelErrorBoundary>
         ) : null}
 
         {activeMatchTab === "statistics" ? (
-          <MatchStatisticsTab
-            statistics={mergedStatistics}
-            loading={loading || highlightly.loading}
-            homeTeamName={homeTeamName}
-            awayTeamName={awayTeamName}
-            matchStatus={match?.status}
-            highlightlyStats={highlightly.statistics}
-          />
+          <PanelErrorBoundary name="Statistics">
+            <MatchStatisticsTab
+              statistics={mergedStatistics}
+              loading={loading || highlightly.loading}
+              homeTeamName={homeTeamName}
+              awayTeamName={awayTeamName}
+              matchStatus={match?.status}
+              highlightlyStats={highlightly.statistics}
+            />
+          </PanelErrorBoundary>
         ) : null}
 
         {activeMatchTab === "lineups" ? (
-          <MatchLineupsTab
-            lineups={lineups}
-            loading={loading}
-            homeTeamName={homeTeamName}
-            awayTeamName={awayTeamName}
-            matchStatus={match?.status}
-          />
+          <PanelErrorBoundary name="Lineups">
+            <MatchLineupsTab
+              lineups={lineups}
+              loading={loading}
+              homeTeamName={homeTeamName}
+              awayTeamName={awayTeamName}
+              matchStatus={match?.status}
+            />
+          </PanelErrorBoundary>
         ) : null}
 
         {activeMatchTab === "commentary" ? (
-          <MatchCommentaryTab
-            commentary={commentary}
-            loading={loading}
-            matchStatus={match?.status}
-          />
+          <PanelErrorBoundary name="Commentary">
+            <MatchCommentaryTab
+              commentary={commentary}
+              loading={loading}
+              matchStatus={match?.status}
+            />
+          </PanelErrorBoundary>
         ) : null}
 
         {activeMatchTab === "h2h" && match ? (
-          <MatchH2HTab
-            match={match}
-            homeTeamName={homeTeamName}
-            awayTeamName={awayTeamName}
-          />
+          <PanelErrorBoundary name="H2H">
+            <MatchH2HTab
+              match={match}
+              homeTeamName={homeTeamName}
+              awayTeamName={awayTeamName}
+            />
+          </PanelErrorBoundary>
         ) : null}
 
         {!match && !loading ? (
