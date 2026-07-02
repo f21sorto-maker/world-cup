@@ -1,6 +1,54 @@
 {
-  "updatedAt": "2026-07-02T16:36:09.394Z",
+  "updatedAt": "2026-07-02T17:55:52.185Z",
   "builds": [
+    {
+      "version": "7.0.0",
+      "build": 7,
+      "kind": "build",
+      "message": "9 file(s) in .cursor, .idx, .mcp.json, .vscode, CHANGELOG.md, VERSION_LOG.md — 9 files changed, 110 insertions(+), 27 deletions(-)",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T17:55:52.185Z"
+    },
+    {
+      "version": "7.0.0",
+      "build": 6,
+      "kind": "build",
+      "message": "Wrap match detail Statistics/Lineups/Commentary/H2H tabs in error boundaries",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T17:29:12.442Z"
+    },
+    {
+      "version": "7.0.0",
+      "build": 5,
+      "kind": "build",
+      "message": "Replace PitchDiagram foreignObject with CSS player overlay for Safari perf",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T17:27:48.445Z"
+    },
+    {
+      "version": "7.0.0",
+      "build": 4,
+      "kind": "build",
+      "message": "Safe tap-to-play embeds on Watch/Highlights and lighter YouTube fetch path",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T17:26:07.685Z"
+    },
+    {
+      "version": "7.0.0",
+      "build": 3,
+      "kind": "build",
+      "message": "Stabilize match detail hooks and gate tab fetches to reduce freeze risk",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T17:23:14.230Z"
+    },
+    {
+      "version": "7.0.0",
+      "build": 2,
+      "kind": "build",
+      "message": "6 file(s) in .cursor, .idx, .mcp.json, .vscode, build-manifest.json, src — 6 files changed, 96 insertions(+), 18 deletions(-)",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T16:52:37.881Z"
+    },
     {
       "version": "7.0.0",
       "build": 1,
@@ -272,57 +320,17 @@
       "message": "Week B: slot identity, view-model adapter, live context panel",
       "date": "2026-06-30",
       "timestamp": "2026-06-30T23:17:40.784Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 52,
-      "kind": "build",
-      "message": "Week A: boot cache merge, lock policy, live bracket context",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T23:12:52.255Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 51,
-      "kind": "build",
-      "message": "Bracket UX: responsive layout, round nav, compact tree cards, match tap, desktop-only connectors",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T22:40:18.105Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 50,
-      "kind": "build",
-      "message": "Narrow live data contract: ESPN lifecycle, result-final lock, live-window polling",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T22:37:14.980Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 49,
-      "kind": "build",
-      "message": "Client registry Phases 0–2: team/fixture resolve, dedupe, kickoff validation",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T22:09:47.345Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 48,
-      "kind": "build",
-      "message": "Fix LiveView gate: resolve kickoff before active-phase filter",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T20:56:09.209Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 47,
-      "kind": "build",
-      "message": "Fix live card locked gate, kickoff drift, remove debug beacons, harden ESPN protection",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:56:18.197Z"
     }
   ],
   "commits": [
+    {
+      "hash": "2bf339faffaaf9d2095abd8ec46dc5f0c01bc702",
+      "shortHash": "2bf339f",
+      "message": "Release v7.0.0 with YouTube broadcaster highlights in match detail.",
+      "version": "7.0.0",
+      "build": 1,
+      "timestamp": "2026-07-02T16:36:19.187Z"
+    },
     {
       "hash": "82b37be9fa2857bb328625fe285d1c859b62289f",
       "shortHash": "82b37be",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 78,
       "timestamp": "2026-06-30T02:52:55.422Z"
-    },
-    {
-      "hash": "fcdcd4b20a42f29497240b62113b8eb6f34804b9",
-      "shortHash": "fcdcd4b",
-      "message": "Add spinning World Cup ball as the global loading indicator.",
-      "version": "4.0.0",
-      "build": 78,
-      "timestamp": "2026-06-30T02:50:43.790Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "7.0.0",
+      "build": 1,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-07-02T16:38:56.085Z"
+    },
     {
       "url": "",
       "environment": "production",
@@ -716,14 +724,6 @@
       "build": 73,
       "message": "Production deploy via deploy:vercel",
       "timestamp": "2026-06-28T20:13:23.753Z"
-    },
-    {
-      "url": "",
-      "environment": "production",
-      "version": "4.0.0",
-      "build": 70,
-      "message": "Production deploy via deploy:vercel",
-      "timestamp": "2026-06-28T06:39:53.537Z"
     }
   ]
 }

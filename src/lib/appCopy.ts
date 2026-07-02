@@ -166,7 +166,7 @@ export const APP_COPY = {
       title: "2026 at a glance",
       teamsLeft: "Teams left",
       matchesPlayed: "Played",
-      matchesRemaining: "Remaining",
+      matchesRemaining: "Remaining Matches",
       totalGoals: "Goals",
       yellowCards: "Yellow cards",
       redCards: "Red cards",

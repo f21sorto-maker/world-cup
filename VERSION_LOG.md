@@ -220,6 +220,30 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+
+
+
+
+
+## [7.0.0] build 7 — 2026-07-02 (build)
+- 9 file(s) in .cursor, .idx, .mcp.json, .vscode, CHANGELOG.md, VERSION_LOG.md — 9 files changed, 110 insertions(+), 27 deletions(-)
+
+## [7.0.0] build 6 — 2026-07-02 (build)
+- Wrap match detail Statistics/Lineups/Commentary/H2H tabs in error boundaries
+
+## [7.0.0] build 5 — 2026-07-02 (build)
+- Replace PitchDiagram foreignObject with CSS player overlay for Safari perf
+
+## [7.0.0] build 4 — 2026-07-02 (build)
+- Safe tap-to-play embeds on Watch/Highlights and lighter YouTube fetch path
+
+## [7.0.0] build 3 — 2026-07-02 (build)
+- Stabilize match detail hooks and gate tab fetches to reduce freeze risk
+
+## [7.0.0] build 2 — 2026-07-02 (build)
+- 6 file(s) in .cursor, .idx, .mcp.json, .vscode, build-manifest.json, src — 6 files changed, 96 insertions(+), 18 deletions(-)
+
 ## [7.0.0] build 1 — 2026-07-02 (major)
 - YouTube broadcaster highlights in match detail; FOX Sports, FOX Soccer, and Telemundo embeds after full time
 
