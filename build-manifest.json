@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T16:31:26.044Z",
+  "updatedAt": "2026-07-02T16:34:19.579Z",
   "builds": [
     {
       "version": "6.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "dcd529a0dcd2a9279a75d7d66ed49ff85b2f135d",
+      "shortHash": "dcd529a",
+      "message": "Wire YouTube broadcaster highlights into match Highlights tab.",
+      "version": "6.0.0",
+      "build": 9,
+      "timestamp": "2026-07-02T16:31:26.475Z"
+    },
+    {
       "hash": "43d0be148291520bc5e341c159bd3bb01fb56d06",
       "shortHash": "43d0be1",
       "message": "Record v6.0.0 build 7 production deploy on Vercel.",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 77,
       "timestamp": "2026-06-30T02:42:37.782Z"
-    },
-    {
-      "hash": "d220627397ecd9429e622f0c7a6da21e48322f5b",
-      "shortHash": "d220627",
-      "message": "Add football-logos branding, knockout penalty scores, and team drawer UX fixes.",
-      "version": "4.0.0",
-      "build": 77,
-      "timestamp": "2026-06-30T02:42:27.582Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "6.0.0",
+      "build": 9,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-07-02T16:34:19.578Z"
+    },
     {
       "url": "",
       "environment": "production",
@@ -716,14 +724,6 @@
       "build": 70,
       "message": "Production deploy via deploy:vercel",
       "timestamp": "2026-06-28T06:39:53.537Z"
-    },
-    {
-      "url": "",
-      "environment": "production",
-      "version": "4.0.0",
-      "build": 48,
-      "message": "Production deploy v4.0.0 build 48 on main",
-      "timestamp": "2026-06-28T04:52:49.303Z"
     }
   ]
 }
