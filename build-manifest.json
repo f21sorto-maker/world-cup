@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T18:05:07.418Z",
+  "updatedAt": "2026-07-02T18:05:17.993Z",
   "builds": [
     {
       "version": "7.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "abcf83b3f1bab4dd9793887164bfbb4f1685b042",
+      "shortHash": "abcf83b",
+      "message": "Record v7.0.0 build 11 production deploy on Vercel.",
+      "version": "7.0.0",
+      "build": 11,
+      "timestamp": "2026-07-02T18:05:17.987Z"
+    },
+    {
       "hash": "60ed1703bd0e5cf7db85b714bb91e7a47511106f",
       "shortHash": "60ed170",
       "message": "Record build 11 commit metadata in build-manifest after post-commit sync.",
@@ -554,14 +562,6 @@
       "version": "4.0.0",
       "build": 83,
       "timestamp": "2026-06-30T03:51:27.851Z"
-    },
-    {
-      "hash": "478a2bd7bcc1044b850d1148f83cb4c356c270a4",
-      "shortHash": "478a2bd",
-      "message": "Record v4.0.0 build 80 production deploy on Vercel.",
-      "version": "4.0.0",
-      "build": 80,
-      "timestamp": "2026-06-30T03:33:37.781Z"
     }
   ],
   "deploys": [
