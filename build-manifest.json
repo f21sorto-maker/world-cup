@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T18:01:29.190Z",
+  "updatedAt": "2026-07-02T18:01:32.746Z",
   "builds": [
     {
       "version": "7.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "5a6e0f52a91eea69fadf2009f25deaccbf08a351",
+      "shortHash": "5a6e0f5",
+      "message": "Fix match detail highlights pipeline and tab stability for mobile PWA.",
+      "version": "7.0.0",
+      "build": 11,
+      "timestamp": "2026-07-02T18:01:32.745Z"
+    },
+    {
       "hash": "12d9ce45fcded31bfab19c039de4047efdeaca49",
       "shortHash": "12d9ce4",
       "message": "clarified remaining Matches",
@@ -554,14 +562,6 @@
       "version": "4.0.0",
       "build": 80,
       "timestamp": "2026-06-30T03:31:49.010Z"
-    },
-    {
-      "hash": "980aa708679440f912618a1488d81b9591354b22",
-      "shortHash": "980aa70",
-      "message": "Unify fixture cards on centered horizontal layout and improve knockout bracket UX.",
-      "version": "4.0.0",
-      "build": 79,
-      "timestamp": "2026-06-30T03:10:10.016Z"
     }
   ],
   "deploys": [
