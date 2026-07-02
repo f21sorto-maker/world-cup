@@ -1,6 +1,14 @@
 {
-  "updatedAt": "2026-07-02T16:34:19.579Z",
+  "updatedAt": "2026-07-02T16:36:09.394Z",
   "builds": [
+    {
+      "version": "7.0.0",
+      "build": 1,
+      "kind": "major",
+      "message": "YouTube broadcaster highlights in match detail; FOX Sports, FOX Soccer, and Telemundo embeds after full time",
+      "date": "2026-07-02",
+      "timestamp": "2026-07-02T16:36:09.394Z"
+    },
     {
       "version": "6.0.0",
       "build": 9,
@@ -312,17 +320,17 @@
       "message": "Fix live card locked gate, kickoff drift, remove debug beacons, harden ESPN protection",
       "date": "2026-06-30",
       "timestamp": "2026-06-30T18:56:18.197Z"
-    },
-    {
-      "version": "5.0.0",
-      "build": 46,
-      "kind": "build",
-      "message": "Fix bracket grid shift from connector overlay consuming first column",
-      "date": "2026-06-30",
-      "timestamp": "2026-06-30T18:43:15.363Z"
     }
   ],
   "commits": [
+    {
+      "hash": "82b37be9fa2857bb328625fe285d1c859b62289f",
+      "shortHash": "82b37be",
+      "message": "Record v6.0.0 build 9 production deploy on Vercel.",
+      "version": "6.0.0",
+      "build": 9,
+      "timestamp": "2026-07-02T16:34:33.997Z"
+    },
     {
       "hash": "dcd529a0dcd2a9279a75d7d66ed49ff85b2f135d",
       "shortHash": "dcd529a",
@@ -554,14 +562,6 @@
       "version": "4.0.0",
       "build": 78,
       "timestamp": "2026-06-30T02:50:43.790Z"
-    },
-    {
-      "hash": "c47d40116de2e3a56634876b732a3044d3fabf24",
-      "shortHash": "c47d401",
-      "message": "Add football-logos branding, knockout penalty scores, and team drawer UX fixes.",
-      "version": "4.0.0",
-      "build": 77,
-      "timestamp": "2026-06-30T02:42:37.782Z"
     }
   ],
   "deploys": [

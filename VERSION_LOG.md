@@ -219,6 +219,10 @@ Use `npm run version:patch|minor|major` for semver releases.
 
 
 
+
+## [7.0.0] build 1 — 2026-07-02 (major)
+- YouTube broadcaster highlights in match detail; FOX Sports, FOX Soccer, and Telemundo embeds after full time
+
 ## [6.0.0] build 9 — 2026-07-02 (build)
 - 12 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 12 files changed, 356 insertions(+), 95 deletions(-)
 

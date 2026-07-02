@@ -1,21 +1,18 @@
 # Changelog
 
-## [6.0.0] — 2026-07-01
+## [7.0.0] — 2026-07-02
 
 ### Changed
-- Live insights strip, bracket flow layout, schedule-parity locked bracket, durable goal events and WC career scorers
+- YouTube broadcaster highlights in match detail; FOX Sports, FOX Soccer, and Telemundo embeds after full time
 
 ## [Unreleased]
 
 ### Builds
-- **6.0.0 build 9** (2026-07-02): 12 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 12 files changed, 356 insertions(+), 95 deletions(-)
-- **6.0.0 build 8** (2026-07-02): wire YouTube highlights into match tab
-- **6.0.0 build 7** (2026-07-01): 25 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, src, version.json — 25 files changed, 592 insertions(+), 96 deletions(-)
-- **6.0.0 build 6** (2026-07-01): Enriched scorer photos, canonical team IDs in stats, tournament pulse bento on Live strip
-- **6.0.0 build 5** (2026-07-01): 84 file(s) in CHANGELOG.md, VERSION_LOG.md, build-manifest.json, package.json, src, version.json — 84 files changed, 5210 insertions(+), 742 deletions(-)
-- **6.0.0 build 4** (2026-07-01): Golden Boot crown pulse, celebrate on leader change and goals
-- **6.0.0 build 3** (2026-07-01): Phase 6: WC career goals on scorer cards and tournament stats leaderboard
-- **6.0.0 build 2** (2026-07-01): Live knockout insights strip with scorer bentos, crown animation, and player popovers
+
+## [6.0.0] — 2026-07-01
+
+### Changed
+- Live insights strip, bracket flow layout, schedule-parity locked bracket, durable goal events and WC career scorers
 
 ## [5.0.0] — 2026-06-30
 
