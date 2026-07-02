@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T18:01:32.746Z",
+  "updatedAt": "2026-07-02T18:05:07.418Z",
   "builds": [
     {
       "version": "7.0.0",
@@ -324,6 +324,14 @@
   ],
   "commits": [
     {
+      "hash": "60ed1703bd0e5cf7db85b714bb91e7a47511106f",
+      "shortHash": "60ed170",
+      "message": "Record build 11 commit metadata in build-manifest after post-commit sync.",
+      "version": "7.0.0",
+      "build": 11,
+      "timestamp": "2026-07-02T18:01:51.367Z"
+    },
+    {
       "hash": "5a6e0f52a91eea69fadf2009f25deaccbf08a351",
       "shortHash": "5a6e0f5",
       "message": "Fix match detail highlights pipeline and tab stability for mobile PWA.",
@@ -554,17 +562,17 @@
       "version": "4.0.0",
       "build": 80,
       "timestamp": "2026-06-30T03:33:37.781Z"
-    },
-    {
-      "hash": "8c21bd81042133cb553ef3f74bcae2d3e97304d3",
-      "shortHash": "8c21bd8",
-      "message": "Fix TeamDetailSheet freezes from unstable effect deps and live poll churn.",
-      "version": "4.0.0",
-      "build": 80,
-      "timestamp": "2026-06-30T03:31:49.010Z"
     }
   ],
   "deploys": [
+    {
+      "url": "",
+      "environment": "production",
+      "version": "7.0.0",
+      "build": 11,
+      "message": "Production deploy via deploy:vercel",
+      "timestamp": "2026-07-02T18:05:07.417Z"
+    },
     {
       "url": "",
       "environment": "production",
@@ -716,14 +724,6 @@
       "build": 74,
       "message": "Production deploy via deploy:vercel",
       "timestamp": "2026-06-30T01:54:08.406Z"
-    },
-    {
-      "url": "",
-      "environment": "production",
-      "version": "4.0.0",
-      "build": 73,
-      "message": "Production deploy via deploy:vercel",
-      "timestamp": "2026-06-28T20:13:23.753Z"
     }
   ]
 }
